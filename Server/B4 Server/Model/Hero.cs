@@ -4,7 +4,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 
-namespace ProjetB3
+namespace ProjetB4
 {
     public class Hero : Entity
     {
@@ -177,7 +177,7 @@ namespace ProjetB3
     
         public void buyItem(String itemName)
 	    {
-		    ItemsInfos itemsInfos = new ItemsInfos();
+		    WorldInfos itemsInfos = myGame.worldInfos;
 		    
 		    try
 		    {
@@ -282,8 +282,8 @@ namespace ProjetB3
 
         public void addItem(String itemName)
         {
-            ItemsInfos itemsInfos = new ItemsInfos();
-
+            WorldInfos itemsInfos = myGame.worldInfos;
+		   
             try
             {
                 Item item = itemsInfos.getItemByName(itemName);

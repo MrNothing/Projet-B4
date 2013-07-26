@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProjetB3
+namespace ProjetB4
 {
     //events trigger units, spawn rewards or entities, display npc messages, activate other events.
     public enum EventType

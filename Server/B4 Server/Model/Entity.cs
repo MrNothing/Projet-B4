@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProjetB3
+namespace ProjetB4
 {
     public enum EntityType
     {

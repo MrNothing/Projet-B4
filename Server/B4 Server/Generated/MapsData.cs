@@ -6,22 +6,27 @@
 		999* entities
 */
 
-public class MapsData
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Text;
+
+namespace ProjetB4
 {
-	public HashTable maps = new HashTable();
-	public MapsData()
+	public class MapsData
 	{
-		Map map_0 = new Map("fields");
-		map_0.name = "fields";
-		
-		Bloc tmpBloc_0 = new Bloc("blocPrefab");
-		tmpBloc_0.id = "0"
-		tmpBloc_0.position = new Vector3(0,0,0);
-		map_0.tiles.add("0", tmpBloc_0);
-		
-		Vector3 tile_0 = new Vector3(0,0,0);
-		map_0.pathTiles.add(tile_0.toPosRefId(), tile_0);
-		
-		maps.add("fields", map_0);
+		public HashTable maps = new HashTable();
+		public MapsData()
+		{
+			//example...
+			Map map_0 = new Map("fields");
+			map_0.name = "fields";
+			
+			Vector3 tile_0 = new Vector3(0,0,0);
+			map_0.pathTiles.add(tile_0.toPosRefId(), tile_0);
+			
+			maps.add("fields", map_0);
+		}
 	}
 }

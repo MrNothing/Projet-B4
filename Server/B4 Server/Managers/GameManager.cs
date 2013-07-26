@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using PlayerIO.GameLibrary;
 
-namespace ProjetB3
+namespace ProjetB4
 {
     public class GameManager
     {
