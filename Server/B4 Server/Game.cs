@@ -38,9 +38,15 @@ public class GameCode : Game<Player> {
 
 		// This method is called when an instance of your the game is created
 		public override void GameStarted() {
+		
+			//load the classes generated with the World Editor
             mapsInfos = new MapsData();
+			worldInfos = new WorldInfos();
+			
+			//enable this for persistence
             PreloadPlayerObjects = true;
 			
+			//load current map
             try
 			{
 				zone = mapsInfos.maps[RoomData["map"]];
@@ -51,16 +57,17 @@ public class GameCode : Game<Player> {
 				return;
 			}
 			
+			//this method load all entities, and events for this zone.
 			initializeZone();
+			
             PlayerIO.ErrorLog.WriteError("Map loaded: " + zone.name);
 
             spellsManager = new SpellsManager(this);
             chatManager = new ChatManager(this);
             gameManager = new GameManager(this, spellsManager);
 
+			//this is the main routine 
             mainTimer = AddTimer(run, loopInterval);
-            //ItemPattern tmpItem = new ItemPattern("testItem");
-            //tmpItem.effects[0] = new Effect(EffectNames.hpBon, 15);
 		}
 
         // This method is called when a player sends a message into the server code
@@ -91,7 +98,6 @@ public class GameCode : Game<Player> {
 		}
 
 		// This method is called whenever a player joins the game
-
         public override void UserJoined(Player player)
         {
             loadUser(player);
@@ -103,7 +109,7 @@ public class GameCode : Game<Player> {
             player.Send("map", zone.zoneName);*/
 
         }
-
+		
         public void loadUser(Player player)
         {
             //create player Object.
@@ -322,11 +328,11 @@ public class GameCode : Game<Player> {
                 //sendEntityInfosToAll(player.myCharacter);
 
                 location = "sendSpells ";
-                //send my spells
+                //send my spells -> disabled since the infos are sent in a different way now
                 //player.myCharacter.sendSpells(player);
 
                 location = "sendItems ";
-                //send Items
+                //send Items -> disabled since the infos are sent in a different way now
                 //player.myCharacter.sendItems(player);
             }
             catch(Exception e)
@@ -470,7 +476,7 @@ public class GameCode : Game<Player> {
 
         public void run()
         {
-            //main loop;
+            //main loop
             foreach (String s in units.Keys)
             {
                 try
