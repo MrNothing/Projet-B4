@@ -1536,12 +1536,12 @@ namespace ProjetB3
 
         public String getPosRefId()
         {
-            return (Math.Floor(position.x / myGame.baseRefSize) * myGame.baseRefSize) + "_" + (Math.Floor(position.z / myGame.baseRefSize) * myGame.baseRefSize);
+            return position.toPosRefId(myGame.baseRefSize);
         }
 
         public String getStepRefId()
         {
-            return (Math.Round(Math.Floor(position.x / myGame.baseStep) * myGame.baseStep)) + "_" + (Math.Round(Math.Floor(position.z / myGame.baseStep) * myGame.baseStep));
+            return position.toPosRefId(myGame.baseStep);
         }
     }
 }
