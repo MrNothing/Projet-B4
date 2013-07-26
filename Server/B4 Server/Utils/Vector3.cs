@@ -10,7 +10,10 @@ namespace ProjetB4
 		public float x=0;
 		public float y=0;
 		public float z=0;
-
+		
+		//This is usefull for the pathfinder
+		public Vector3 parent;
+		
 		public Vector3(float _x, float _y, float _z)
 		{
 			x = _x;
@@ -21,6 +24,13 @@ namespace ProjetB4
 		public Vector3 ()
 		{
 			//zero vector;
+		}
+		
+		public Vector3 (Vector3 vector)
+		{
+			x = vector.x;
+			y = vector.y;
+			z = vector.z;
 		}
 		
 		public Vector3 Add(Vector3 tmpVect)
