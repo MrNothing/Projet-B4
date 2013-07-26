@@ -43,7 +43,12 @@ namespace ProjetB3
         public GameCode myGame;
         public Player myController;
 
+        //The distance to view this unit as a player.
         public float viewRange = 30;
+		
+		//This defines the for ranges for visibility
+		public Vector3 checkRange = new Vector3(1,0.1f,1);
+		
         public String focus = null;
         public Entity master=null;
         public Entity riding = null;
@@ -92,8 +97,6 @@ namespace ProjetB3
 
         public Random mainSeed = new Random();
 
-        public int checkRange = 1;
-
         float IntervalCounter1000 = 0;
         float IntervalCounter250 = 0;
 
@@ -110,11 +113,7 @@ namespace ProjetB3
 
             lastDate = tmpDate;
 
-            //if (IntervalCounter1000 > 1000)
-                setRegenPoints();
-
-            //if (type == EntityType.player)
-            //    sendPos();
+            setRegenPoints();
             
             visibleUnits = new Dictionary<String, String>();
             visibleEnemies = new Dictionary<String, String>();
@@ -124,9 +123,15 @@ namespace ProjetB3
             visibleEnnemyNonHeroes = new Dictionary<String, String>();
             visibleCorpses = new Dictionary<String, String>();
 
-            //if (IntervalCounter250 > 250)
-            checkVisiblePlayers();
-         
+			for(float x=-checkRange.x; x<checkRange.x; x++)
+			{
+				for(float y=-checkRange.y; y<checkRange.y; y++)
+				{
+					for(float z=-checkRange.z; z<checkRange.z; z++)
+						checkVisiblePlayers(new Vector3((int)x,(int)y,(int)z));
+				}
+			}
+			
             if (type != EntityType.player)
             {
                 if (riding == null)
@@ -333,28 +338,53 @@ namespace ProjetB3
             }
         }
 
-        private void checkVisiblePlayers()
+        private void checkVisiblePlayers(Vector3 offset)
         {
             //check the units around me, if they are players, send my position to them.
             //startAttacking: if the target is on range
             //focusTarget() //if the target is in attack range and i am not attacking anyone.
             //sendPosition() //if the target is a player and i am in his vision range -> viewRange.
-
+			
+			string posRefId = position.Add(offset).toPosRefId(myGame.baseRefSize);
+			
             try
             {
-                foreach (Object o in myGame.players.Keys)
+				Dictionnary<String, String> bloc = myGame.inGameUnitsRefs[posRefId];
+				
+                foreach (String s in bloc.Keys)
                 {
-                    Entity theUnit = myGame.units[o + ""];
+                    Entity theUnit = myGame.units[s];
 
                     if (theUnit.getDistance(this)<myGame.baseRefSize)
                     {
-                         visiblePlayers.Add(theUnit.id, theUnit.id);
-
-                         if (theUnit.team != team && agressivity == AgressivityLevel.agressive && type==EntityType.npc)
-                         {
-                             if (theUnit.getDistance(this) <= viewRange)
-                                 focus = theUnit.id;
-                         }
+						
+						visibleUnits.Add(theUnit.id, theUnit.id);
+						
+						if(theUnit.hp<=0)
+							visibleCorpses.Add(theUnit.id, theUnit.id);
+						else
+						{
+							if(theUnit.team != team)
+							{
+								visibleEnemies.Add(theUnit.id, theUnit.id);
+								
+								if (type == EntityType.player)
+									visibleEnnemyHeroes = new Dictionary<String, String>();
+								else
+									visibleEnnemyNonHeroes = new Dictionary<String, String>();
+							}
+							else
+								visibleAllies.Add(theUnit.id, theUnit.id);
+								
+							if (type == EntityType.player)
+								visiblePlayers.Add(theUnit.id, theUnit.id); 
+						}
+						
+						if (theUnit.team != team && agressivity == AgressivityLevel.agressive && type==EntityType.npc)
+						{
+							if (theUnit.getDistance(this) <= viewRange)
+								focus = theUnit.id;
+						}
                     }
                 }
             }
@@ -377,10 +407,9 @@ namespace ProjetB3
             {
                 if (targetUnit.hp > 0)
                 {
-                    float bruteFocusDistance = ((targetUnit.position.x - position.x) * (targetUnit.position.x - position.x) + (targetUnit.position.z - position.z) * (targetUnit.position.z - position.z) + (targetUnit.position.y - position.y) * (targetUnit.position.y - position.y));
-                    focusDistance = (float)Math.Sqrt(bruteFocusDistance);
-
-
+                    focusDistance = targetUnit.position.Substract(position).SqrMagnitude()
+					
+					//target is out of viewRange
                     if (focusDistance > viewRange + 3 && !type.Equals("Hero"))
                     {
                         focus = null;
@@ -402,18 +431,14 @@ namespace ProjetB3
                 }
                 else
                 {
-                    //if(type.Equals("Turret"))
-                    //	System.out.println("target is dead!");
-
+					//Target is dead, reset focus
                     focus = null;
                     focusDistance = 999;
                 }
             }
             else
             {
-                //if(type.Equals("Turret"))
-                //	System.out.println("target has disappeared!");
-
+				//Target has disappeared or something when really wrong with it...
                 focus = null;
                 focusDistance = 999;
             }
@@ -1486,11 +1511,7 @@ namespace ProjetB3
             data[4] = 0; //ix
             data[5] = 0; //iy
             data[6] = 0; //iz
-
-            if (checkRange > 0)
-                myGame.sendDataToGroup("p", visiblePlayers, data);
-            else
-                myGame.Broadcast("p", data);
+			myGame.sendDataToGroup("p", visiblePlayers, data);
 
         }
 
