@@ -1,7 +1,7 @@
 Projet-B4
 =========
 
-MMORPG Project:
+Project Structure:
 
 - Unity3D C# Client (Includes the World Editor avaliable via an ingame console)
 - PlayerIO C# Server (Uses BigDB for persistence)
