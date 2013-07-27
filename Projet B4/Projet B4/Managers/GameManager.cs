@@ -278,7 +278,7 @@ namespace ProjetB4
                 {
                     try
                     {
-                        UnitsInfos tmpInfos = new UnitsInfos();
+                        WorldInfos tmpInfos = mainInstance.worldInfos;
                         Entity invokedCreature = new Entity(mainInstance, "", "", tmpInfos.getEntityInfosByName(message.GetString(1)), sender.myCharacter.position.Add(new Vector3(1,0,1)));
                         invokedCreature.infos.baseSpeed = 2;
                         invokedCreature.master = sender.myCharacter;

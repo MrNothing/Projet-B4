@@ -100,13 +100,13 @@ namespace ProjetB4
 		
 		public String toPosRefId(float step)
 		{
-			return Math.floor(x/step)*step + "_" + Math.floor(y/step)*step + "_" + Math.floor(z/step)*step;
+			return Math.Floor(x/step)*step + "_" + Math.Floor(y/step)*step + "_" + Math.Floor(z/step)*step;
 		}
 		
 		private float defaultStep = 1;
 		public String toPosRefId()
 		{
-			return Math.floor(x/defaultStep)*defaultStep + "_" + Math.floor(y/defaultStep)*defaultStep + "_" + Math.floor(z/defaultStep)*defaultStep;
+			return Math.Floor(x/defaultStep)*defaultStep + "_" + Math.Floor(y/defaultStep)*defaultStep + "_" + Math.Floor(z/defaultStep)*defaultStep;
 		}
 	}
 }

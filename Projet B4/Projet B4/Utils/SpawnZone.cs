@@ -82,7 +82,7 @@ namespace ProjetB4
                         else
                             _specificName = monsters[typeSeed];
 
-                        Entity tmpCont = new Entity(mainInstance, "", _specificName, new UnitsInfos().getEntityInfosByName(monsters[typeSeed]), tmpPos);
+                        Entity tmpCont = new Entity(mainInstance, "", _specificName, mainInstance.worldInfos.getEntityInfosByName(monsters[typeSeed]), tmpPos);
 
                         tmpCont.spawnZone = this;
                         tmpCont.isTemp = true;
@@ -136,7 +136,7 @@ namespace ProjetB4
                             else
                                 _specificName = monsters[typeSeed];
 
-                            Entity tmpCont = new Entity(mainInstance, "", _specificName, new UnitsInfos().getEntityInfosByName(monsters[typeSeed]), tmpPos);
+                            Entity tmpCont = new Entity(mainInstance, "", _specificName, mainInstance.worldInfos.getEntityInfosByName(monsters[typeSeed]), tmpPos);
                             tmpCont.spawnZone = this;
                             tmpCont.isTemp = true;
                             tmpCont.enableRewards = !noReward;

@@ -35,14 +35,12 @@ namespace ProjetB4
                 {
                     if (randEnnemy.getDistance(parentUnit)<15)
                     {
-                    parentUnit.x = randEnnemy.x;
-                    parentUnit.y = randEnnemy.y;
-                    parentUnit.z = randEnnemy.z;
+                        parentUnit.position = randEnnemy.position;
 
-                    randEnnemy.hitMeWithPhysic(parentUnit.id, parentUnit.getAttackValue(), parentUnit.lastCrit);
+                        randEnnemy.hitMeWithPhysic(parentUnit.id, parentUnit.getAttackValue(), parentUnit.lastCrit);
 
-                    parentUnit.sendSpecialAttack(randEnnemy.id, (int)randEnnemy.x, (int)randEnnemy.y, (int)randEnnemy.z, "special_1");
-                        }
+                        //parentUnit.sendSpecialAttack(randEnnemy.id, (int)randEnnemy.x, (int)randEnnemy.y, (int)randEnnemy.z, "special_1");
+                    }
                 }
 
                 waves--;

@@ -16,7 +16,7 @@ namespace ProjetB4
 {
 	public class MapsData
 	{
-		public HashTable maps = new HashTable();
+		public Hashtable maps = new Hashtable();
 		public MapsData()
 		{
 			//example...
@@ -24,9 +24,9 @@ namespace ProjetB4
 			map_0.name = "fields";
 			
 			Vector3 tile_0 = new Vector3(0,0,0);
-			map_0.pathTiles.add(tile_0.toPosRefId(), tile_0);
+			map_0.pathTiles.Add(tile_0.toPosRefId(), tile_0);
 			
-			maps.add("fields", map_0);
+			maps.Add("fields", map_0);
 		}
 	}
 }

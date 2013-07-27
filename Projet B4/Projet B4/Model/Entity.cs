@@ -349,7 +349,7 @@ namespace ProjetB4
 			
             try
             {
-				Dictionnary<String, String> bloc = myGame.inGameUnitsRefs[posRefId];
+				Dictionary<String, String> bloc = myGame.inGameUnitsRefs[posRefId];
 				
                 foreach (String s in bloc.Keys)
                 {
@@ -407,7 +407,7 @@ namespace ProjetB4
             {
                 if (targetUnit.hp > 0)
                 {
-                    focusDistance = targetUnit.position.Substract(position).SqrMagnitude()
+                    focusDistance = targetUnit.position.Substract(position).SqrMagnitude();
 					
 					//target is out of viewRange
                     if (focusDistance > viewRange + 3 && !type.Equals("Hero"))
@@ -1563,6 +1563,44 @@ namespace ProjetB4
         public String getStepRefId()
         {
             return position.toPosRefId(myGame.baseStep);
+        }
+
+        public Entity clone()
+        {
+            Entity tmpEntity = new Entity(myGame, id, name, infos, position);
+            tmpEntity.agressivity = agressivity;
+            tmpEntity.checkRange = checkRange;
+            tmpEntity.viewRange = viewRange;
+            tmpEntity.wanderAround = wanderAround;
+            tmpEntity.hp = hp;
+            tmpEntity.mp = mp;
+            tmpEntity.master = master;
+            tmpEntity.level = level;
+            tmpEntity.items = items;
+            tmpEntity.spells = spells;
+            tmpEntity.spawnZone = spawnZone;
+            tmpEntity.team = team;
+            tmpEntity.ridable = ridable;
+            tmpEntity.myController = myController;
+            tmpEntity.myTrigger = myTrigger;
+            tmpEntity.isPatrol = isPatrol;
+            tmpEntity.initialPosition = initialPosition;
+            tmpEntity.focus = focus;
+            tmpEntity.enableRewards = enableRewards;
+            tmpEntity.destination = destination;
+            tmpEntity.decalage = decalage;
+            tmpEntity.buffs = buffs;
+
+            return tmpEntity;
+        }
+
+        public Entity getRandomEnnemy()
+        {
+            foreach(String s in visibleEnemies.Keys)
+            {
+                return myGame.units[s];
+            }
+            return null;
         }
     }
 }

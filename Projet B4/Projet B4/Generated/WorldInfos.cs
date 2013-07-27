@@ -16,10 +16,10 @@ namespace ProjetB4
 {
 	public class WorldInfos
 	{
-		public HashTable Npcs = new HashTable();
-		public HashTable Items = new HashTable();
-		public HashTable Spells = new HashTable();
-		public HashTable Quests = new HashTable();
+		public Hashtable Npcs = new Hashtable();
+		public Hashtable Items = new Hashtable();
+		public Hashtable Spells = new Hashtable();
+		public Hashtable Quests = new Hashtable();
 		
 		public WorldInfos()
 		{
@@ -28,14 +28,14 @@ namespace ProjetB4
 		
 		public Item getItemByName(String itemName) //generates an item using its pattern. that item has no id until it is specified.
 		{
-			Item newItem = new Item(Items[itemName]);
+			Item newItem = new Item((ItemPattern)Items[itemName]);
 			newItem.uses = newItem.infos.charges;
 			return newItem;
 		}
 		
 		public EntityInfos getEntityInfosByName(String name)
 		{
-			return Npcs[name];
+			return (EntityInfos)Npcs[name];
 		}
 	}
 }

@@ -43,37 +43,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseStatsInfos.cs" />
-    <Compile Include="ChatManager.cs" />
-    <Compile Include="delayedMagicDmg.cs" />
-    <Compile Include="delayedZoneMagicDmg.cs" />
-    <Compile Include="EffectsGenerator.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="EntityInfos.cs" />
-    <Compile Include="Event.cs" />
-    <Compile Include="EventsManager.cs" />
+    <Compile Include="Model\EntityInfos\BaseStatsInfos.cs" />
+    <Compile Include="Managers\ChatManager.cs" />
+    <Compile Include="Utils\delayedMagicDmg.cs" />
+    <Compile Include="Utils\delayedZoneMagicDmg.cs" />
+    <Compile Include="Utils\EffectsGenerator.cs" />
+    <Compile Include="Model\Entity.cs" />
+    <Compile Include="Model\EntityInfos\EntityInfos.cs" />
+    <Compile Include="Model\Event.cs" />
+    <Compile Include="Managers\EventsManager.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GameManager.cs" />
-    <Compile Include="Hero.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="ItemPattern.cs" />
-    <Compile Include="Map.cs" />
-    <Compile Include="MapsData.cs" />
-    <Compile Include="NameGenerator.cs" />
-    <Compile Include="PathFinder.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Managers\GameManager.cs" />
+    <Compile Include="Model\Hero.cs" />
+    <Compile Include="Model\Item.cs" />
+    <Compile Include="Model\ItemPattern.cs" />
+    <Compile Include="Model\Map.cs" />
+    <Compile Include="Generated\MapsData.cs" />
+    <Compile Include="Utils\NameGenerator.cs" />
+    <Compile Include="Utils\PathFinder.cs" />
+    <Compile Include="Model\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResistanceInfos.cs" />
-    <Compile Include="SpawnZone.cs" />
-    <Compile Include="SpecialEffects.cs" />
-    <Compile Include="SpellBonusInfos.cs" />
-    <Compile Include="SpellInfos.cs" />
-    <Compile Include="SpellsManager.cs" />
-    <Compile Include="Triggers.cs" />
-    <Compile Include="Vector3.cs" />
-    <Compile Include="VitalInfos.cs" />
-    <Compile Include="WorldInfos.cs" />
+    <Compile Include="Model\EntityInfos\ResistanceInfos.cs" />
+    <Compile Include="Utils\SpawnZone.cs" />
+    <Compile Include="Model\EntityInfos\SpecialEffects.cs" />
+    <Compile Include="Model\EntityInfos\SpellBonusInfos.cs" />
+    <Compile Include="Model\EntityInfos\SpellInfos.cs" />
+    <Compile Include="Managers\SpellsManager.cs" />
+    <Compile Include="Model\Triggers.cs" />
+    <Compile Include="Utils\Vector3.cs" />
+    <Compile Include="Model\EntityInfos\VitalInfos.cs" />
+    <Compile Include="Generated\WorldInfos.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
