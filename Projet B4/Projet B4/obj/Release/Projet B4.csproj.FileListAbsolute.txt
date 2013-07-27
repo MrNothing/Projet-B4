@@ -1,0 +1,7 @@
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\obj\Release\Projet B4.csprojResolveAssemblyReference.cache
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\bin\Release\Projet B4.dll
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\bin\Release\Projet B4.pdb
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\bin\Release\Player.IO GameLibrary.dll
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\bin\Release\Player.IO GameLibrary.xml
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\obj\Release\Projet B4.dll
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\obj\Release\Projet B4.pdb

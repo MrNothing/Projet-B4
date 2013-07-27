@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using PlayerIO.GameLibrary;
-using System.Drawing;
 
 namespace ProjetB4 {
 	[RoomType("Game")]
@@ -49,7 +48,7 @@ public class GameCode : Game<Player> {
 			//load current map
             try
 			{
-				zone = mapsInfos.maps[RoomData["map"]];
+				zone = (Map)mapsInfos.maps[RoomData["map"]];
             }
 			catch(Exception e)
 			{
@@ -347,7 +346,7 @@ public class GameCode : Game<Player> {
             try
             {
                 player.PlayerObject.Set("online", false);
-                player.PlayerObject.Set("map", zone.zoneName);
+                player.PlayerObject.Set("map", zone.name);
 
                 player.PlayerObject.Set("level", player.myCharacter.level);
                 player.PlayerObject.Set("model", player.myCharacter.infos.model);
@@ -801,11 +800,13 @@ public class GameCode : Game<Player> {
         void initializeZone()
         { 
             //load units
-            foreach (string s in zone.Entities.Keys)
+            foreach (string s in zone.entities.Keys)
             {
-                zone.Entities[s].myGame = this;
-                units.Add(s, zone.Entities[s]);
-                PlayerIO.ErrorLog.WriteError("Unit loaded: "+zone.Entities[s].name);
+                //Create a new Unit using the refrence
+                Entity newEntity = zone.entities[s].clone();
+                newEntity.myGame = this;
+                units.Add(s, newEntity);
+                PlayerIO.ErrorLog.WriteError("Unit loaded: "+zone.entities[s].name);
             }
 
             //load spawnZones
@@ -820,10 +821,10 @@ public class GameCode : Game<Player> {
             //load events
 
             int k = 0;
-            foreach (string s in zone.Events.Keys)
+            foreach (string s in zone.events.Keys)
             {
-                events.Add(k, zone.Events[s]);
-                PlayerIO.ErrorLog.WriteError("Event loaded: " + zone.Events[s].eventName.ToString());
+                events.Add(k, zone.events[s]);
+                PlayerIO.ErrorLog.WriteError("Event loaded: " + zone.events[s].eventName.ToString());
                 k++;
             }
 
