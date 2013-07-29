@@ -156,11 +156,7 @@ namespace ProjetB4
 
     public enum ItemAdvancedTypes
     {
-<<<<<<< HEAD:Server/Projet B4/Model/ItemPattern.cs
         none, potion, scroll, wand, spellBook, book,
-=======
-        none, usable, usableAndDestroyAfterTimes, book, spellBook
->>>>>>> 6d0d6ee37d6c24bc24b8e025371790552683807a:Projet B4/Projet B4/Model/ItemPattern.cs
     }
 
     public enum SlotTypes
