@@ -48,5 +48,25 @@ namespace ProjetB4
 
             return (int)totalXp;
         }
+		
+		public Hashtable toHashtable()
+		{
+			Hashtable tmpInfos = new Hashtable();
+			tmpInfos.Add("vitalInfos", vitalInfos.toHashtable());
+			tmpInfos.Add("baseStats", baseStats.toHashtable());
+			tmpInfos.Add("vitalInfosBon", vitalInfosBon.toHashtable());
+			tmpInfos.Add("baseStatsBon", baseStatsBon.toHashtable());
+			tmpInfos.Add("resBon", resBon.toHashtable());
+			tmpInfos.Add("spellBon", spellBon.toHashtable());
+			tmpInfos.Add("specialEffects", specialEffects.toHashtable());
+			
+			tmpInfos.Add("model", model);
+			tmpInfos.Add("range", range);
+			tmpInfos.Add("attackMoveSpeed", attackMoveSpeed);
+			tmpInfos.Add("baseSpeed", baseSpeed);
+			tmpInfos.Add("level", level);
+
+            return tmpInfos;
+		}
     }
 }

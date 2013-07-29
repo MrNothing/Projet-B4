@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Model\EntityInfos\BaseStatsInfos.cs" />
     <Compile Include="Managers\ChatManager.cs" />
+    <Compile Include="Model\ItemSeed.cs" />
     <Compile Include="Utils\delayedMagicDmg.cs" />
     <Compile Include="Utils\delayedZoneMagicDmg.cs" />
     <Compile Include="Utils\EffectsGenerator.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Model\ItemPattern.cs" />
     <Compile Include="Model\Map.cs" />
     <Compile Include="Generated\MapsData.cs" />
+    <Compile Include="Utils\ItemGenerator.cs" />
     <Compile Include="Utils\NameGenerator.cs" />
     <Compile Include="Utils\PathFinder.cs" />
     <Compile Include="Model\Player.cs" />
