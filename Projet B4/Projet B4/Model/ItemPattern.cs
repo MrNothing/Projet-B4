@@ -156,7 +156,7 @@ namespace ProjetB4
 
     public enum ItemAdvancedTypes
     {
-        none, usable, usableAndDestroyAfterTimes, book, 
+        none, usable, usableAndDestroyAfterTimes, book, spellBook
     }
 
     public enum SlotTypes
