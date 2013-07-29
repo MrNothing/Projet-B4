@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 
@@ -21,5 +22,11 @@ namespace ProjetB4
         public float spellVamp = 0;
         public float manaVamp = 0;
         public float resilience = 0;
+
+        public Hashtable toHashtable()
+        {
+            Hashtable tmp = new Hashtable();
+            return tmp;
+        }
     }
 }

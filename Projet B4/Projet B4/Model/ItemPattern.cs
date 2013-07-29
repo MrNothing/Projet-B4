@@ -15,6 +15,14 @@ namespace ProjetB4
             effect = _effect;
             value = _value;
         }
+
+        public Hashtable toHashtable()
+        {
+            Hashtable tmp = new Hashtable();
+            tmp.Add("effect", effect.ToString());
+            tmp.Add("value", value);
+            return tmp;
+        }
     }
 
     public enum EffectNames
@@ -185,6 +193,70 @@ namespace ProjetB4
         public ItemPattern(String _name)
         {
             name = _name;
+        }
+
+        public ItemPattern(Hashtable pattern)
+        {
+            name = pattern["name"]+"";
+            icon = pattern["icon"] + "";
+            description = pattern["description"] + "";
+            material = pattern["material"] + "";
+            model = pattern["model"] + "";
+            canBeTraded = bool.Parse(pattern["canBeTraded"] + "");
+            isQuestItem = bool.Parse(pattern["isQuestItem"] + "");
+            price = int.Parse(pattern["price"]+"");
+            weight = float.Parse(pattern["weight"]+"");
+            minLevel = int.Parse(pattern["minLevel"] + "");
+            specialString = pattern["specialString"] + "";
+            coolDown = float.Parse(pattern["coolDown"] + "");
+            charges = float.Parse(pattern["charges"] + "");
+            spell = pattern["spell"] + "";
+
+            type = (ItemTypes)Enum.Parse(typeof(ItemTypes), pattern["type"] + "", true);
+            advancedType = (ItemAdvancedTypes)Enum.Parse(typeof(ItemAdvancedTypes), pattern["advancedType"] + "", true);
+            slot = (SlotTypes)Enum.Parse(typeof(SlotTypes), pattern["advancedType"] + "", true);
+
+            for (int i = 0; pattern["effect_"+i] != null; i++)
+            { 
+                Hashtable infos = (Hashtable) pattern["effect_"+i];
+                EffectNames effectName = (EffectNames)Enum.Parse(typeof(EffectNames), infos["effect"] + "", true);
+                float effectValue = float.Parse(infos["value"]+"");
+                Effect tmpEffect = new Effect(effectName, effectValue);
+                effects[i] = tmpEffect;
+            }
+        }
+
+        public Hashtable toHashtable()
+        {
+            Hashtable tmpInfos = new Hashtable();
+
+            tmpInfos.Add("name", name);
+            tmpInfos.Add("icon", icon);
+            tmpInfos.Add("description", description);
+            tmpInfos.Add("material", material);
+            tmpInfos.Add("model", model);
+            tmpInfos.Add("canBeTraded", canBeTraded);
+            tmpInfos.Add("isQuestItem", isQuestItem);
+            tmpInfos.Add("price", price);
+            tmpInfos.Add("weight", weight);
+            tmpInfos.Add("minLevel", minLevel);
+            tmpInfos.Add("specialString", specialString);
+
+            tmpInfos.Add("coolDown", coolDown);
+            tmpInfos.Add("charges", charges);
+            tmpInfos.Add("spell", spell);
+
+            tmpInfos.Add("type", type.ToString());
+            tmpInfos.Add("advancedType", advancedType.ToString());
+            tmpInfos.Add("slot", slot.ToString());
+
+            for (int i = 0; i < effects.Length; i++)
+            { 
+                Effect tmpEffect = effects[i];
+                tmpInfos.Add("effect_" + i, effects[i].toHashtable());
+            }
+            
+            return tmpInfos;
         }
 
         public void setAllEffects(Entity target)

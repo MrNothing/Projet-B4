@@ -23,6 +23,8 @@ public class GameCode : Game<Player> {
         public SpellsManager spellsManager;
         public ChatManager chatManager;
         public GameManager gameManager;
+		
+		public ItemGenerator itemGenerator = new ItemGenerator();
 
         public float baseStep = 1;
         public float baseRefSize=100;
@@ -236,13 +238,42 @@ public class GameCode : Game<Player> {
                         try
                         {
                             //load item Infos...
-                            Item loadedItem =  worldInfos.getItemByName(player.PlayerObject.GetString("item_" + n + "_name"));
-                            tL = "1";
+                            ItemPattern errorItemPattern = new ItemPattern("Error");
+                            errorItemPattern.icon = "error";
+                            errorItemPattern.description = "This item could not be loaded";
+
+							Item loadedItem =  new Item(errorItemPattern);
+
+							if(!player.PlayerObject.GetString("item_" + n + "_generated", "N/A").Equals("N/A"))
+							{
+                                try
+                                {
+                                    loadedItem = itemGenerator.parseItem(player.PlayerObject.GetString("item_" + n + "_generated", "N/A"));
+                                }
+                                catch (Exception e)
+                                {
+                                    errorItemPattern.description = "This item could not be parsed, it must be corrupted. Please report this."; 
+                                }
+                            }
+							else
+							{
+                                try
+                                {
+								    loadedItem = worldInfos.getItemByName(player.PlayerObject.GetString("item_" + n + "_name"));
+                                }
+                                catch (Exception e)
+                                {
+                                    errorItemPattern.description = "This item could not be found. The database was alterated? Please report this.";
+                                } 
+                                
+                                tL = "1";
+							}
+
                             loadedItem.id = n + "";
                             loadedItem.cooldown = player.PlayerObject.GetInt("item_" + n + "_cd");
                             loadedItem.uses = player.PlayerObject.GetInt("item_" + n + "_uses");
                             loadedItem.equipped = player.PlayerObject.GetBool("item_" + n + "_equipped");
-
+                               
                             player.myCharacter.itemsCounter = n + 1;
 
                             player.myCharacter.items.Add(n + "", loadedItem);
@@ -398,11 +429,25 @@ public class GameCode : Game<Player> {
                 foreach (String s in player.myCharacter.items.Keys)
                 {
                     Item tmpitem = player.myCharacter.items[s];
-                    player.PlayerObject.Set("item_" + tmpC1, 1);
-                    player.PlayerObject.Set("item_" + tmpC1 + "_name", tmpitem.infos.name);
-                    player.PlayerObject.Set("item_" + tmpC1 + "_cd", (int)tmpitem.infos.coolDown);
-                    player.PlayerObject.Set("item_" + tmpC1 + "_uses", (int)tmpitem.uses);
-                    player.PlayerObject.Set("item_" + tmpC1 + "_equipped", tmpitem.equipped);
+
+                    if (!tmpitem.generated)
+                    {
+                        player.PlayerObject.Set("item_" + tmpC1, 1);
+                        player.PlayerObject.Set("item_" + tmpC1 + "_name", tmpitem.infos.name);
+                        player.PlayerObject.Set("item_" + tmpC1 + "_cd", (int)tmpitem.infos.coolDown);
+                        player.PlayerObject.Set("item_" + tmpC1 + "_uses", (int)tmpitem.uses);
+                        player.PlayerObject.Set("item_" + tmpC1 + "_equipped", tmpitem.equipped);
+                    }
+                    else
+                    {
+                        player.PlayerObject.Set("item_" + tmpC1, 1);
+                        player.PlayerObject.Set("item_" + tmpC1 + "_generated", itemGenerator.exportItem(tmpitem));
+                        player.PlayerObject.Set("item_" + tmpC1 + "_name", tmpitem.infos.name);
+                        player.PlayerObject.Set("item_" + tmpC1 + "_cd", (int)tmpitem.infos.coolDown);
+                        player.PlayerObject.Set("item_" + tmpC1 + "_uses", (int)tmpitem.uses);
+                        player.PlayerObject.Set("item_" + tmpC1 + "_equipped", tmpitem.equipped);
+                    }
+
                     tmpC1++;
                 }
 

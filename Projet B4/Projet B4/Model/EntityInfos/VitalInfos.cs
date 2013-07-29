@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 
@@ -26,5 +27,11 @@ namespace ProjetB4
 	    public float dmgSpirits=0;
 	    public float dmgOgres=0; //equivalent to golems
 	    public float dmgDragons=0;
+
+        public Hashtable toHashtable()
+        {
+            Hashtable tmp = new Hashtable();
+            return tmp;
+        }
     }
 }

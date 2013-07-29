@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace ProjetB4
 {
@@ -12,7 +13,9 @@ namespace ProjetB4
         public float cooldown = 0; //triggered after use
         public float uses = 0; //if the item is usable only a specific amount of times.
 
-        public bool equipped=false;
+        public bool equipped = false;
+
+        public bool generated = false;
 
         public ItemPattern infos;
         public Vector3 position; //position on the Bag;
@@ -21,5 +24,19 @@ namespace ProjetB4
         {
             infos = _infos;
         }
+		
+		public Hashtable toHashtable()
+		{
+			Hashtable tmpInfos = new Hashtable();
+			
+			tmpInfos.Add("id", id);
+			tmpInfos.Add("cooldown", cooldown);
+			tmpInfos.Add("uses", uses);
+			tmpInfos.Add("equipped", equipped);
+
+            tmpInfos.Add("infos", infos.toHashtable());
+
+            return tmpInfos;
+		}
     }
 }
