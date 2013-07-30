@@ -184,7 +184,7 @@ namespace ProjetB4
             ItemPattern tmpItem = new ItemPattern();
             ItemSeed randomTypeInfo = seeds[random.Next(0, seeds.Length - 1)];
 
-            tmpItem = generateItemPattern(level, rarity, tmpItem.type, tmpItem.advancedType, randomTypeInfo.defaultEffects);
+            tmpItem = generateItemPattern(level, rarity*randomTypeInfo.ratio, tmpItem.type, tmpItem.advancedType, randomTypeInfo.defaultEffects);
 
             tmpItem.name = nameGenerator.generateItemName(randomTypeInfo.name, (int)rarity);
             tmpItem.type = randomTypeInfo.type;
