@@ -29,6 +29,8 @@ namespace ProjetB4
         public Vector3 wanderAround = new Vector3(0, 0, 0);
         public Vector3 destination = new Vector3(0, 0, 0);
 
+        public List<Vector3> paths = new List<Vector3>();
+
         public EntityInfos infos;
 
         public float hp;
@@ -86,6 +88,12 @@ namespace ProjetB4
             type = EntityType.npc;
             team = "neutral";
             applyBaseStatsToVitalInfos();
+        }
+
+        PathFinder pathfinder;
+        public void enablePathFinder(Dictionary<String, Vector3> wayPoints)
+        {
+            pathfinder = new PathFinder(wayPoints, myGame.baseStep);
         }
 
         public int itemsUsageCd = 0;
@@ -224,6 +232,13 @@ namespace ProjetB4
         String lastTargetPosRefId="";
         private void applyIAMoves()
         {
+
+            if (isSynchronized() && paths.Count > 0)
+            {
+                destination = paths[paths.Count - 1];
+                paths.RemoveAt(paths.Count - 1);
+            }
+
             string debugLocation = "";
             if (focus != null && hp > 0 && infos.range > 0 && !type.Equals("Hero"))
             {
@@ -238,8 +253,7 @@ namespace ProjetB4
                         {
 
                             focus = null;
-                            destination = initialPosition;
-
+                            paths = pathfinder.start(position, initialPosition);
                         }
                         else
                         {
@@ -252,10 +266,12 @@ namespace ProjetB4
                                     lastTargetPosRefId = myGame.units[focus].getStepRefId();
                                     //myPathFinder.go(getTiledPosition(), ((Unit)myGame.units[focus]).getTiledPosition());
 
-                                    destination.x = myGame.units[focus].position.x + (float)mainSeed.NextDouble() * 6f - (float)mainSeed.NextDouble() * 6f;
-                                    destination.y = myGame.units[focus].position.y;
-                                    destination.z = myGame.units[focus].position.z + (float)mainSeed.NextDouble() * 6f - (float)mainSeed.NextDouble() * 6f;
-                                 
+                                    Vector3 newDestination = new Vector3();
+                                    newDestination.x = myGame.units[focus].position.x + (float)mainSeed.NextDouble() * 6f - (float)mainSeed.NextDouble() * 6f;
+                                    newDestination.y = myGame.units[focus].position.y;
+                                    newDestination.z = myGame.units[focus].position.z + (float)mainSeed.NextDouble() * 6f - (float)mainSeed.NextDouble() * 6f;
+
+                                    paths = pathfinder.start(position, newDestination);
                                     // sendPos();
                                 }
                                 focusCounter++;
@@ -263,6 +279,7 @@ namespace ProjetB4
                     }
                     else
                     {
+                        paths = new List<Vector3>();
                         destination = position;
 
                         if (attackCounter > getAttackSpeed())
@@ -552,19 +569,23 @@ namespace ProjetB4
                 {
                     //print(infos.unitName+" moving..");
 
+                    Vector3 newDestination = new Vector3();
+
                     if (!isPatrol)
                     {
-                        destination.x = initialPosition.x + ((float)mainSeed.NextDouble() * wanderAround.x - (float)mainSeed.NextDouble() * wanderAround.x);
-                        //iy = UnityEngine.Random.Range(-wanderAround.y, wanderAround.y);
-                        destination.z = initialPosition.z + ((float)mainSeed.NextDouble() * wanderAround.z - (float)mainSeed.NextDouble() * wanderAround.z);
+                        newDestination.x = initialPosition.x + ((float)mainSeed.NextDouble() * wanderAround.x - (float)mainSeed.NextDouble() * wanderAround.x);
+                        newDestination.y = position.y;
+                        newDestination.z = initialPosition.z + ((float)mainSeed.NextDouble() * wanderAround.z - (float)mainSeed.NextDouble() * wanderAround.z);
                     }
                     else
                     {
-                        destination.x = initialPosition.x + wanderAround.x * patrolK;
-                        //iy = UnityEngine.Random.Range(-wanderAround.y, wanderAround.y);
-                        destination.z = initialPosition.z + wanderAround.z * patrolK;
-                        patrolK = -patrolK;
+                        newDestination.x = initialPosition.x + wanderAround.x * patrolK;
+                        newDestination.y = position.y;
+                        newDestination.z = initialPosition.z + wanderAround.z * patrolK;
+                        patrolK = -patrolK;paths = pathfinder.start(position, newDestination);
                     }
+
+                    paths = pathfinder.start(position, newDestination);
                 }
             }
         }
