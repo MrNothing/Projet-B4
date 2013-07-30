@@ -69,6 +69,9 @@ public class GameCode : Game<Player> {
 
 			//this is the main routine 
             mainTimer = AddTimer(run, loopInterval);
+
+            PlayerIO.ErrorLog.WriteError("test Item infos:");
+            PlayerIO.ErrorLog.WriteError(itemGenerator.generateItem("0", 1, 10).toString());
 		}
 
         // This method is called when a player sends a message into the server code

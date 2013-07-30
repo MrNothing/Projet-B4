@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generated\SpellInfos.cs" />
     <Compile Include="Model\EntityInfos\BaseStatsInfos.cs" />
     <Compile Include="Managers\ChatManager.cs" />
     <Compile Include="Model\ItemSeed.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="Utils\SpawnZone.cs" />
     <Compile Include="Model\EntityInfos\SpecialEffects.cs" />
     <Compile Include="Model\EntityInfos\SpellBonusInfos.cs" />
-    <Compile Include="Model\EntityInfos\SpellInfos.cs" />
     <Compile Include="Managers\SpellsManager.cs" />
     <Compile Include="Model\Triggers.cs" />
     <Compile Include="Utils\Vector3.cs" />

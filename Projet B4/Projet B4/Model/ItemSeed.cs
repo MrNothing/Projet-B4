@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProjetB4
 {
-    class ItemSeed
+    public class ItemSeed
     {
         public String name;
         public ItemTypes type;

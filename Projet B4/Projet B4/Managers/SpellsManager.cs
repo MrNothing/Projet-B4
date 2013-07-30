@@ -70,7 +70,7 @@ namespace ProjetB4
                 return;
             }
 
-            if (myItem.infos.advancedType != ItemAdvancedTypes.usable && myItem.infos.advancedType != ItemAdvancedTypes.usableAndDestroyAfterTimes)
+            if (myItem.infos.advancedType == ItemAdvancedTypes.none || myItem.infos.advancedType == ItemAdvancedTypes.book || myItem.infos.advancedType == ItemAdvancedTypes.spellBook)
 		    {
                 caster.getMyOwner().Send("err", "i1"); //This item cannot be used that way!
 			    //send message: need more mana!

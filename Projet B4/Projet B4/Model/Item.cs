@@ -38,5 +38,17 @@ namespace ProjetB4
 
             return tmpInfos;
 		}
+
+        public String toString()
+        {
+            String des = "{id: " + id + ", type: " + infos.type.ToString() + ",";
+
+            for (int i = 0; infos.effects[i]!=null; i++)
+            {
+                des += " [Effect" + i + ": " + infos.getEffectDescription(infos.effects[i].effect, infos.effects[i].value)+"]";
+            }
+            
+            return des+"}";
+        }
     }
 }
