@@ -12,7 +12,7 @@ namespace ProjetB4
 		public float z=0;
 		
 		//This is usefull for the pathfinder
-		public Vector3 parent;
+		public Vector3 parent=null;
 		
 		public Vector3(float _x, float _y, float _z)
 		{
