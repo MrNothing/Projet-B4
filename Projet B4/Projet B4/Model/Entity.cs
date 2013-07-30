@@ -88,6 +88,8 @@ namespace ProjetB4
             type = EntityType.npc;
             team = "neutral";
             applyBaseStatsToVitalInfos();
+
+            enablePathFinder(new Dictionary<String, Vector3>());
         }
 
         PathFinder pathfinder;
