@@ -166,13 +166,7 @@ namespace ProjetB4
                 }
 
                 //myGame.PlayerIO.ErrorLog.WriteError("name " + name + " destination: " + destination.toString() + " initialPosition: " + initialPosition.toString() + " wanderAround" + wanderAround);
-                try
-                {
-                    triggerWanderAround();
-                }
-                catch (Exception e)
-                {
-                }
+              
 
                 if (recentlyHit > 0)
                     recentlyHit--;
@@ -199,11 +193,20 @@ namespace ProjetB4
                 {
                     try
                     {
-                        applyIAMoves();
+                        triggerWanderAround();
                     }
                     catch (Exception e)
-                    { 
+                    {
                     }
+
+                    try
+                    {
+                        applyIAMoves();
+                    }
+                    catch (Exception e){ 
+                    }
+
+                   
                 }
 
             }
