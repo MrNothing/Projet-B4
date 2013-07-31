@@ -384,6 +384,107 @@ namespace ProjetB4
                 return;
             }
         }
+
+        public void addItem(Item item)
+        {
+            try
+            {
+                item.id = itemsCounter + "";
+                itemsCounter++;
+
+                Hashtable dependencies = new Hashtable(); //useless in an mmorpg.
+                int price = 0;
+
+                if (price <= myPlayer.money)
+                {
+                    if (bagWeight + Math.Ceiling(item.infos.weight) - equippedItems.Count > bagMaxWeight)
+                    {
+                        if (itemsByName[item.infos.name] != null)
+                        {
+                            float amount = (float)itemsByName[item.infos.name];
+                            if (amount < 1)
+                            {
+                                //proceed...
+                            }
+                            else
+                            {
+                                getMyOwner().Send("err", "i3");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            getMyOwner().Send("err", "i3");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        //proceed...
+                    }
+
+                    //check dependencies...
+                    /*if(checkItemDependencies(dependencies))
+                    {
+                    }
+                    else*/
+                    {
+                        //getMyOwner().Send("err", "i4");
+                        //return;
+
+                        //auto buy the missing items if i have enough money...
+
+
+                        /*	for(Object o:dependencies.getKeys())
+                            {
+                                buyItem(o+"");
+                            }
+                        */
+                    }
+
+                    items.Add(itemsCounter + "", item);
+                    try
+                    {
+                        float amount = (float)itemsByName[item.infos.name];
+
+                        amount += item.infos.weight;
+                        itemsByName.Remove(item.infos.name);
+                        itemsByName.Add(item.infos.name, amount);
+                    }
+                    catch (Exception e)
+                    {
+                        itemsByName.Add(item.infos.name, item.infos.weight);
+                    }
+
+                    bagWeight += item.infos.weight;
+                    //myPlayer.money -= price;
+
+                    /*foreach(Object i in effects.Keys)
+                    {
+                        Hashtable tmpEffect = (Hashtable)effects[i + ""];
+                        setEffet(tmpEffect["effect"]+"", (float)tmpEffect["amount"]);
+                    }*/
+
+                    sendDynamicInfosToAll();
+                    sendInfosToMe();
+                    sendAddItem(item, itemsCounter + "");
+                    //sendMoney();
+
+                    itemsCounter++;
+
+                }
+                else
+                {
+                    getMyOwner().Send("err", "i5");
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                getMyOwner().Send("err", "i6");
+                return;
+            }
+        }
        
         public void sellItem(String itemId) //items are sold for 70% of their initial value.
 	    {
@@ -518,16 +619,31 @@ namespace ProjetB4
 		    return allowed;
 	    }
 
-        public void sendAddItem(String itemName, String itemId) //shall send them to all!
+        public void sendAddItem(String itemName, String itemId) 
         {
             Object[] data = new Object[3];
             data[0] = id;
             data[1] = itemName;
             data[2] = itemId;
+            data[3] = "null";
             myGame.sendDataToAll("i+", data);
         }
 
-        public void sendRemoveItem(String itemId) //shall send them to all!
+        public void sendAddItem(Item item, String itemId) 
+        {
+            Object[] data = new Object[3];
+            data[0] = id;
+            data[1] = item.infos.name;
+            data[2] = itemId;
+
+            if (!item.generated)
+                data[3] = "null";
+            else
+                data[3] = myGame.itemGenerator.exportItem(item);
+            myGame.sendDataToAll("i+", data);
+        }
+
+        public void sendRemoveItem(String itemId) 
         {
             Object[] data = new Object[2];
             data[0] = id;
@@ -535,15 +651,9 @@ namespace ProjetB4
             myGame.sendDataToAll("i-", data);
         }
 
-        public void sendItems(Player requester) //shall send them to all!
+        public void sendItems(Player requester) 
         {
-            /*ISFSObject infos = new SFSObject();
-            infos.Add("id", id);
-            infos.Add("items", items);
-            myGame.send("items", infos, getMyOwner());*/
-
-            //TODO: FLIND A WAY TO SEND THIS WITH A SIMPLE ARRAY
-            Object[] data = new Object[1 + items.Count*5];
+           Object[] data = new Object[1 + items.Count*6];
             data[0] = id;
             int counter=0;
             foreach (string s in items.Keys)
@@ -554,7 +664,12 @@ namespace ProjetB4
                 data[counter + 4] = ((Item)items[s]).uses;
                 data[counter + 5] = ((Item)items[s]).equipped;
 
-                counter+=5;
+                if(!((Item)items[s]).generated)
+                    data[counter + 6] = "null";
+                else
+                    data[counter + 6] = myGame.itemGenerator.exportItem((Item)items[s]);
+
+                counter+=6;
             }
 
             requester.Send("items", data);

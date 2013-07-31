@@ -81,7 +81,7 @@ namespace ProjetB4
             //if i have ways left...
             if (openTiles.Count > 0)
             {
-                float minKey = openTiles.Keys.OrderBy(x => x).Last();
+                float minKey = openTiles.Keys.First();
                 openTiles.Remove(minKey);
 
                 bestPath = openTiles[minKey];

@@ -170,11 +170,10 @@ namespace ProjetB4
 
         }
 
+        System.Random random = new System.Random();
         NameGenerator nameGenerator = new NameGenerator();
         public Item generateItem(String id, float rewardRarity, int rewardLevel)
         {
-            System.Random random = new System.Random();
-
             float rarity = rewardRarity;
             int level = rewardLevel + random.Next(0, 1) - random.Next(0, 1);
 
@@ -207,8 +206,6 @@ namespace ProjetB4
 
         public ItemPattern generateItemPattern(int minLevel, float _rarity, ItemTypes type, ItemAdvancedTypes advancedType, EffectNames[] defaultEffects)
         {
-            System.Random random = new System.Random();
-            
             ItemPattern newItem = new ItemPattern();
 
             float _value = _rarity * minLevel * 10;
@@ -263,7 +260,7 @@ namespace ProjetB4
                         {
                             tmpAmount = valueLeft;
                         }
-                        EffectNames randomEffect = getRandomEffect(random);
+                        EffectNames randomEffect = getRandomEffect();
                         newItem.effects[i] = new Effect(randomEffect, (int)(tmpAmount / getEffectValue(randomEffect.ToString())));
 
                         valueLeft -= tmpAmount;
@@ -275,7 +272,7 @@ namespace ProjetB4
             {
                 float tmpAmount = valueLeft;
 
-                EffectNames randomEffect = getRandomEffect(random);
+                EffectNames randomEffect = getRandomEffect();
                 newItem.effects[0] = new Effect(randomEffect, (int)(tmpAmount / getEffectValue(randomEffect.ToString())));
 
                 valueLeft -= tmpAmount;
@@ -300,7 +297,7 @@ namespace ProjetB4
             return newItem;
         }
 
-        public EffectNames getRandomEffect(Random random)
+        public EffectNames getRandomEffect()
         {
             Array values = EffectNames.GetValues(typeof(EffectNames));
             return (EffectNames)values.GetValue(random.Next(values.Length));

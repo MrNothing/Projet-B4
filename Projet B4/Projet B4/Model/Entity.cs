@@ -230,6 +230,9 @@ namespace ProjetB4
             }
 
             //setRef();
+
+            if (combatMode > 0)
+                combatMode--;
         }
 
         int focusCounter = 0;
@@ -242,6 +245,19 @@ namespace ProjetB4
             {
                 destination = paths[paths.Count - 1];
                 paths.RemoveAt(paths.Count - 1);
+            }
+
+            if (combatMode >= 0)
+            {
+                float highestThreat = 0;
+                foreach (String tmpId in lastHiter.Keys)
+                {
+                    if (highestThreat < lastHiter[tmpId])
+                    {
+                        highestThreat = lastHiter[tmpId];
+                        focus = tmpId;
+                    }
+                }
             }
 
             string debugLocation = "";
@@ -564,7 +580,7 @@ namespace ProjetB4
                 }
 
                 if (master.recentlyHit>0)
-                    focus = master.lastHiter;
+                    focus = master.lastHiter.Keys.Last();
             }
 
             if (((wanderAround.x > 0 || wanderAround.z > 0) || master!=null) && focus == null)
@@ -782,7 +798,7 @@ namespace ProjetB4
                 {
                     if (eName.Equals("poison"))
                     {
-                        this.hitMeWithMagic(lastHiter, eValue, "nature");
+                        this.hitMeWithMagic(myEffect["author"]+"", eValue, "nature");
                     }
 
                     if (eName.Equals("stun"))
@@ -807,12 +823,13 @@ namespace ProjetB4
         }
 
         private int dotCounter = 0;
-        public void setDot(String effect, float amount, int turns)
+        public void setDot(String effect, float amount, int turns, string author)
         {
             Hashtable myEffect = new Hashtable();
             myEffect.Add("effect", effect);
             myEffect.Add("amount", amount);
             myEffect.Add("turns", turns);
+            myEffect.Add("author", author);
             dots.Add(dotCounter + "", myEffect);
             dotCounter++;
         }
@@ -941,7 +958,7 @@ namespace ProjetB4
             lastMp = mp;
         }
 
-        public string lastHiter="";
+        public SortedDictionary<String, float> lastHiter = new SortedDictionary<String, float>();
         public bool lastCrit = false;
         public float physicShield = 0;
         public void hitMeWithPhysic(String _author, float dmg, bool crit)
@@ -953,7 +970,7 @@ namespace ProjetB4
             if (hp > 0)
             {
                 Entity author = (Entity)myGame.units[_author];
-                lastHiter = _author;
+
                 recentlyHit = 10;
 
                 if (author.infos.specialEffects.drainHp > 0 || author.infos.specialEffects.drainMp > 0 && author.hp > 0)
@@ -1072,8 +1089,6 @@ namespace ProjetB4
 
                 }
 
-                lastHiter = _author;
-
                 float armor = 0;
                 if (dmgType.Equals("fire"))
                     armor = (-author.infos.specialEffects.ignoreRes + infos.resBon.totalRes + infos.resBon.fireRes);
@@ -1151,6 +1166,7 @@ namespace ProjetB4
             }
         }
 
+        public int combatMode = 0;
         public bool enableRewards = true;
         void checkIfDead(Entity _author, int _dmg)
         {
@@ -1169,7 +1185,7 @@ namespace ProjetB4
                             //give special rewards...
                         }
 
-                        if (type == EntityType.npc)
+                        if (type == EntityType.npc && enableRewards)
                         {
                             Hero theHero = (Hero)_author;
                             theHero.addXp(((float)infos.toInt()) * 2);
@@ -1177,6 +1193,14 @@ namespace ProjetB4
                             theHero.sendMoney(id);
 
                             //show items for drop;
+                            if (mainSeed.Next(0, 100) < 10)
+                            {
+                                float mobRarity = ((float)infos.toInt())/(5*infos.level);
+
+                                Item newItem = myGame.itemGenerator.generateItem("gen", mobRarity, infos.level);
+
+                                theHero.addItem(newItem);
+                            }
                         }
 
                     }
@@ -1186,9 +1210,13 @@ namespace ProjetB4
             {
                 if (type == EntityType.npc)
                 {
-                    if (focus == null)
-                        focus = _author.id;
+                    if (lastHiter[_author.id] == null)
+                        lastHiter.Add(_author.id, _dmg);
+                    else
+                        lastHiter[_author.id] = _dmg + (float)lastHiter[_author.id];
                 }
+
+                combatMode = 15;
             }
         }
 
