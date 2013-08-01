@@ -31,7 +31,7 @@ namespace ProjetB4
             seeds[2] = new ItemSeed("Wand", ItemTypes.usable, ItemAdvancedTypes.wand, SlotTypes.head, WandIcons, 0.1f);
 
             //1H Swords seed
-            String[] SwordIcons = { "sword1", "sword2", "sword3" };
+            String[] SwordIcons = { "gen1", "gen2", "gen3", "gen4", "gen5" };
             seeds[3] = new ItemSeed("Sword", ItemTypes.equipement, ItemAdvancedTypes.none, SlotTypes.leftHand, SwordIcons, 1.5f);
             seeds[3].defaultEffects = new EffectNames[1];
             seeds[3].defaultEffects[0] = EffectNames.dmg;
@@ -42,7 +42,7 @@ namespace ProjetB4
             seeds[4].defaultEffects[0] = EffectNames.dmg;
 
             //1H Axe seed
-            String[] AxeIcons = {"axe1", "axe2", "axe3" };
+            String[] AxeIcons = { "gen6", "gen7", "gen8", "gen9", "gen10"};
             seeds[5] = new ItemSeed("Axe", ItemTypes.equipement, ItemAdvancedTypes.none, SlotTypes.leftHand, AxeIcons, 1.5f);
             seeds[5].defaultEffects = new EffectNames[1];
             seeds[5].defaultEffects[0] = EffectNames.dmg;
@@ -53,7 +53,7 @@ namespace ProjetB4
             seeds[6].defaultEffects[0] = EffectNames.dmg;
 
             //2H Staff seed 2
-            String[] StaffIcons = { "staff1", "staff2", "staff3" };
+            String[] StaffIcons = { "gen11", "gen12", "gen13", "gen14", "gen15" };
             seeds[7] = new ItemSeed("Staff", ItemTypes.equipement, ItemAdvancedTypes.none, SlotTypes.bothHands, StaffIcons, 2.5f);
             seeds[7].defaultEffects = new EffectNames[1];
             seeds[7].defaultEffects[0] = EffectNames.dmg;
@@ -191,10 +191,9 @@ namespace ProjetB4
             tmpItem.slot = randomTypeInfo.slot;
             tmpItem.minLevel = level;
 
-            String model = randomTypeInfo.models[random.Next(0, randomTypeInfo.models.Length - 1)];
-            String icon = randomTypeInfo.icons[random.Next(0, randomTypeInfo.icons.Length - 1)];
+            String model = random.Next(0, 5)+"";
 
-            tmpItem.icon = icon;
+            tmpItem.icon = model;
             tmpItem.model = model;
 
             Item newItem = new Item(tmpItem);
@@ -238,10 +237,7 @@ namespace ProjetB4
                             tmpAmount = valueLeft;
                         }
 
-
-
                         newItem.effects[i] = new Effect(defaultEffects[i], (int)(tmpAmount / getEffectValue(defaultEffects[i].ToString())));
-
                         valueLeft -= tmpAmount;
                     }
                 }
