@@ -97,7 +97,11 @@ public class NameGenerator {
 		owners.Add("Mr. Green", "Mr. Green");
 		owners.Add("Mr. Beta", "Mr. Beta");
 		owners.Add("Mr. Alpha", "Mr. Alpha");
-		
+        owners.Add("Rodik", "Rodik");
+        owners.Add("Samy", "Samy");
+        owners.Add("Piccolo", "Piccolo");
+        owners.Add("Pedobear", "Pedobear");
+
 		status.Add("of Darkness", "of Darkness");
 		status.Add("of the Dammned", "of the Dammned");
 		status.Add("of Light", "of Light");
@@ -142,6 +146,13 @@ public class NameGenerator {
 		status.Add("of the Joking Knight", "of the Joking Knight");
 		status.Add("of the Sad Frog", "of the Sad Frog");
 		status.Add("of the Star", "of the Star");
+        status.Add("of the sexy beast", "of the sexy beast");
+        status.Add("of the cute little pony", "of the cute little pony");
+        status.Add("of the bearded Viking", "");
+        status.Add("of the decieving snake", "of the decieving snake");
+        status.Add("of the fat man", "of the fat man");
+        status.Add("of the arse-sexed sheep", "of the arse-sexed sheep");
+        status.Add("of the little gal", "of the little gal");
 		
 		prefix.Add("White", "White");
 		prefix.Add("Gray", "Gray");
