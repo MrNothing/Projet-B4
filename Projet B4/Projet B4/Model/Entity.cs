@@ -229,7 +229,7 @@ namespace ProjetB4
                     attackCounter += 0.25f * decalage / 2;
             }
 
-            //setRef();
+            setRef();
 
             if (combatMode > 0)
                 combatMode--;
@@ -397,26 +397,24 @@ namespace ProjetB4
                     {
 						
 						visibleUnits.Add(theUnit.id, theUnit.id);
-						
-						if(theUnit.hp<=0)
-							visibleCorpses.Add(theUnit.id, theUnit.id);
-						else
+
+                        if (theUnit.hp <= 0)
+                            visibleCorpses.Add(theUnit.id, theUnit.id);
+
+						if(theUnit.team != team)
 						{
-							if(theUnit.team != team)
-							{
-								visibleEnemies.Add(theUnit.id, theUnit.id);
-								
-								if (type == EntityType.player)
-									visibleEnnemyHeroes = new Dictionary<String, String>();
-								else
-									visibleEnnemyNonHeroes = new Dictionary<String, String>();
-							}
-							else
-								visibleAllies.Add(theUnit.id, theUnit.id);
+							visibleEnemies.Add(theUnit.id, theUnit.id);
 								
 							if (type == EntityType.player)
-								visiblePlayers.Add(theUnit.id, theUnit.id); 
+								visibleEnnemyHeroes = new Dictionary<String, String>();
+							else
+								visibleEnnemyNonHeroes = new Dictionary<String, String>();
 						}
+						else
+							visibleAllies.Add(theUnit.id, theUnit.id);
+								
+						if (type == EntityType.player)
+							visiblePlayers.Add(theUnit.id, theUnit.id); 
 						
 						if (theUnit.team != team && agressivity == AgressivityLevel.agressive && type==EntityType.npc)
 						{
@@ -516,8 +514,8 @@ namespace ProjetB4
             }
             catch (Exception e)
             {
-                if(type==EntityType.player)
-                    myGame.PlayerIO.ErrorLog.WriteError("I have to create this block: " + tmp_id + " and i added myself inside...");
+                //if(type==EntityType.player)
+                //    myGame.PlayerIO.ErrorLog.WriteError("I have to create this block: " + tmp_id + " and i added myself inside...");
                 
                 Dictionary<String, String> tmp = new Dictionary<String, String>();
                 tmp.Add(char_id, id);

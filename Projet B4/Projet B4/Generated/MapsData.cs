@@ -16,17 +16,20 @@ namespace ProjetB4
 {
 	public class MapsData
 	{
-		public Hashtable maps = new Hashtable();
-		public MapsData()
-		{
-			//example...
-			Map map_0 = new Map("fields");
-			map_0.name = "fields";
-			
-			Vector3 tile_0 = new Vector3(0,0,0);
-			map_0.pathTiles.Add(tile_0.toPosRefId(), tile_0);
-			
-			maps.Add("fields", map_0);
-		}
+		void loadMap(String map)
+        {
+            if (map.Equals("Map1"))
+            {
+                Map map_0 = new Map("Fields");
+                map_0.name = "Map1";
+
+                UnitsInfos tmpInfos = new UnitsInfos();
+
+                Vector3 tile_0 = new Vector3(0, 0, 0);
+                map_0.pathTiles.Add(tile_0.toPosRefId(), tile_0);
+
+                maps.Add("fields", map_0);
+            }
+        }
 	}
 }

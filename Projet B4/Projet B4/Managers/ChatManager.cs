@@ -48,6 +48,7 @@ namespace ProjetB4
 		{
 			if(!message.GetString(1).Equals(""))
 			{
+                //mainInstance.PlayerIO.ErrorLog.WriteError("msg called...");
 				mainInstance.sendMsg(sender, message.GetString(1)); //msg
 			}
 		}

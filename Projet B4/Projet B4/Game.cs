@@ -36,7 +36,6 @@ public class GameCode : Game<Player> {
 
         Timer mainTimer;
 
-
 		// This method is called when an instance of your the game is created
 		public override void GameStarted() {
 		
@@ -51,27 +50,26 @@ public class GameCode : Game<Player> {
             try
 			{
 				zone = (Map)mapsInfos.maps[RoomData["map"]];
+                PlayerIO.ErrorLog.WriteError("Map loaded: " + zone.name);
             }
 			catch(Exception e)
 			{
 				//the requested map does not exist, disconnect user and abord map initialization.
-				return;
+				//return;
+                PlayerIO.ErrorLog.WriteError("Map failed: " + RoomData["map"]);
 			}
 			
 			//this method load all entities, and events for this zone.
 			initializeZone();
-			
-            PlayerIO.ErrorLog.WriteError("Map loaded: " + zone.name);
 
             spellsManager = new SpellsManager(this);
             chatManager = new ChatManager(this);
             gameManager = new GameManager(this, spellsManager);
 
+            PlayerIO.ErrorLog.WriteError("test Item infos:"+itemGenerator.generateItem("0", 1, 10).toString());
+
 			//this is the main routine 
             mainTimer = AddTimer(run, loopInterval);
-
-            PlayerIO.ErrorLog.WriteError("test Item infos:");
-            PlayerIO.ErrorLog.WriteError(itemGenerator.generateItem("0", 1, 10).toString());
 		}
 
         // This method is called when a player sends a message into the server code
@@ -151,8 +149,8 @@ public class GameCode : Game<Player> {
 
                 location = "3";
 
-                if (player.PlayerObject.GetString("model", "").Equals("")) { 
-                    player.PlayerObject.Set("model", "PlayerMaleHuman"); 
+                if (player.PlayerObject.GetString("model", "").Equals("")) {
+                    player.PlayerObject.Set("model", "GuardMale"); 
                     player.PlayerObject.Save(); 
                 }
                 
@@ -160,15 +158,15 @@ public class GameCode : Game<Player> {
 
                 location = "4";
 
-                if (player.PlayerObject.GetFloat("money", -1) == -1) { player.PlayerObject.Set("money", 0); player.PlayerObject.Save(); }
+                if (player.PlayerObject.GetInt("money", -1) == -1) { player.PlayerObject.Set("money", 0); player.PlayerObject.Save(); }
                 else
-                    player.money = player.PlayerObject.GetFloat("money");
+                    player.money = player.PlayerObject.GetInt("money");
 
                 location = "5";
 
-                if (player.PlayerObject.GetFloat("xp", -1) == -1) { player.PlayerObject.Set("xp", 0); player.PlayerObject.Save(); }
+                if (player.PlayerObject.GetInt("xp", -1) == -1) { player.PlayerObject.Set("xp", 0); player.PlayerObject.Save(); }
                 
-                    player.myCharacter.xp = player.PlayerObject.GetFloat("xp");
+                    player.myCharacter.xp = player.PlayerObject.GetInt("xp");
 
                 location = "6";
 
@@ -350,6 +348,8 @@ public class GameCode : Game<Player> {
                 units[player.ConnectUserId] = player.myCharacter;
                 players[player.ConnectUserId] = player;
 
+                units[player.ConnectUserId].setRef();
+
                 //player.Send("map", zone.zoneName);
 
                 /*foreach (String s in units.Keys)
@@ -358,7 +358,7 @@ public class GameCode : Game<Player> {
                         sendEntityInfos(player, units[s]);
                 }*/
 
-                //sendEntityInfosToAll(player.myCharacter);
+                sendEntityInfos(player, player.myCharacter);
 
                 location = "sendSpells ";
                 //send my spells -> disabled since the infos are sent in a different way now
@@ -380,15 +380,23 @@ public class GameCode : Game<Player> {
             try
             {
                 player.PlayerObject.Set("online", false);
-                player.PlayerObject.Set("map", zone.name);
 
-                player.PlayerObject.Set("level", player.myCharacter.level);
+                try
+                {
+                    player.PlayerObject.Set("map", zone.name);
+                }
+                catch (Exception e)
+                { 
+                
+                }
+
+                player.PlayerObject.Set("level", (int)player.myCharacter.level);
                 player.PlayerObject.Set("model", player.myCharacter.infos.model);
-                player.PlayerObject.Set("money", player.money);
+                player.PlayerObject.Set("money", (int)player.money);
                 player.PlayerObject.Set("hp", (int)player.myCharacter.hp);
                 player.PlayerObject.Set("mp", (int)player.myCharacter.mp);
-                player.PlayerObject.Set("xp", player.myCharacter.xp);
-                player.PlayerObject.Set("skillPoints", player.myCharacter.skillPoints);
+                player.PlayerObject.Set("xp", (int)player.myCharacter.xp);
+                player.PlayerObject.Set("skillPoints", (int)player.myCharacter.skillPoints);
 
                 location = "1";
 
@@ -848,7 +856,7 @@ public class GameCode : Game<Player> {
         void initializeZone()
         { 
             //load units
-            foreach (string s in zone.entities.Keys)
+            /*foreach (string s in zone.entities.Keys)
             {
                 //Create a new Unit using the refrence
                 Entity newEntity = zone.entities[s].clone();
@@ -874,7 +882,7 @@ public class GameCode : Game<Player> {
                 events.Add(k, zone.events[s]);
                 PlayerIO.ErrorLog.WriteError("Event loaded: " + zone.events[s].eventName.ToString());
                 k++;
-            }
+            }*/
 
         }
 

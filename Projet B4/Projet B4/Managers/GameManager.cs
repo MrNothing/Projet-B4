@@ -27,6 +27,20 @@ namespace ProjetB4
             {
                 mainInstance.PlayerIO.ErrorLog.WriteError("handleClientRequest Cancelled: " + _cmd + " there was no Hero loaded");
             }
+
+                //getVisibleUnits
+                if (_cmd.Equals("getVisibleUnits"))
+                {
+                    try
+                    {
+                        sender.Send("err", "This unit sees: " + ((Entity)mainInstance.units[message.GetString(1)]).visibleUnits.Count + " Entities and " + ((Entity)mainInstance.units[message.GetString(1)]).visiblePlayers.Count + " Players, posRefId: " + ((Entity)mainInstance.units[message.GetString(1)]).position.toPosRefId());
+                    }
+                    catch (Exception e)
+                    {
+                        sender.Send("err", "Unit not found!");
+                    }
+                }
+                
                 //lvlUpSpell
                 if (_cmd.Equals("lvlUpSpell"))
                 {
@@ -215,16 +229,12 @@ namespace ProjetB4
                 
                 if (_cmd.Equals("p"))
                 {
-                    Entity myCharacter = mainInstance.units[message.GetString(4)];
+                    Entity myCharacter = sender.myCharacter;
 
-                    if (myCharacter.master.Equals(sender.myCharacter) || myCharacter.Equals(sender.myCharacter))
-                    {
+                    if (myCharacter.hp > 0)
+                        myCharacter.setPos(message.GetFloat(1), message.GetFloat(2), message.GetFloat(3));
 
-                        if (myCharacter.hp > 0)
-                            myCharacter.setPos(message.GetFloat(1), message.GetFloat(2), message.GetFloat(3));
-
-                        myCharacter.sendPos(new Vector3(0, 0, 0));
-                    }
+                    myCharacter.sendPos(new Vector3(0, 0, 0));
                 }
 
                 if (_cmd.Equals("lp"))
