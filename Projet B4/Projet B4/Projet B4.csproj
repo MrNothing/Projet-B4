@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Generated\SpellInfos.cs" />
+    <Compile Include="Generated\Units\units level 0 5.cs" />
+    <Compile Include="Generated\Units\UnitsInfos.cs" />
     <Compile Include="Lobby.cs" />
     <Compile Include="Model\EntityInfos\BaseStatsInfos.cs" />
     <Compile Include="Managers\ChatManager.cs" />

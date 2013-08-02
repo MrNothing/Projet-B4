@@ -33,7 +33,7 @@ namespace ProjetB4
                 {
                     try
                     {
-                        sender.Send("err", "This unit sees: " + ((Entity)mainInstance.units[message.GetString(1)]).visibleUnits.Count + " Entities and " + ((Entity)mainInstance.units[message.GetString(1)]).visiblePlayers.Count + " Players, posRefId: " + ((Entity)mainInstance.units[message.GetString(1)]).position.toPosRefId());
+                        sender.Send("err", ((Entity)mainInstance.units[message.GetString(1)]).debugMsg);
                     }
                     catch (Exception e)
                     {

@@ -51,8 +51,11 @@ namespace ProjetB4
         public Random mainSeed = new Random();
 
         private int firstLaunch = 0;
+        public int counter = 0;
 	    public void run () {
-		
+
+            
+
 		    if(!enabled)
 			    return;
 
@@ -64,17 +67,23 @@ namespace ProjetB4
                         firstLaunch--;
 
 				    respawnPeriodCounter = 60;
+
+                    counter++;
 				
 				    if(totalAmount<maxAmountSimulaneously)
 				    {
                         int typeSeed = (int)mainSeed.Next(0, monsters.Length - 1);
 					    if(typeSeed>monsters.Length)
 						    typeSeed = monsters.Length;
+
+                        counter++;
 					
 					    Vector3 tmpPos = position.getNewInstance();
                         tmpPos.x += (float)mainSeed.NextDouble()*zone - (float)mainSeed.NextDouble()*zone;
                         tmpPos.z += (float)mainSeed.NextDouble()*zone - (float)mainSeed.NextDouble()*zone;
-					    
+
+                        counter++;
+
                         string _specificName;
 
                         if (specificName.Length > 0)
@@ -82,7 +91,11 @@ namespace ProjetB4
                         else
                             _specificName = monsters[typeSeed];
 
+                        counter++;
+
                         Entity tmpCont = new Entity(mainInstance, "", _specificName, mainInstance.worldInfos.getEntityInfosByName(monsters[typeSeed]), tmpPos);
+
+                        counter++;
 
                         tmpCont.spawnZone = this;
                         tmpCont.isTemp = true;
@@ -91,7 +104,11 @@ namespace ProjetB4
                         tmpCont.agressivity = agressivityLevel;
                         tmpCont.team = mobsTeam;
 
+                        counter++;
+
                         mainInstance.addUnit(tmpCont);
+
+                        counter++;
 
 					    if(!destination.isZero())
 					    {
@@ -102,7 +119,9 @@ namespace ProjetB4
 						    tmpCont.wanderAround.x = zone;
 						    tmpCont.wanderAround.z = zone;
 					    }
-					
+
+                        counter++;
+
 					    totalAmount ++;
 				    }
 			    }

@@ -16,7 +16,7 @@ namespace ProjetB4
 {
 	public class MapsData
 	{
-		void loadMap(String map)
+		public void loadMap(GameCode core, String map)
         {
             if (map.Equals("Map1"))
             {
@@ -25,10 +25,10 @@ namespace ProjetB4
 
                 UnitsInfos tmpInfos = new UnitsInfos();
 
-                Vector3 tile_0 = new Vector3(0, 0, 0);
-                map_0.pathTiles.Add(tile_0.toPosRefId(), tile_0);
-
-                maps.Add("fields", map_0);
+                string[] mobsGrp1 = new string[1];
+                mobsGrp1[0] = "Blob";
+                core.spawnZones.Add("blobs1", new SpawnZone(core, new Vector3(-0.1796811f, 7.400879f, -4.319699f), mobsGrp1, 20));
+                
             }
         }
 	}

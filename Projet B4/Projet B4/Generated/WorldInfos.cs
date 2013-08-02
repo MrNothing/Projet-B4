@@ -35,7 +35,8 @@ namespace ProjetB4
 		
 		public EntityInfos getEntityInfosByName(String name)
 		{
-			return (EntityInfos)Npcs[name];
+            UnitsInfos infos = new UnitsInfos();
+            return infos.items[name];
 		}
 	}
 }

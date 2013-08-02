@@ -8,7 +8,7 @@ namespace ProjetB4 {
 	[RoomType("Game")]
 public class GameCode : Game<Player> {
 
-        public Map zone;
+        public String zoneName;
         public MapsData mapsInfos;
 		public WorldInfos worldInfos;
 		
@@ -27,7 +27,7 @@ public class GameCode : Game<Player> {
 		public ItemGenerator itemGenerator = new ItemGenerator();
 
         public float baseStep = 1;
-        public float baseRefSize=100;
+        public float baseRefSize=500;
         public int loopInterval=100;
 
         public int defaultUnitCounter = 0;
@@ -49,8 +49,8 @@ public class GameCode : Game<Player> {
 			//load current map
             try
 			{
-				zone = (Map)mapsInfos.maps[RoomData["map"]];
-                PlayerIO.ErrorLog.WriteError("Map loaded: " + zone.name);
+                mapsInfos.loadMap(this, RoomData["map"]);
+                zoneName = RoomData["map"];
             }
 			catch(Exception e)
 			{
@@ -383,7 +383,7 @@ public class GameCode : Game<Player> {
 
                 try
                 {
-                    player.PlayerObject.Set("map", zone.name);
+                    player.PlayerObject.Set("map", zoneName);
                 }
                 catch (Exception e)
                 { 
@@ -547,14 +547,16 @@ public class GameCode : Game<Player> {
 
             foreach (String s in spawnZones.Keys)
             {
+                SpawnZone tmpZone=null;
                 try
                 {
-                    SpawnZone tmpZone = (SpawnZone)spawnZones[s];
+                    tmpZone = (SpawnZone)spawnZones[s];
                     tmpZone.run();
                 }
                 catch (Exception e)
                 {
                     //print error!
+                    PlayerIO.ErrorLog.WriteError("spawZones Location: " + tmpZone.counter);
                 }
             }
 
@@ -888,12 +890,14 @@ public class GameCode : Game<Player> {
 
         public void addUnit(Entity theUnit)
         {
-            //PlayerIO.ErrorLog.WriteError("adding unit: " + theUnit.name+" position: "+theUnit.position.toString());
+            PlayerIO.ErrorLog.WriteError("adding unit: " + theUnit.name+" position: "+theUnit.position.toString());
             theUnit.id = "#u" + defaultUnitCounter;
             theUnit.myGame = this;
             //theUnit.setRef();
 
             units.Add(theUnit.id, theUnit);
+
+            theUnit.setRef();
 
             defaultUnitCounter++;
 

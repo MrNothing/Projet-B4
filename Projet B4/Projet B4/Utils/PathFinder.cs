@@ -29,17 +29,26 @@ namespace ProjetB4
 
         public List<Vector3> start(Vector3 start, Vector3 _target)
         {
-            target = _target;
-            openTiles = new SortedDictionary<float, Vector3>();
-            closedTiles = new Dictionary<String, bool>();
+            if (wayPoints.Count > 0)
+            {
+                target = _target;
+                openTiles = new SortedDictionary<float, Vector3>();
+                closedTiles = new Dictionary<String, bool>();
 
-            result = new List<Vector3>();
+                result = new List<Vector3>();
 
-            bestPath = null;
+                bestPath = null;
 
-            search(start);
+                search(start);
 
-            return result;
+                return result;
+            }
+            else
+            {
+                List<Vector3> tmpRes = new List<Vector3>();
+                tmpRes.Add(_target);
+                return tmpRes;
+            }
         }
 
         int checkRange = 1; //not recommented to increase this, may have some weird (funny?) results...

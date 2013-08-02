@@ -132,6 +132,13 @@ namespace ProjetB4
             visiblePlayers = new Dictionary<String, String>();
             visibleEnnemyNonHeroes = new Dictionary<String, String>();
             visibleCorpses = new Dictionary<String, String>();
+            debugMsg = "";
+
+            if (type.Equals(EntityType.player))
+            {
+                visibleUnits.Add(id, id);
+                visiblePlayers.Add(id, id);
+            }
 
 			for(float x=-checkRange.x; x<checkRange.x; x++)
 			{
@@ -146,6 +153,9 @@ namespace ProjetB4
             {
                 if (riding == null)
                     synchronizePosition();
+
+                //if(hasMoved)
+                sendPos();
 
                 if (hp <= 0)
                 {
@@ -170,9 +180,6 @@ namespace ProjetB4
 
                 if (recentlyHit > 0)
                     recentlyHit--;
-
-                //if(hasMoved)
-                sendPos();
                
                 if (type.Equals(EntityType.trigger))
                 {
@@ -225,6 +232,9 @@ namespace ProjetB4
                     }
                 }
                 */
+
+                //getMyOwner().Send("err", "i see " + visibleUnits.Count + " entities " + "my ref is:" + getPosRefId()+" in total, there are "+myGame.units.Count+" units");
+
                 if (attackCounter <= getAttackSpeed())
                     attackCounter += 0.25f * decalage / 2;
             }
@@ -376,6 +386,7 @@ namespace ProjetB4
             }
         }
 
+        public string debugMsg = "";
         private void checkVisiblePlayers(Vector3 offset)
         {
             //check the units around me, if they are players, send my position to them.
@@ -388,50 +399,56 @@ namespace ProjetB4
             try
             {
 				Dictionary<String, String> bloc = myGame.inGameUnitsRefs[posRefId];
-				
+
+                debugMsg += posRefId+" {";
+
                 foreach (String s in bloc.Keys)
                 {
-                    Entity theUnit = myGame.units[s];
-
-                    if (theUnit.getDistance(this)<myGame.baseRefSize)
+                    try
                     {
-						
-						visibleUnits.Add(theUnit.id, theUnit.id);
+                        Entity theUnit = myGame.units[s];
+
+                        debugMsg += theUnit.id + ",";
+
+                        visibleUnits.Add(theUnit.id, theUnit.id);
 
                         if (theUnit.hp <= 0)
                             visibleCorpses.Add(theUnit.id, theUnit.id);
 
-						if(theUnit.team != team)
-						{
-							visibleEnemies.Add(theUnit.id, theUnit.id);
-								
-							if (type == EntityType.player)
-								visibleEnnemyHeroes = new Dictionary<String, String>();
-							else
-								visibleEnnemyNonHeroes = new Dictionary<String, String>();
-						}
-						else
-							visibleAllies.Add(theUnit.id, theUnit.id);
-								
-						if (type == EntityType.player)
-							visiblePlayers.Add(theUnit.id, theUnit.id); 
-						
-						if (theUnit.team != team && agressivity == AgressivityLevel.agressive && type==EntityType.npc)
-						{
-							if (theUnit.getDistance(this) <= viewRange)
-								focus = theUnit.id;
-						}
+                        if (theUnit.team != team)
+                        {
+                            visibleEnemies.Add(theUnit.id, theUnit.id);
+
+                            if (type == EntityType.player)
+                                visibleEnnemyHeroes = new Dictionary<String, String>();
+                            else
+                                visibleEnnemyNonHeroes = new Dictionary<String, String>();
+                        }
+                        else
+                            visibleAllies.Add(theUnit.id, theUnit.id);
+
+                        if (theUnit.type == EntityType.player)
+                            visiblePlayers.Add(theUnit.id, theUnit.id);
+
+                        if (theUnit.team != team && agressivity == AgressivityLevel.agressive && type == EntityType.npc)
+                        {
+                            if (theUnit.getDistance(this) <= viewRange)
+                                focus = theUnit.id;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        debugMsg += e.Message + ",";
                     }
                 }
+
+                debugMsg += "}";
             }
             catch(Exception e)
             {
                 // if (type == EntityType.player)
                 //  myGame.PlayerIO.ErrorLog.WriteError("checking Zone id: " + tmp_id + " result was failure");
             }
-
-           
-
         }
 
         float focusDistance = 999;
@@ -1506,12 +1523,12 @@ namespace ProjetB4
 
         public float getDistance(Entity otherUnit)
         {
-            return (float)Math.Sqrt((otherUnit.position.x - position.x) * (otherUnit.position.x - position.x) + (otherUnit.position.y - position.y) * (otherUnit.position.y - position.y) + (otherUnit.position.z - position.z) * (otherUnit.position.z - position.z));
+            return otherUnit.position.Substract(position).SqrMagnitude();
         }
 
         public float getDistance(Vector3 point)
         {
-            return (float)Math.Sqrt((point.x - position.x) * (point.x - position.x) + (point.y - position.y) * (point.y - position.y) + (point.z - position.z) * (point.z - position.z));
+            return point.Substract(position).SqrMagnitude();
         }
 
         public float get2DDistance(Vector3 point)
@@ -1553,6 +1570,7 @@ namespace ProjetB4
 
         public void sendPos()
         {
+            //myGame.PlayerIO.ErrorLog.WriteError("sendPos id: " + id + " visiblePlayers: "+visiblePlayers.Count);
             Object[] data = new Object[7];
             data[0] = id; //i
             data[1] = position.x;  //x
@@ -1653,6 +1671,11 @@ namespace ProjetB4
                 return myGame.units[s];
             }
             return null;
+        }
+
+        public String toString()
+        {
+            return name;
         }
     }
 }

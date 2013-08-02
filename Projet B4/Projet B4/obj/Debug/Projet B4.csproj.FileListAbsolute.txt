@@ -2,3 +2,5 @@ C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\bin\Debug\Projet B
 C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\bin\Debug\Projet B4.pdb
 C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\obj\Debug\Projet B4.dll
 C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\obj\Debug\Projet B4.pdb
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\Boris\Documents\GitHub\Projet-B4\Projet B4\Projet B4\bin\Debug\Player.IO GameLibrary.xml
