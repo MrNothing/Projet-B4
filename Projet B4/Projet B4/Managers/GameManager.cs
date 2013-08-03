@@ -40,6 +40,21 @@ namespace ProjetB4
                         sender.Send("err", "Unit not found!");
                     }
                 }
+
+                //getVisibleUnits
+                if (_cmd.Equals("ul"))
+                {
+                    Entity myPlayer = sender.myCharacter;
+
+                    List<String> pList = new List<String>();
+                    foreach (string s in mainInstance.units.Keys)
+                    {
+                        if(myPlayer.position.Substract(mainInstance.units[s].position).Magnitude()<mainInstance.baseRefSize)
+                            pList.Add(s + "|x" + mainInstance.units[s].position.x + "y" + mainInstance.units[s].position.y + "z" + mainInstance.units[s].position.z);
+                    }
+
+                    sender.Send("ul", pList.ToArray());
+                }
                 
                 //lvlUpSpell
                 if (_cmd.Equals("lvlUpSpell"))
@@ -235,6 +250,15 @@ namespace ProjetB4
                         myCharacter.setPos(message.GetFloat(1), message.GetFloat(2), message.GetFloat(3));
 
                     myCharacter.sendPos(new Vector3(0, 0, 0));
+
+                    List<String> pList = new List<String>();
+                    foreach (string s in mainInstance.units.Keys)
+                    {
+                        if (myCharacter.position.Substract(mainInstance.units[s].position).Magnitude() < mainInstance.baseRefSize)
+                            pList.Add(s + "|x" + mainInstance.units[s].position.x + "y" + mainInstance.units[s].position.y + "z" + mainInstance.units[s].position.z);
+                    }
+
+                    sender.Send("ul", pList.ToArray());
                 }
 
                 if (_cmd.Equals("lp"))

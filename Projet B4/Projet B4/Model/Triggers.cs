@@ -137,7 +137,7 @@ namespace ProjetB4
             data[0] = parentEntity.id; //id
             data[1] = activated; //activated
 
-            parentEntity.myGame.sendDataToAll("trigger", data);
+            parentEntity.myGame.sendDataToAll("trigger", data, parentEntity);
         }
 
         public void sendRewards()

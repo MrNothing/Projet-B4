@@ -471,7 +471,7 @@ namespace ProjetB4
 
                     infos[5] = 0; //waves
 
-                    author.myGame.sendDataToGroup("z_spell", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("z_spell", infos, author);
                 }
 
                 if (spell.Equals("teleport"))
@@ -488,7 +488,7 @@ namespace ProjetB4
                     infos[1] = author.id + ""; //myid
                     infos[2] = 300 - 60 * (rank - 1); //x
 
-                    author.myGame.sendDataToGroup("aura", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("aura", infos, author);
 
                     author.sendCast(300- 60 * (rank - 1));
                 }
@@ -511,7 +511,7 @@ namespace ProjetB4
                     infos[2] = ix; //x
                     infos[3] = iz; //y
 
-                    author.myGame.sendDataToGroup("blow", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("blow", infos, author);
                 }
 
                 if (spell.Equals("WavesofEden"))
@@ -535,7 +535,7 @@ namespace ProjetB4
                     infos[2] = ix; //x
                     infos[3] = iz; //y
 
-                    author.myGame.sendDataToGroup("blow", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("blow", infos, author);
                 }
 
                 
@@ -557,7 +557,7 @@ namespace ProjetB4
 
                     infos[5] = 3 + ((int)Math.Floor(rank / 2f)); //waves
 
-                    author.myGame.sendDataToGroup("z_spell", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("z_spell", infos, author);
                 }
             }
 
@@ -592,8 +592,8 @@ namespace ProjetB4
                     infos[3] = target.position.x;
                     infos[4] = target.position.y;
                     infos[5] = target.position.z;
-                    
-                    author.myGame.sendDataToGroup("t_spell", author.visiblePlayers, infos);
+
+                    author.myGame.sendDataToAll("t_spell", infos, author);
                 }
             }
 
@@ -615,7 +615,7 @@ namespace ProjetB4
                     infos[1] = author.id + ""; //myid
                     infos[2] = 60; //duration
                     infos[3] = true; //is Avatar
-                    author.myGame.sendDataToGroup("aura", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("aura", infos, author);
                 }
 
                 if (spell.Equals("HealthRegen"))
@@ -627,7 +627,7 @@ namespace ProjetB4
                     infos[1] = author.id + ""; //myid
                     infos[2] = 60*10; //x
 
-                    author.myGame.sendDataToGroup("aura", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("aura", infos, author);
                 }
 
                 if (spell.Equals("ManaRegen"))
@@ -639,7 +639,7 @@ namespace ProjetB4
                     infos[1] = author.id + ""; //myid
                     infos[2] = 60 * 10; //x
 
-                    author.myGame.sendDataToGroup("aura", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("aura", infos, author);
                 }
 
                 if (spell.Equals("boneDance"))
@@ -656,7 +656,7 @@ namespace ProjetB4
                     infos[1] = author.id + ""; //myid
                     infos[2] = 60 * 7; //x
 
-                    author.myGame.sendDataToGroup("aura", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("aura", infos, author);
                 }
 
                 if (spell.Equals("Reanimation"))
@@ -689,7 +689,7 @@ namespace ProjetB4
                             infos[1] = author.id + ""; //myid
                             infos[2] = 80; //x
 
-                            author.myGame.sendDataToGroup("aura", author.visiblePlayers, infos);
+                            author.myGame.sendDataToAll("aura", infos, author);
 
                             amount--;
                         }
@@ -712,7 +712,7 @@ namespace ProjetB4
                     infos[1] = author.id + ""; //myid
                     infos[2] = (int)(60f * time/4f); //x
 
-                    author.myGame.sendDataToGroup("aura", author.visiblePlayers, infos);
+                    author.myGame.sendDataToAll("aura", infos, author);
                 }
 
                 if (spell.Equals("MoonlightArt"))
@@ -729,7 +729,7 @@ namespace ProjetB4
                      infos[1] = author.id + ""; //myid
                      infos[2] = (int)(60f * time / 2f); //x
 
-                     author.myGame.sendDataToGroup("aura", author.visiblePlayers, infos);*/
+                     author.myGame.sendDataToAll("aura", infos, author);*/
                 }
             }
         }

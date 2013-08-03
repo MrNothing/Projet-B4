@@ -99,7 +99,7 @@ namespace ProjetB4.Static_Units
         }
     }
 
-    public class Wich //Wiches 13-15
+    public class Witch //Wiches 13-15
     {
         public EntityInfos value()
         {
@@ -239,7 +239,38 @@ namespace ProjetB4.Static_Units
         }
     }
 
-    
+    //crawler
+    public class Crawler
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 30;
+            infos.baseStats.sta = 50;
+            infos.baseStats.str = 30;
+            infos.baseStats.intel = 30;
+            infos.baseStats.sou = 30;
+            infos.model = "Crawler";
+            infos.level = 20;
+            return infos;
+        }
+    }
 
+    //crawler
+    public class Balrog
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 20;
+            infos.baseStats.sta = 45;
+            infos.baseStats.str = 30;
+            infos.baseStats.intel = 20;
+            infos.baseStats.sou = 20;
+            infos.model = "Balrog";
+            infos.level = 15;
+            return infos;
+        }
+    }
     
 }

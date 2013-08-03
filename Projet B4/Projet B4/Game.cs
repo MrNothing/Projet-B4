@@ -27,8 +27,8 @@ public class GameCode : Game<Player> {
 		public ItemGenerator itemGenerator = new ItemGenerator();
 
         public float baseStep = 1;
-        public float baseRefSize=500;
-        public int loopInterval=100;
+        public float baseRefSize=100;
+        public int loopInterval=500;
 
         public int defaultUnitCounter = 0;
 
@@ -348,7 +348,7 @@ public class GameCode : Game<Player> {
                 units[player.ConnectUserId] = player.myCharacter;
                 players[player.ConnectUserId] = player;
 
-                units[player.ConnectUserId].setRef();
+                //units[player.ConnectUserId].setRef();
 
                 //player.Send("map", zone.zoneName);
 
@@ -362,7 +362,7 @@ public class GameCode : Game<Player> {
 
                 location = "sendSpells ";
                 //send my spells -> disabled since the infos are sent in a different way now
-                //player.myCharacter.sendSpells(player);
+                player.myCharacter.sendSpells(player);
 
                 location = "sendItems ";
                 //send Items -> disabled since the infos are sent in a different way now
@@ -494,12 +494,30 @@ public class GameCode : Game<Player> {
             Broadcast("uLeave", player.ConnectUserId);
 		}
 
-        public void sendDataToAll(String id, Object[] Data)
+        public void sendDataToAll(String id, Object[] Data, Entity sender)
         {
-            Broadcast(id, Data);
+            foreach (Object o in players.Keys)
+            {
+                if ((Player)units[o + ""].getMyOwner() != null)
+                {
+                    Player tmpPlayer = players[o + ""];
+
+                    try
+                    {
+                        if (sender.position.Substract(tmpPlayer.myCharacter.position).Magnitude()<baseRefSize)
+                            tmpPlayer.Send(id, Data);
+                    }
+                    catch (Exception e)
+                    {
+                        //System.out.println("sendDataToGroup failed! msg: "+e.getMessage());
+                    }
+
+
+                }
+            }
         }
 
-        public void sendDataToGroup(String _cmd, Dictionary<String, String> group, Object[] data)
+        /*public void sendDataToGroup(String _cmd, Dictionary<String, String> group, Object[] data)
         {
             try
             {
@@ -528,22 +546,31 @@ public class GameCode : Game<Player> {
                 //System.out.println("sendDataToGroup failed! reason: "+e.getMessage());
             }
         }
+        */
 
         public void run()
         {
             //main loop
+            int testCounter = 0;
+            int exceptionsCounter = 0;
+            string lastException = "";
             foreach (String s in units.Keys)
             {
                 try
                 {
                     Entity tmpUnit = (Entity)units[s];
                     tmpUnit.run();
+                    testCounter++;
                 }
                 catch (Exception e)
-                { 
+                {
+                    exceptionsCounter++;
+                    lastException = e.Message;
                     //print error!
                 }
             }
+
+            //PlayerIO.ErrorLog.WriteError("testCounter reached: " + testCounter + "exceptions: " + exceptionsCounter + "lastException: " + lastException);
 
             foreach (String s in spawnZones.Keys)
             {
@@ -825,7 +852,7 @@ public class GameCode : Game<Player> {
                 data[13] = myUnit.position.x; //x
                 data[14] = myUnit.position.y; //y
                 data[15] = myUnit.position.z; //z
-                sendDataToAll("req", data);
+                sendDataToAll("req", data, myUnit);
 
             }
             catch (Exception e)
@@ -852,7 +879,7 @@ public class GameCode : Game<Player> {
             infos[1] = msg; //msg
             infos[0] = _player.ConnectUserId; //name
             // infos[2] = _player.id; //id
-            sendDataToGroup("msg", _player.myCharacter.visiblePlayers, infos);
+            sendDataToAll("msg", infos, _player.myCharacter);
         }
 
         void initializeZone()
@@ -897,7 +924,7 @@ public class GameCode : Game<Player> {
 
             units.Add(theUnit.id, theUnit);
 
-            theUnit.setRef();
+            //theUnit.setRef();
 
             defaultUnitCounter++;
 

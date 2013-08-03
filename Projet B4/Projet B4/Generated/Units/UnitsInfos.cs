@@ -26,6 +26,10 @@ namespace ProjetB4
             items.Add("Blob", new Static_Units.Blob().value());
             items.Add("Fire Spirit", new Static_Units.FireSpirit().value());
             items.Add("Mecha Golem", new Static_Units.MechaGolem().value());
+            items.Add("Crawler", new Static_Units.Crawler().value());
+            items.Add("Balrog", new Static_Units.Balrog().value());
+            items.Add("Skeleton", new Static_Units.Skeleton().value());
+            
         }
     }
 }

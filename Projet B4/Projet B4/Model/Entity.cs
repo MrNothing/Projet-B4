@@ -49,7 +49,7 @@ namespace ProjetB4
         public float viewRange = 30;
 		
 		//This defines the for ranges for visibility
-		public Vector3 checkRange = new Vector3(1,0.1f,1);
+		public Vector3 checkRange = new Vector3(2,0.1f,2);
 		
         public String focus = null;
         public Entity master=null;
@@ -124,8 +124,8 @@ namespace ProjetB4
             lastDate = tmpDate;
 
             setRegenPoints();
-            
-            visibleUnits = new Dictionary<String, String>();
+
+            /*visibleUnits = new Dictionary<String, String>();
             visibleEnemies = new Dictionary<String, String>();
             visibleAllies = new Dictionary<String, String>();
             visibleEnnemyHeroes = new Dictionary<String, String>();
@@ -140,14 +140,14 @@ namespace ProjetB4
                 visiblePlayers.Add(id, id);
             }
 
-			for(float x=-checkRange.x; x<checkRange.x; x++)
-			{
-				for(float y=-checkRange.y; y<checkRange.y; y++)
-				{
-					for(float z=-checkRange.z; z<checkRange.z; z++)
-						checkVisiblePlayers(new Vector3((int)x,(int)y,(int)z));
-				}
-			}
+            for(float x=-checkRange.x; x<checkRange.x; x++)
+            {
+                for(float y=-checkRange.y; y<checkRange.y; y++)
+                {
+                    for(float z=-checkRange.z; z<checkRange.z; z++)
+                        checkVisiblePlayers(new Vector3((int)x,(int)y,(int)z));
+                }
+            }*/
 			
             if (type != EntityType.player)
             {
@@ -155,7 +155,7 @@ namespace ProjetB4
                     synchronizePosition();
 
                 //if(hasMoved)
-                sendPos();
+                //sendPos();
 
                 if (hp <= 0)
                 {
@@ -239,7 +239,7 @@ namespace ProjetB4
                     attackCounter += 0.25f * decalage / 2;
             }
 
-            setRef();
+            //setRef();
 
             if (combatMode > 0)
                 combatMode--;
@@ -497,7 +497,7 @@ namespace ProjetB4
             }
         }
 
-        String lastPosRefId = "";
+        /*String lastPosRefId = "";
         public void setRef()
         {
 
@@ -549,7 +549,7 @@ namespace ProjetB4
                 myGame.inGameUnitsRefs.Add(tmp_id, tmp);
             }
         }
-
+       
         public void clearRef()
         {
             String last_id = lastPosRefId;
@@ -568,6 +568,7 @@ namespace ProjetB4
 
         }
 
+         */
 
         public bool isPatrol = false;
         public float seed=1;
@@ -1339,7 +1340,7 @@ namespace ProjetB4
             data[12] = getMaxHp(); //getMaxHp
             data[13] = getMaxMp(); //getMaxMp
             data[14] = xp; //xp
-            myGame.sendDataToGroup("infos", visiblePlayers, data);
+            myGame.sendDataToAll("infos", data, this);
         }
 
         public void sendDynamicInfosToAll(String author)
@@ -1352,7 +1353,7 @@ namespace ProjetB4
             //STATS:
             data[3] = (int)hp;//hp
             data[4] = (int)mp;//mp
-            myGame.sendDataToGroup("dinfos", visiblePlayers, data);
+            myGame.sendDataToAll("dinfos", data, this);
 
         }
 
@@ -1371,7 +1372,7 @@ namespace ProjetB4
             data[7] = xp;//xp
             data[8] = level;//level
 
-            myGame.sendDataToGroup("dinfos", visiblePlayers, data);
+            myGame.sendDataToAll("dinfos", data, this);
             /*Hashtable tmp = new Hashtable();
            tmp.Add("hp", (int)hp);
            tmp.Add("mp", (int)mp);
@@ -1399,7 +1400,7 @@ namespace ProjetB4
             data[3] = (int)hp;//hp
             data[4] = (int)mp;//mp
 
-            myGame.sendDataToGroup("dinfos", visiblePlayers, data);
+            myGame.sendDataToAll("dinfos", data, this);
         }
 
         public void sendCast()
@@ -1411,7 +1412,7 @@ namespace ProjetB4
             data[2] = 15;//time
 
 
-            myGame.sendDataToGroup("anim", visiblePlayers, data);
+            myGame.sendDataToAll("anim", data, this);
         }
 
         void sendAnim(String _anim)
@@ -1422,7 +1423,7 @@ namespace ProjetB4
             data[2] = 15;//time
 
 
-            myGame.sendDataToGroup("anim", visiblePlayers, data);
+            myGame.sendDataToAll("anim", data, this);
         }
 
         public void sendCast(int duration)
@@ -1434,7 +1435,7 @@ namespace ProjetB4
             data[2] = duration;//time
 
 
-            myGame.sendDataToGroup("anim", visiblePlayers, data);
+            myGame.sendDataToAll("anim", data, this);
         }
 
         public void sendCast(float tx, float ty, float tz)
@@ -1448,7 +1449,7 @@ namespace ProjetB4
             data[4] = (int)ty; //ty
             data[5] = (int)tz; //tz
 
-            myGame.sendDataToGroup("anim", visiblePlayers, data);
+            myGame.sendDataToAll("anim", data, this);
         }
 
         public void sendCast(Item myItem)
@@ -1460,7 +1461,7 @@ namespace ProjetB4
             data[2] = 15;//time
             data[3] = myItem.id;
 
-            myGame.sendDataToGroup("anim", visiblePlayers, data);
+            myGame.sendDataToAll("anim", data, this);
         }
 
         public void sendTeleport()
@@ -1471,7 +1472,7 @@ namespace ProjetB4
             data[2] = position.y;
             data[3] = position.z; //z
 
-            myGame.sendDataToAll("teleport", data);
+            myGame.sendDataToAll("teleport", data, this);
         }
 
         public void sendSpells()
@@ -1495,7 +1496,7 @@ namespace ProjetB4
                 }
             }
 
-            myGame.sendDataToAll("spells", data);
+            myGame.sendDataToAll("spells", data, this);
         }
 
         public void sendSpells(Player player)
@@ -1549,7 +1550,7 @@ namespace ProjetB4
             data[2] = position.y;
             data[3] = position.z; //z
 
-            myGame.sendDataToGroup("p", visiblePlayers, data);
+            myGame.sendDataToAll("p", data, this);
 
         }
 
@@ -1564,7 +1565,7 @@ namespace ProjetB4
 
             data[4] = _parentName; //ix
 
-            myGame.sendDataToGroup("lp", visiblePlayers, data);
+            myGame.sendDataToAll("lp", data, this);
 
         }
 
@@ -1581,7 +1582,7 @@ namespace ProjetB4
             data[4] = 0; //ix
             data[5] = 0; //iy
             data[6] = 0; //iz
-			myGame.sendDataToGroup("p", visiblePlayers, data);
+            myGame.sendDataToAll("p", data, this);
 
         }
 
@@ -1597,7 +1598,7 @@ namespace ProjetB4
             {
                 data[1] = "";  //x
             }
-            myGame.sendDataToAll("mount", data);
+            myGame.sendDataToAll("mount", data, this);
         }
 
         bool hasMoved = false;

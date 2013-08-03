@@ -27,7 +27,11 @@ namespace ProjetB4
 
                 string[] mobsGrp1 = new string[1];
                 mobsGrp1[0] = "Blob";
-                core.spawnZones.Add("blobs1", new SpawnZone(core, new Vector3(-0.1796811f, 7.400879f, -4.319699f), mobsGrp1, 20));
+
+                SpawnZone pack1 = new SpawnZone(core, new Vector3(-0.1796811f, 7.400879f, -4.319699f), mobsGrp1, 20);
+                pack1.maxAmountSimulaneously = 100;
+
+                core.spawnZones.Add("blobs1", pack1);
                 
             }
         }

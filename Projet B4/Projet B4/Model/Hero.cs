@@ -626,7 +626,7 @@ namespace ProjetB4
             data[1] = itemName;
             data[2] = itemId;
             data[3] = "null";
-            myGame.sendDataToAll("i+", data);
+            myGame.sendDataToAll("i+", data, this);
         }
 
         public void sendAddItem(Item item, String itemId) 
@@ -640,7 +640,7 @@ namespace ProjetB4
                 data[3] = "null";
             else
                 data[3] = myGame.itemGenerator.exportItem(item);
-            myGame.sendDataToAll("i+", data);
+            myGame.sendDataToAll("i+", data, this);
         }
 
         public void sendRemoveItem(String itemId) 
@@ -648,7 +648,7 @@ namespace ProjetB4
             Object[] data = new Object[2];
             data[0] = id;
             data[1] = itemId;
-            myGame.sendDataToAll("i-", data);
+            myGame.sendDataToAll("i-", data, this);
         }
 
         public void sendItems(Player requester) 
