@@ -25,13 +25,16 @@ namespace ProjetB4
 
                 UnitsInfos tmpInfos = new UnitsInfos();
 
-                string[] mobsGrp1 = new string[1];
-                mobsGrp1[0] = "Blob";
+                string[] mobsGrp1 = new string[2];
+                mobsGrp1[0] = "Skeleton";
+                mobsGrp1[1] = "Blob";
 
                 SpawnZone pack1 = new SpawnZone(core, new Vector3(-0.1796811f, 7.400879f, -4.319699f), mobsGrp1, 20);
-                pack1.maxAmountSimulaneously = 100;
+                pack1.maxAmountSimulaneously = 10;
 
                 core.spawnZones.Add("blobs1", pack1);
+
+                core.addUnit(new Entity(core, "", "Crawler", tmpInfos.getEntityInfosByName("Crawler"), new Vector3(0, 7.400879f, -30)));
                 
             }
         }
