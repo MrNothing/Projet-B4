@@ -66,7 +66,7 @@ public class GameCode : Game<Player> {
             chatManager = new ChatManager(this);
             gameManager = new GameManager(this, spellsManager);
 
-            PlayerIO.ErrorLog.WriteError("test Item infos:"+itemGenerator.generateItem("0", 1, 10).toString());
+            PlayerIO.ErrorLog.WriteError("test Item infos:"+itemGenerator.generateItem("0", 10, 10).toString());
 
 			//this is the main routine 
             mainTimer = AddTimer(run, loopInterval);
@@ -917,7 +917,7 @@ public class GameCode : Game<Player> {
 
         public void addUnit(Entity theUnit)
         {
-            PlayerIO.ErrorLog.WriteError("adding unit: " + theUnit.name+" position: "+theUnit.position.toString());
+            //PlayerIO.ErrorLog.WriteError("adding unit: " + theUnit.name+" position: "+theUnit.position.toString());
             theUnit.id = "#u" + defaultUnitCounter;
             theUnit.myGame = this;
             //theUnit.setRef();

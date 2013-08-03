@@ -1226,10 +1226,14 @@ namespace ProjetB4
             {
                 if (type == EntityType.npc)
                 {
-                    if (lastHiter[_author.id] == null)
+                    try
+                    {
                         lastHiter.Add(_author.id, _dmg);
-                    else
+                    }
+                    catch (Exception e)
+                    {
                         lastHiter[_author.id] = _dmg + (float)lastHiter[_author.id];
+                    }
                 }
 
                 combatMode = 15;

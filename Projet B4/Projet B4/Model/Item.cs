@@ -41,7 +41,7 @@ namespace ProjetB4
 
         public String toString()
         {
-            String des = "{id: " + id + ", type: " + infos.type.ToString() + ", effect0: "+infos.effects[0]+", ";
+            String des = "{name: " + infos.name + ", type: " + infos.type.ToString() + ", ";
 
             for (int i = 0; infos.effects[i]!=null; i++)
             {

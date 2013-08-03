@@ -28,6 +28,13 @@ namespace ProjetB4
                 mainInstance.PlayerIO.ErrorLog.WriteError("handleClientRequest Cancelled: " + _cmd + " there was no Hero loaded");
             }
 
+
+                //generateItem
+                if (_cmd.Equals("generateItem"))
+                {
+                    sender.Send("err", mainInstance.itemGenerator.generateItem("", 10, 10).toString());
+                }
+        
                 //getVisibleUnits
                 if (_cmd.Equals("getVisibleUnits"))
                 {

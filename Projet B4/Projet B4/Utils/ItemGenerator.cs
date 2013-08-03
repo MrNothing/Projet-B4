@@ -213,16 +213,13 @@ namespace ProjetB4
 
             float valueLeft = _value;
 
-            int effectsAmount = random.Next(5);
+            int effectsAmount = random.Next(0, 5);
             effectsAmount = effectsAmount - defaultEffects.Length;
             if (effectsAmount <= 0)
                 effectsAmount = 1;
 
             if (effectsAmount > 5)
-                effectsAmount = 0;
-
-            if (type == ItemTypes.simple)
-                return newItem;
+                effectsAmount = 5;
 
             if (advancedType == ItemAdvancedTypes.none)
             {

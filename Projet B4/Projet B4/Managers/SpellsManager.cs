@@ -235,11 +235,11 @@ namespace ProjetB4
                     //send message: The spell is not ready!
                     return;
                 }
-
+               
                 if ((int)mySpell["rank"] <= 0)
                 {
                     caster.getMyOwner().Send("err", "s5"); //You dont know this spell!
-                    //send message: The spell is not ready!
+                    //send message: The spell is not rank 1!
                     return;
                 }
 
@@ -344,9 +344,8 @@ namespace ProjetB4
                 caster.sendDynamicInfosToAll("");
 
                 //send CD infos
-                Object[] cdinfos = new Object[2];
+                Object[] cdinfos = new Object[1];
                 cdinfos[0] = spellId; //i
-                cdinfos[1] = mySpell["coolDown"]; //cd
                 caster.getMyOwner().Send("cd", cdinfos);
 
                /* if ((int)mySpell["zone"] > 0)
