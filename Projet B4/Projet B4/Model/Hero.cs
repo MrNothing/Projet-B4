@@ -259,8 +259,8 @@ namespace ProjetB4
 						    setEffet(tmpEffect["effect"]+"", (float)tmpEffect["amount"]);
 					    }*/
 
-                        sendDynamicInfosToAll();
-					    sendInfosToMe();
+                        //sendDynamicInfosToAll();
+					    //sendInfosToMe();
                         sendAddItem(itemName, itemsCounter+"");
 					    sendMoney();
 					
@@ -292,13 +292,13 @@ namespace ProjetB4
                 itemsCounter++;
 
                 Hashtable dependencies = new Hashtable(); //useless in an mmorpg.
-                int price = 0;
+                //int price = 0;
 
-                if (price <= myPlayer.money)
+                if (true)
                 {
                     if (bagWeight + Math.Ceiling(item.infos.weight) - equippedItems.Count > bagMaxWeight)
                     {
-                        if (itemsByName[item.infos.name] != null)
+                        try
                         {
                             float amount = (float)itemsByName[item.infos.name];
                             if (amount < 1)
@@ -311,7 +311,7 @@ namespace ProjetB4
                                 return;
                             }
                         }
-                        else
+                        catch(Exception e)
                         {
                             getMyOwner().Send("err", "i3");
                             return;
@@ -364,8 +364,8 @@ namespace ProjetB4
                         setEffet(tmpEffect["effect"]+"", (float)tmpEffect["amount"]);
                     }*/
 
-                    sendDynamicInfosToAll();
-                    sendInfosToMe();
+                    //sendDynamicInfosToAll();
+                    //sendInfosToMe();
                     sendAddItem(itemName, itemsCounter + "");
                     //sendMoney();
 
@@ -387,30 +387,23 @@ namespace ProjetB4
 
         public void addItem(Item item)
         {
+            int debugCounter = 0;
             try
             {
                 item.id = itemsCounter + "";
                 itemsCounter++;
 
                 Hashtable dependencies = new Hashtable(); //useless in an mmorpg.
-                int price = 0;
+                //int price = 0;
 
-                if (price <= myPlayer.money)
+                if (bagWeight + Math.Ceiling(item.infos.weight) - equippedItems.Count > bagMaxWeight)
                 {
-                    if (bagWeight + Math.Ceiling(item.infos.weight) - equippedItems.Count > bagMaxWeight)
+                    try
                     {
-                        if (itemsByName[item.infos.name] != null)
+                        float amount = (float)itemsByName[item.infos.name];
+                        if (amount < 1)
                         {
-                            float amount = (float)itemsByName[item.infos.name];
-                            if (amount < 1)
-                            {
-                                //proceed...
-                            }
-                            else
-                            {
-                                getMyOwner().Send("err", "i3");
-                                return;
-                            }
+                            //proceed...
                         }
                         else
                         {
@@ -418,70 +411,76 @@ namespace ProjetB4
                             return;
                         }
                     }
-                    else
+                    catch(Exception e)
                     {
-                        //proceed...
+                        getMyOwner().Send("err", "i3");
+                        return;
                     }
-
-                    //check dependencies...
-                    /*if(checkItemDependencies(dependencies))
-                    {
-                    }
-                    else*/
-                    {
-                        //getMyOwner().Send("err", "i4");
-                        //return;
-
-                        //auto buy the missing items if i have enough money...
-
-
-                        /*	for(Object o:dependencies.getKeys())
-                            {
-                                buyItem(o+"");
-                            }
-                        */
-                    }
-
-                    items.Add(itemsCounter + "", item);
-                    try
-                    {
-                        float amount = (float)itemsByName[item.infos.name];
-
-                        amount += item.infos.weight;
-                        itemsByName.Remove(item.infos.name);
-                        itemsByName.Add(item.infos.name, amount);
-                    }
-                    catch (Exception e)
-                    {
-                        itemsByName.Add(item.infos.name, item.infos.weight);
-                    }
-
-                    bagWeight += item.infos.weight;
-                    //myPlayer.money -= price;
-
-                    /*foreach(Object i in effects.Keys)
-                    {
-                        Hashtable tmpEffect = (Hashtable)effects[i + ""];
-                        setEffet(tmpEffect["effect"]+"", (float)tmpEffect["amount"]);
-                    }*/
-
-                    sendDynamicInfosToAll();
-                    sendInfosToMe();
-                    sendAddItem(item, itemsCounter + "");
-                    //sendMoney();
-
-                    itemsCounter++;
-
                 }
                 else
                 {
-                    getMyOwner().Send("err", "i5");
-                    return;
+                    //proceed...
                 }
+
+                debugCounter++; //1
+
+                //check dependencies...
+                /*if(checkItemDependencies(dependencies))
+                {
+                }
+                else*/
+                {
+                    //getMyOwner().Send("err", "i4");
+                    //return;
+
+                    //auto buy the missing items if i have enough money...
+
+
+                    /*	for(Object o:dependencies.getKeys())
+                        {
+                            buyItem(o+"");
+                        }
+                    */
+                }
+
+                items.Add(itemsCounter + "", item);
+
+                debugCounter++; //2
+
+                try
+                {
+                    float amount = (float)itemsByName[item.infos.name];
+
+                    amount += item.infos.weight;
+                    itemsByName.Remove(item.infos.name);
+                    itemsByName.Add(item.infos.name, amount);
+                }
+                catch (Exception e)
+                {
+                    itemsByName.Add(item.infos.name, item.infos.weight);
+                }
+
+                debugCounter++; //3
+
+                bagWeight += item.infos.weight;
+                //myPlayer.money -= price;
+                debugCounter++; //4
+                /*foreach(Object i in effects.Keys)
+                {
+                    Hashtable tmpEffect = (Hashtable)effects[i + ""];
+                    setEffet(tmpEffect["effect"]+"", (float)tmpEffect["amount"]);
+                }*/
+
+                //sendDynamicInfosToAll();
+                //sendInfosToMe();
+                sendAddItem(item, itemsCounter + "");
+                //sendMoney();
+                debugCounter++; //5
+                itemsCounter++;
             }
             catch (Exception e)
             {
-                getMyOwner().Send("err", "i6");
+                getMyOwner().Send("err", "i6="+debugCounter);
                 return;
             }
         }
@@ -621,7 +620,7 @@ namespace ProjetB4
 
         public void sendAddItem(String itemName, String itemId) 
         {
-            Object[] data = new Object[3];
+            Object[] data = new Object[4];
             data[0] = id;
             data[1] = itemName;
             data[2] = itemId;
@@ -631,7 +630,7 @@ namespace ProjetB4
 
         public void sendAddItem(Item item, String itemId) 
         {
-            Object[] data = new Object[3];
+            Object[] data = new Object[4];
             data[0] = id;
             data[1] = item.infos.name;
             data[2] = itemId;
@@ -639,8 +638,12 @@ namespace ProjetB4
             if (!item.generated)
                 data[3] = "null";
             else
-                data[3] = myGame.itemGenerator.exportItem(item);
-            myGame.sendDataToAll("i+", data, this);
+            {
+                getMyOwner().Send("sMsg", "exportItem");
+                getMyOwner().Send("sMsg", "toHashTable" + item.infos.toReducedHashtable());
+                data[3] = myGame.itemGenerator.exportItemCompact(item);
+            }
+            getMyOwner().Send("i+", data);
         }
 
         public void sendRemoveItem(String itemId) 
@@ -648,7 +651,7 @@ namespace ProjetB4
             Object[] data = new Object[2];
             data[0] = id;
             data[1] = itemId;
-            myGame.sendDataToAll("i-", data, this);
+            getMyOwner().Send("i-", data);
         }
 
         public void sendItems(Player requester) 

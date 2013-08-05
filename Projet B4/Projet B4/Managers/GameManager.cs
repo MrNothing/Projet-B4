@@ -32,7 +32,7 @@ namespace ProjetB4
                 //generateItem
                 if (_cmd.Equals("generateItem"))
                 {
-                    sender.Send("err", mainInstance.itemGenerator.generateItem("", 10, 10).toString());
+                    sender.myCharacter.addItem(mainInstance.itemGenerator.generateItem("", 10, 10));
                 }
         
                 //getVisibleUnits
@@ -40,7 +40,7 @@ namespace ProjetB4
                 {
                     try
                     {
-                        sender.Send("err", ((Entity)mainInstance.units[message.GetString(1)]).debugMsg);
+                        mainInstance.units[message.GetString(1)].watcher = sender.myCharacter.id;
                     }
                     catch (Exception e)
                     {

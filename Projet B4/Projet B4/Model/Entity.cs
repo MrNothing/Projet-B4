@@ -71,6 +71,7 @@ namespace ProjetB4
         public Dictionary<String, String> visibleEnnemyNonHeroes = new Dictionary<String, String>();
         public Dictionary<String, String> visibleCorpses = new Dictionary<String, String>();
 
+        public String watcher="";
         public Entity(GameCode _myGame, String _id, String _name, EntityInfos _infos, Vector3 _position)
         {
             myTrigger = new Triggers(this);
@@ -78,6 +79,8 @@ namespace ProjetB4
             id = _id;
             name = _name;
             infos = _infos;
+
+            ridable = _infos.ridable;
 
             level = _infos.level;
 
@@ -114,7 +117,8 @@ namespace ProjetB4
 
         public void run()
         {
-           
+            
+
             DateTime tmpDate = DateTime.Now;
 
             int diff = (tmpDate - lastDate).Milliseconds;
@@ -257,8 +261,10 @@ namespace ProjetB4
                 paths.RemoveAt(paths.Count - 1);
             }
 
-            if (combatMode >= 0)
+            string debugLocation = "";
+            if (focus != null && hp > 0 && infos.range > 0)
             {
+
                 float highestThreat = 0;
                 foreach (String tmpId in lastHiter.Keys)
                 {
@@ -268,41 +274,45 @@ namespace ProjetB4
                         focus = tmpId;
                     }
                 }
-            }
 
-            string debugLocation = "";
-            if (focus != null && hp > 0 && infos.range > 0 && !type.Equals("Hero"))
-            {
                 setFocusDistance();
-               
+
                 if (focus != null)
                 {
-
+                    if (watcher.Length > 0)
+                    {
+                        myGame.players[watcher].Send("err", "focusDistance: " + focusDistance);
+                    }
                     if (focusDistance > infos.range)
                     {
                         if (position.Substract(initialPosition).Magnitude() > viewRange)
                         {
-
                             focus = null;
                             paths = pathfinder.start(position, initialPosition);
+                            destination = paths[paths.Count - 1];
+                            paths.RemoveAt(paths.Count - 1);
+                            lastHiter.Clear();
                         }
                         else
                         {
-                            
+                                
                                 //walk to the target...
 
-                                if (infos.baseSpeed > 0 && focusCounter > 2 && !myGame.units[focus].getStepRefId().Equals(lastTargetPosRefId))
+                                if (infos.baseSpeed > 0 && focusCounter > 2)
                                 {
+                                   
                                     focusCounter = 0;
                                     lastTargetPosRefId = myGame.units[focus].getStepRefId();
                                     //myPathFinder.go(getTiledPosition(), ((Unit)myGame.units[focus]).getTiledPosition());
-
+                                    
                                     Vector3 newDestination = new Vector3();
-                                    newDestination.x = myGame.units[focus].position.x + (float)mainSeed.NextDouble() * 6f - (float)mainSeed.NextDouble() * 6f;
+                                    newDestination.x = myGame.units[focus].position.x + (float)mainSeed.NextDouble() * 1f - (float)mainSeed.NextDouble() * 1f;
                                     newDestination.y = myGame.units[focus].position.y;
-                                    newDestination.z = myGame.units[focus].position.z + (float)mainSeed.NextDouble() * 6f - (float)mainSeed.NextDouble() * 6f;
-
+                                    newDestination.z = myGame.units[focus].position.z + (float)mainSeed.NextDouble() * 1f - (float)mainSeed.NextDouble() * 1f;
+                                    
                                     paths = pathfinder.start(position, newDestination);
+                                    destination = paths[paths.Count-1];
+                                    paths.RemoveAt(paths.Count - 1);
                                     // sendPos();
                                 }
                                 focusCounter++;
@@ -312,7 +322,7 @@ namespace ProjetB4
                     {
                         paths = new List<Vector3>();
                         destination = position;
-
+                        myGame.PlayerIO.ErrorLog.WriteError("OK5");
                         if (attackCounter > getAttackSpeed())
                         {
                             //Spell casting:
@@ -360,9 +370,11 @@ namespace ProjetB4
                                 //if(type.Equals("Tower"))
                                 //	System.out.println("My attack Speed is: "+getAttackSpeed());
 
+                                myGame.PlayerIO.ErrorLog.WriteError("Trying to attack entity: " + focus);
+
                                 attack(focus);
                                 attackCounter = 0;
-
+                               
                             }
                         }
 
@@ -372,7 +384,7 @@ namespace ProjetB4
             }
 
             if (attackCounter <= getAttackSpeed())
-                attackCounter += 0.25f * decalage / 2;
+                attackCounter += 0.25f;
         }
 
         public void attack(String target)
@@ -382,7 +394,7 @@ namespace ProjetB4
                 Entity targetUnit = myGame.units[target];
                 float tmpDmg = getAttackValue();
                 targetUnit.hitMeWithPhysic(id, tmpDmg, lastCrit);
-                sendAnim("Attack");
+                sendAnim("Attack", target);
             }
         }
 
@@ -460,13 +472,16 @@ namespace ProjetB4
             {
                 if (targetUnit.hp > 0)
                 {
-                    focusDistance = targetUnit.position.Substract(position).SqrMagnitude();
+                    Vector3 tmpPos = new Vector3(position);
+                    tmpPos.y = targetUnit.position.y;
+                    focusDistance = targetUnit.position.Substract(tmpPos).SqrMagnitude();
 					
 					//target is out of viewRange
                     if (focusDistance > viewRange + 3 && !type.Equals("Hero"))
                     {
                         focus = null;
                         focusDistance = 999;
+                        lastHiter.Clear();
                     }
                     /*if(wayPoints.Count>0)
                     {
@@ -487,13 +502,15 @@ namespace ProjetB4
 					//Target is dead, reset focus
                     focus = null;
                     focusDistance = 999;
+                    lastHiter.Clear();
                 }
             }
             else
             {
-				//Target has disappeared or something when really wrong with it...
+				//Target has disappeared or something was really wrong with it...
                 focus = null;
                 focusDistance = 999;
+                lastHiter.Clear();
             }
         }
 
@@ -590,13 +607,17 @@ namespace ProjetB4
 
                 initialPosition = master.position;
 
+                position.y = master.position.y;
+
                 if (master != null && master.getDistance(this) > 20)
                 {
                     focus = null;
                 }
 
-                if (master.recentlyHit>0)
-                    focus = master.lastHiter.Keys.Last();
+                if (master.recentlyHit > 0)
+                {
+                        focus = master.lastDirectHiter;
+                }
             }
 
             if (((wanderAround.x > 0 || wanderAround.z > 0) || master!=null) && focus == null)
@@ -619,10 +640,12 @@ namespace ProjetB4
                         newDestination.x = initialPosition.x + wanderAround.x * patrolK;
                         newDestination.y = position.y;
                         newDestination.z = initialPosition.z + wanderAround.z * patrolK;
-                        patrolK = -patrolK;paths = pathfinder.start(position, newDestination);
+                        patrolK = -patrolK;
                     }
 
                     paths = pathfinder.start(position, newDestination);
+                    destination = paths[paths.Count - 1];
+                    paths.RemoveAt(paths.Count - 1);
                 }
             }
         }
@@ -950,12 +973,12 @@ namespace ProjetB4
             {
                 if (hp < getMaxHp())
                 {
-                    hp += (infos.vitalInfos.hpRegen + infos.vitalInfosBon.hpRegen) * decalage;
+                    hp += (infos.vitalInfos.hpRegen + infos.vitalInfosBon.hpRegen) * decalage * (float)myGame.loopInterval/ 500f;
                 }
 
                 if (mp < getMaxMp())
                 {
-                    mp += (infos.vitalInfos.mpRegen + infos.vitalInfosBon.mpRegen) * decalage;
+                    mp += (infos.vitalInfos.mpRegen + infos.vitalInfosBon.mpRegen) * decalage * (float)myGame.loopInterval / 500f;
                 }
 
             }
@@ -974,6 +997,7 @@ namespace ProjetB4
             lastMp = mp;
         }
 
+        string lastDirectHiter = "";
         public SortedDictionary<String, float> lastHiter = new SortedDictionary<String, float>();
         public bool lastCrit = false;
         public float physicShield = 0;
@@ -988,6 +1012,7 @@ namespace ProjetB4
                 Entity author = (Entity)myGame.units[_author];
 
                 recentlyHit = 10;
+                lastDirectHiter = _author;
 
                 if (author.infos.specialEffects.drainHp > 0 || author.infos.specialEffects.drainMp > 0 && author.hp > 0)
                 {
@@ -1037,10 +1062,10 @@ namespace ProjetB4
                 if (armor < -99)
                     armor = -99;
 
-                float division = (armor) + (float)100;
+                float division = (armor) + (float)1000;
                 if (division <= 0)
                     division = 1;
-                dmg = dmg * (100 / (division));
+                dmg = dmg * (1000 / (division));
 
                 //System.out.println(dmg+" division: "+division);
 
@@ -1188,6 +1213,10 @@ namespace ProjetB4
         {
             if (hp < 0)
             {
+                focus = null;
+                focusDistance = 999;
+                lastHiter.Clear();
+
                 rezCounter = rezInterval;
 
                 if (enableRewards)
@@ -1237,6 +1266,9 @@ namespace ProjetB4
                 }
 
                 combatMode = 15;
+
+                if (lastHiter.Count == 1)
+                    focus = _author.id;
             }
         }
 
@@ -1304,6 +1336,7 @@ namespace ProjetB4
         {
             float attackSpeed = 0.5f + 1.5f * 100 / (infos.vitalInfos.attackSpeed + infos.vitalInfosBon.attackSpeed + 100);
 
+            attackSpeed *= 500f/(float)myGame.loopInterval;
             /*if(type.Equals("Tower"))
             {
                 attackSpeed = 3f;
@@ -1419,13 +1452,13 @@ namespace ProjetB4
             myGame.sendDataToAll("anim", data, this);
         }
 
-        void sendAnim(String _anim)
+        void sendAnim(String _anim, string target)
         {
-            Object[] data = new Object[3];
+            Object[] data = new Object[4];
             data[0] = id; //i
             data[1] = _anim;  //anim
             data[2] = 15;//time
-
+            data[3] = target;//target
 
             myGame.sendDataToAll("anim", data, this);
         }
@@ -1523,6 +1556,8 @@ namespace ProjetB4
             }
 
             player.Send("spells", data);
+
+            //myGame.PlayerIO.ErrorLog.WriteError("spells: " + spells.Count);
         }
 
 
@@ -1611,15 +1646,28 @@ namespace ProjetB4
             if (!isSynchronized())
             {
                 hasMoved = true;
+
+                float calculatedSpeed = infos.baseSpeed;//infos.baseSpeed * ((float)myGame.loopInterval/1000f);
+
                 if (position.x < destination.x)
-                    position.x += infos.baseSpeed;
+                    position.x += calculatedSpeed;
                 if (position.x > destination.x)
-                    position.x -= infos.baseSpeed;
+                    position.x -= calculatedSpeed;
 
                 if (position.z < destination.z)
-                    position.z += infos.baseSpeed;
+                    position.z += calculatedSpeed;
                 if (position.z > destination.z)
-                    position.z -= infos.baseSpeed;
+                    position.z -= calculatedSpeed;
+
+                if (Math.Abs(position.z - destination.z) <= calculatedSpeed)
+                {
+                    position.z = destination.z;
+                }
+
+                if (Math.Abs(position.x - destination.x) <= calculatedSpeed)
+                {
+                    position.x = destination.x;
+                }
             }
             else
                 hasMoved = false; 
@@ -1627,7 +1675,9 @@ namespace ProjetB4
 
         public bool isSynchronized()
         {
-            return !(position.Substract(destination).Magnitude() > infos.baseSpeed && !destination.isZero());
+            Vector3 tmpPos = new Vector3(position);
+            tmpPos.y = destination.y;
+            return !(tmpPos.Substract(destination).Magnitude() > infos.baseSpeed && !destination.isZero());
         }
 
         public String getPosRefId()

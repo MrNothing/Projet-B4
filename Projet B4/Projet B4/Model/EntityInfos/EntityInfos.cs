@@ -27,6 +27,7 @@ namespace ProjetB4
         public float attackMoveSpeed = 0.1f;
         public float baseSpeed = 0.3f;
         public int level=1;
+        public bool ridable = false;
 
         public EntityInfos()
         {}

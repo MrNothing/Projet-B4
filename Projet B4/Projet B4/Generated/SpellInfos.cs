@@ -36,6 +36,8 @@ namespace ProjetB4
 
             HealthRegen.Add("manaPerRank", 15);
 
+            HealthRegen.Add("icon", "HealthRegen");
+            HealthRegen.Add("name", "HealthRegen");
             HealthRegen.Add("range", 60);
             HealthRegen.Add("zone", 0);
             HealthRegen.Add("baseEffect", 80);

@@ -28,7 +28,7 @@ public class GameCode : Game<Player> {
 
         public float baseStep = 1;
         public float baseRefSize=100;
-        public int loopInterval=500;
+        public int loopInterval=100;
 
         public int defaultUnitCounter = 0;
 
@@ -249,7 +249,7 @@ public class GameCode : Game<Player> {
 							{
                                 try
                                 {
-                                    loadedItem = itemGenerator.parseItem(player.PlayerObject.GetString("item_" + n + "_generated", "N/A"));
+                                    loadedItem = itemGenerator.parseItem(player.PlayerObject.GetString("item_" + n + "_generated", "N/A"), this);
                                 }
                                 catch (Exception e)
                                 {
@@ -317,24 +317,26 @@ public class GameCode : Game<Player> {
                     int decal = 0;
                     if (player.PlayerObject.GetInt("spell_" + n + "_rank", -1) != -1)
                     {
-                        PlayerIO.ErrorLog.WriteError("spell FOUND");
+                        PlayerIO.ErrorLog.WriteError("spell FOUND: " + player.PlayerObject.GetString("spell_" + n + "_name"));
                         //load item Infos...
                         Hashtable loadedSpell = (Hashtable)(new SpellInfos()).allSpells[player.PlayerObject.GetString("spell_" + n + "_name")]; // (player.PlayerObject.GetString("spell_" + n + "_name"));
                         loadedSpell["rank"] = player.PlayerObject.GetInt("spell_" + n + "_rank");
                         loadedSpell["cd"] = player.PlayerObject.GetInt("spell_" + n + "_cd");
-
+                        int loc = 0;
                         try
                         {
                             player.myCharacter.spellsByName.Add(loadedSpell["name"], true);
+                            loc++;
                             player.myCharacter.spells.Add((n - decal) + "", loadedSpell);
-
+                            loc++;
                             player.myCharacter.spellsCounter = (n - decal) + 1;
-
+                            loc++;
                             spellsManager.applyPassiveEffects(player.myCharacter, loadedSpell["name"]+"");
                         }
                         catch (Exception e)
                         {
                             decal += 1;
+                            PlayerIO.ErrorLog.WriteError("spell FAILED: " + loc);
                         }
                     }
                     else
@@ -366,7 +368,9 @@ public class GameCode : Game<Player> {
 
                 location = "sendItems ";
                 //send Items -> disabled since the infos are sent in a different way now
-                //player.myCharacter.sendItems(player);
+                player.myCharacter.sendItems(player);
+
+                player.myCharacter.sendMoney();
             }
             catch(Exception e)
             {
@@ -451,12 +455,19 @@ public class GameCode : Game<Player> {
                     }
                     else
                     {
-                        player.PlayerObject.Set("item_" + tmpC1, 1);
-                        player.PlayerObject.Set("item_" + tmpC1 + "_generated", itemGenerator.exportItem(tmpitem));
-                        player.PlayerObject.Set("item_" + tmpC1 + "_name", tmpitem.infos.name);
-                        player.PlayerObject.Set("item_" + tmpC1 + "_cd", (int)tmpitem.infos.coolDown);
-                        player.PlayerObject.Set("item_" + tmpC1 + "_uses", (int)tmpitem.uses);
-                        player.PlayerObject.Set("item_" + tmpC1 + "_equipped", tmpitem.equipped);
+                        try
+                        {
+                            player.PlayerObject.Set("item_" + tmpC1, 1);
+                            player.PlayerObject.Set("item_" + tmpC1 + "_generated", itemGenerator.exportItem(tmpitem));
+                            player.PlayerObject.Set("item_" + tmpC1 + "_name", tmpitem.infos.name);
+                            player.PlayerObject.Set("item_" + tmpC1 + "_cd", (int)tmpitem.infos.coolDown);
+                            player.PlayerObject.Set("item_" + tmpC1 + "_uses", (int)tmpitem.uses);
+                            player.PlayerObject.Set("item_" + tmpC1 + "_equipped", tmpitem.equipped);
+                        }
+                        catch (Exception e)
+                        {
+                            PlayerIO.ErrorLog.WriteError("Could not save generated item!");
+                        }
                     }
 
                     tmpC1++;

@@ -16,6 +16,7 @@ namespace ProjetB4.Static_Units
             infos.baseStats.intel = 1;
             infos.baseStats.sou = 1;
             infos.model = "Blob";
+            infos.range = 2;
             return infos;
         }
     }
@@ -31,6 +32,7 @@ namespace ProjetB4.Static_Units
             infos.baseStats.intel = 3;
             infos.baseStats.sou = 3;
             infos.model = "Fire Spirit";
+            infos.level = 3;
             return infos;
         }
     }
@@ -62,6 +64,7 @@ namespace ProjetB4.Static_Units
             infos.baseStats.intel = 7;
             infos.baseStats.sou = 7;
             infos.model = "Skeleton";
+            infos.range = 2;
             infos.level = 7;
             return infos;
         }
@@ -72,13 +75,13 @@ namespace ProjetB4.Static_Units
         public EntityInfos value()
         {
             EntityInfos infos = new EntityInfos();
-            infos.baseStats.agi = 9;
-            infos.baseStats.sta = 9;
-            infos.baseStats.str = 9;
+            infos.baseStats.agi = 25;
+            infos.baseStats.sta = 100;
+            infos.baseStats.str = 150;
             infos.baseStats.intel = 9;
-            infos.baseStats.sou = 9;
-            infos.model = "WoodenGolem";
-            infos.level = 9;
+            infos.baseStats.sou = 55;
+            infos.model = "Ent";
+            infos.level = 40;
             return infos;
         }
     }
@@ -142,7 +145,7 @@ namespace ProjetB4.Static_Units
             infos.baseStats.intel = 17;
             infos.baseStats.sou = 17;
             infos.model = "LavaGolem";
-            infos.level = 17;
+            infos.level = 40;
             return infos;
         }
     }
@@ -247,7 +250,7 @@ namespace ProjetB4.Static_Units
             EntityInfos infos = new EntityInfos();
             infos.baseStats.agi = 30;
             infos.baseStats.sta = 50;
-            infos.baseStats.str = 30;
+            infos.baseStats.str = 40;
             infos.baseStats.intel = 30;
             infos.baseStats.sou = 30;
             infos.model = "Crawler";
@@ -256,7 +259,7 @@ namespace ProjetB4.Static_Units
         }
     }
 
-    //crawler
+    //Balrog
     public class Balrog
     {
         public EntityInfos value()
@@ -269,8 +272,27 @@ namespace ProjetB4.Static_Units
             infos.baseStats.sou = 20;
             infos.model = "Balrog";
             infos.level = 15;
+            infos.range = 3;
             return infos;
         }
     }
-    
+
+    //BlackDrake
+    public class BlackDrake
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 70;
+            infos.baseStats.sta = 250;
+            infos.baseStats.str = 250;
+            infos.baseStats.intel = 55;
+            infos.baseStats.sou = 99;
+            infos.model = "BlackDragon";
+            infos.level = 60;
+            infos.range = 8;
+            infos.ridable = true;
+            return infos;
+        }
+    }
 }

@@ -186,6 +186,7 @@ namespace ProjetB4
             tmpItem = generateItemPattern(level, rarity*randomTypeInfo.ratio, tmpItem.type, tmpItem.advancedType, randomTypeInfo.defaultEffects);
 
             tmpItem.name = nameGenerator.generateItemName(randomTypeInfo.name, (int)rarity);
+            tmpItem.specificType = randomTypeInfo.name;
             tmpItem.type = randomTypeInfo.type;
             tmpItem.advancedType = randomTypeInfo.advancedType;
             tmpItem.slot = randomTypeInfo.slot;
@@ -307,11 +308,21 @@ namespace ProjetB4
             return "";
         }
 
-        public Item parseItem(String rawData)
+        public Item parseItem(String rawData, GameCode mainInstane)
         {
             Hashtable itemInfos = dataToHashMap(rawData);
 
-            ItemPattern newPattern = new ItemPattern(itemInfos);
+            ItemPattern newPattern;
+            try
+            {
+                newPattern = new ItemPattern(itemInfos);
+            }
+            catch(Exception e)
+            {
+                mainInstane.PlayerIO.ErrorLog.WriteError("newPattern error: " + e.Message);
+                throw new Exception();
+            }
+           
             Item newItem = new Item(newPattern);
             newItem.generated = true;
 
@@ -320,7 +331,14 @@ namespace ProjetB4
 
         public String exportItem(Item myItem)
         {
-           return hashMapToData(myItem.infos.toHashtable());
+            
+            return hashMapToData(myItem.infos.toHashtable());
+        }
+
+        public String exportItemCompact(Item myItem)
+        {
+            myItem.infos.description = myItem.generateDescription();
+            return hashMapToData(myItem.infos.toReducedHashtable());
         }
 
         public Hashtable dataToHashMap(String data)

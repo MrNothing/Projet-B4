@@ -186,6 +186,8 @@ namespace ProjetB4
         public int spellRank = 0;
 
         public ItemTypes type=ItemTypes.simple;
+        public String specificType="";
+
         public ItemAdvancedTypes advancedType = ItemAdvancedTypes.none;
         public SlotTypes slot = SlotTypes.head;
         public Effect[] effects = new Effect[5];
@@ -216,16 +218,24 @@ namespace ProjetB4
             spell = pattern["spell"] + "";
 
             type = (ItemTypes)Enum.Parse(typeof(ItemTypes), pattern["type"] + "", true);
+            specificType = pattern["specificType"] + "";
             advancedType = (ItemAdvancedTypes)Enum.Parse(typeof(ItemAdvancedTypes), pattern["advancedType"] + "", true);
-            slot = (SlotTypes)Enum.Parse(typeof(SlotTypes), pattern["advancedType"] + "", true);
+            slot = (SlotTypes)Enum.Parse(typeof(SlotTypes), pattern["slot"] + "", true);
 
-            for (int i = 0; pattern["effect_"+i] != null; i++)
-            { 
-                Hashtable infos = (Hashtable) pattern["effect_"+i];
-                EffectNames effectName = (EffectNames)Enum.Parse(typeof(EffectNames), infos["effect"] + "", true);
-                float effectValue = float.Parse(infos["value"]+"");
-                Effect tmpEffect = new Effect(effectName, effectValue);
-                effects[i] = tmpEffect;
+            for (int i = 0; ; i++)
+            {
+                try
+                {
+                    Hashtable infos = (Hashtable)pattern["effect_" + i];
+                    EffectNames effectName = (EffectNames)Enum.Parse(typeof(EffectNames), infos["effect"] + "", true);
+                    float effectValue = float.Parse(infos["value"] + "");
+                    Effect tmpEffect = new Effect(effectName, effectValue);
+                    effects[i] = tmpEffect;
+                }
+                catch (Exception e)
+                {
+                    break;
+                }
             }
         }
 
@@ -250,15 +260,51 @@ namespace ProjetB4
             tmpInfos.Add("spell", spell);
 
             tmpInfos.Add("type", type.ToString());
+            tmpInfos.Add("specificType", specificType);
             tmpInfos.Add("advancedType", advancedType.ToString());
             tmpInfos.Add("slot", slot.ToString());
 
             for (int i = 0; i < effects.Length; i++)
-            { 
-                Effect tmpEffect = effects[i];
-                tmpInfos.Add("effect_" + i, effects[i].toHashtable());
+            {
+                try
+                {
+                    Effect tmpEffect = effects[i];
+                    tmpInfos.Add("effect_" + i, effects[i].toHashtable());
+                }
+                catch (Exception e)
+                {
+                    break;
+                }
             }
             
+            return tmpInfos;
+        }
+
+        public Hashtable toReducedHashtable()
+        {
+            Hashtable tmpInfos = new Hashtable();
+
+            tmpInfos.Add("name", name);
+            tmpInfos.Add("icon", icon);
+            tmpInfos.Add("description", description);
+            tmpInfos.Add("material", material);
+            tmpInfos.Add("model", model);
+            tmpInfos.Add("canBeTraded", canBeTraded);
+            tmpInfos.Add("isQuestItem", isQuestItem);
+            tmpInfos.Add("price", price);
+            tmpInfos.Add("weight", weight);
+            tmpInfos.Add("minLevel", minLevel);
+            tmpInfos.Add("specialString", specialString);
+
+            tmpInfos.Add("coolDown", coolDown);
+            tmpInfos.Add("charges", charges);
+            tmpInfos.Add("spell", spell);
+
+            tmpInfos.Add("type", type.ToString());
+            tmpInfos.Add("specificType", specificType);
+            tmpInfos.Add("advancedType", advancedType.ToString());
+            tmpInfos.Add("slot", slot.ToString());
+
             return tmpInfos;
         }
 

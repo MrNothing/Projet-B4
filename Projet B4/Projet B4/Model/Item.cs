@@ -50,5 +50,16 @@ namespace ProjetB4
             
             return des+"}";
         }
+
+        public string generateDescription()
+        {
+            string des = "";
+            for (int i = 0; infos.effects[i] != null; i++)
+            {
+                des += "\n " + infos.getEffectDescription(infos.effects[i].effect, infos.effects[i].value);
+            }
+
+            return des;
+        }
     }
 }
