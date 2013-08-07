@@ -545,9 +545,9 @@ namespace ProjetB4
 
                     delayedZoneMagicDmg mySpell = new delayedZoneMagicDmg(author, mainInstance, dmg, "fire", ix, iy, iz, 5f, 3 + ((int)Math.Floor(rank / 2f)));
                     mySpell.period = 1300;
-                    mainInstance.ScheduleCallback(mySpell.run, 1000);
+                    author.canalisedSpell = mainInstance.ScheduleCallback(mySpell.run, 1000);
 
-                    Object[] infos = new Object[6];
+                    Object[] infos = new Object[7];
                     infos[0] = "RainOfFire"; //id
                     infos[1] = author.id + ""; //myid
                     infos[2] = ix; //x
@@ -555,6 +555,8 @@ namespace ProjetB4
                     infos[4] = iz; //z
 
                     infos[5] = 3 + ((int)Math.Floor(rank / 2f)); //waves
+
+                    infos[6] = mySpell.period;
 
                     author.myGame.sendDataToAll("z_spell", infos, author);
                 }

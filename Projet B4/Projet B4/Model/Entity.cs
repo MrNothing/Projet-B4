@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PlayerIO.GameLibrary;
 
 namespace ProjetB4
 {
@@ -72,6 +73,9 @@ namespace ProjetB4
         public Dictionary<String, String> visibleCorpses = new Dictionary<String, String>();
 
         public String watcher="";
+
+        public Timer canalisedSpell;
+
         public Entity(GameCode _myGame, String _id, String _name, EntityInfos _infos, Vector3 _position)
         {
             myTrigger = new Triggers(this);

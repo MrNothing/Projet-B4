@@ -248,6 +248,22 @@ namespace ProjetB4
                      
                 }
 
+                if (_cmd.Equals("stopCast"))
+                {
+                    Player myPlayer = sender;
+
+                    if (((Entity)(mainInstance).units[message.GetString(1)]).getMyOwner().ConnectUserId.Equals(sender.ConnectUserId))
+                    {
+                        ((Entity)(mainInstance).units[message.GetString(1)]).canalisedSpell.Stop();
+                        String[] data = {((Entity)(mainInstance).units[message.GetString(1)]).id};
+                        mainInstance.sendDataToAll("stopCast", data, sender.myCharacter);
+                    }
+                    else
+                    {
+                        sender.Send("err", "e1");
+                    }
+
+                }
                 
                 if (_cmd.Equals("p"))
                 {
