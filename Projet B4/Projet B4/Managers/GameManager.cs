@@ -254,7 +254,28 @@ namespace ProjetB4
 
                     if (((Entity)(mainInstance).units[message.GetString(1)]).getMyOwner().ConnectUserId.Equals(sender.ConnectUserId))
                     {
-                        ((Entity)(mainInstance).units[message.GetString(1)]).canalisedSpell.Stop();
+                        try
+                        {
+                            if (((Entity)(mainInstance).units[message.GetString(1)]).canalisedSpell != null)
+                                ((Entity)(mainInstance).units[message.GetString(1)]).canalisedSpell.Stop();
+                            ((Entity)(mainInstance).units[message.GetString(1)]).canalisedSpell = null;
+                        }
+                        catch (Exception e)
+                        {
+                            sender.Send("err", "cancel failed at 1: " + e);
+                        }
+
+                        try
+                        {
+                            if (((Entity)(mainInstance).units[message.GetString(1)]).incantation != null)
+                                ((Entity)(mainInstance).units[message.GetString(1)]).incantation.Stop();
+                            ((Entity)(mainInstance).units[message.GetString(1)]).incantation = null;
+                        }
+                        catch (Exception e)
+                        {
+                            sender.Send("err", "cancel failed at 2: " + e);
+                        }
+                        
                         String[] data = {((Entity)(mainInstance).units[message.GetString(1)]).id};
                         mainInstance.sendDataToAll("stopCast", data, sender.myCharacter);
                     }

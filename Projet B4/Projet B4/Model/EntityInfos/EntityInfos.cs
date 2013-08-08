@@ -29,6 +29,8 @@ namespace ProjetB4
         public int level=1;
         public bool ridable = false;
 
+        public string[] spells = new string[0];
+
         public EntityInfos()
         {}
 

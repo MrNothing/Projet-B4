@@ -74,10 +74,18 @@ namespace ProjetB4
 
         public String watcher="";
 
-        public Timer canalisedSpell;
+        public Timer incantation = null;
+        public Timer canalisedSpell = null;
 
         public Entity(GameCode _myGame, String _id, String _name, EntityInfos _infos, Vector3 _position)
         {
+            if (_infos.spells.Length > 0)
+            {
+                SpellInfos spellInfos = new SpellInfos();
+                for (int i = 0; i < _infos.spells.Length; i++)
+                    spells.Add(i + "", new Hashtable((Hashtable)spellInfos.allSpells[_infos.spells[i]]));
+            }
+
             myTrigger = new Triggers(this);
             myGame = _myGame;
             id = _id;
@@ -169,7 +177,7 @@ namespace ProjetB4
                 {
                     if (rezCounter <= 0)
                     {
-                        if (isTemp)
+                        if (isTemp || master!=null)
                             myGame.destroyUnit(id);
                         else
                         {
@@ -183,12 +191,6 @@ namespace ProjetB4
                         rezCounter--;
                 }
 
-                //myGame.PlayerIO.ErrorLog.WriteError("name " + name + " destination: " + destination.toString() + " initialPosition: " + initialPosition.toString() + " wanderAround" + wanderAround);
-              
-
-                if (recentlyHit > 0)
-                    recentlyHit--;
-               
                 if (type.Equals(EntityType.trigger))
                 {
                     if (myTrigger.autoTrigger > 0)
@@ -251,6 +253,9 @@ namespace ProjetB4
 
             if (combatMode > 0)
                 combatMode--;
+
+            if (recentlyHit > 0)
+                recentlyHit--;
         }
 
         int focusCounter = 0;
@@ -326,7 +331,7 @@ namespace ProjetB4
                     {
                         paths = new List<Vector3>();
                         destination = position;
-                        myGame.PlayerIO.ErrorLog.WriteError("OK5");
+                        //myGame.PlayerIO.ErrorLog.WriteError("OK5");
                         if (attackCounter > getAttackSpeed())
                         {
                             //Spell casting:
@@ -341,29 +346,30 @@ namespace ProjetB4
                             {
                                 casting = true;
 
-                                if (hp > getMaxHp() * 0.95f) //set buffs etc...
+                                if (hp > getMaxHp() * 0.95f) //Spell 1
                                 {
-                                    if (spells["3"] != null)
+                                    if (spells["0"] != null)
                                     {
                                         Entity focusedUnit = myGame.units[focus];
-                                        casting = myGame.spellsManager.IAUseSpell(this, id, "3", position.x, position.y, position.z);
+                                        casting = myGame.spellsManager.IAUseSpell(this, focus, "0", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
                                     }
                                 }
 
-                                if (hp > getMaxHp() * 0.3f) //use offensive spells...
+                                if (hp > getMaxHp() * 0.3f) //Spell 2
                                 {
                                     if (spells["1"] != null)
                                     {
                                         Entity focusedUnit = myGame.units[focus];
-                                        casting = myGame.spellsManager.IAUseSpell(this, focus, "2", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
+                                        casting = myGame.spellsManager.IAUseSpell(this, focus, "1", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
                                     }
                                 }
 
-                                if (hp < getMaxHp() * 0.2f) //use defensive spells...
+                                if (hp < getMaxHp() * 0.2f) //Spell 3
                                 {
                                     if (spells["2"] != null)
                                     {
-                                        casting = myGame.spellsManager.IAUseSpell(this, id, "2", position.x, position.y, position.z);
+                                        Entity focusedUnit = myGame.units[focus];
+                                        casting = myGame.spellsManager.IAUseSpell(this, focus, "2", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
                                     }
                                 }
                             }
@@ -375,11 +381,11 @@ namespace ProjetB4
                                 //	System.out.println("My attack Speed is: "+getAttackSpeed());
 
                                 myGame.PlayerIO.ErrorLog.WriteError("Trying to attack entity: " + focus);
-
+    
                                 attack(focus);
-                                attackCounter = 0;
-                               
                             }
+
+                            attackCounter = 0;
                         }
 
                         debugLocation = "line 338"; //7
@@ -609,8 +615,10 @@ namespace ProjetB4
                 wanderAround.x = 15;
                 wanderAround.z = 15;
 
-                initialPosition = master.position;
-
+                if (focus == null)
+                {
+                    destination = master.position.Add(new Vector3(2, 0, 2.5f)); ;
+                }
                 position.y = master.position.y;
 
                 if (master != null && master.getDistance(this) > 20)
@@ -624,10 +632,10 @@ namespace ProjetB4
                 }
             }
 
-            if (((wanderAround.x > 0 || wanderAround.z > 0) || master!=null) && focus == null)
+            if ((wanderAround.x > 0 || wanderAround.z > 0) && focus == null)
             {
                 //&& UnityEngine.Random.Range(0, 100)<10
-                if ((isSynchronized() && mainSeed.NextDouble()*100 < seed) || (master!=null && master.getDistance(this)>20))
+                if (isSynchronized() && mainSeed.NextDouble()*100 < seed)
                 {
                     //print(infos.unitName+" moving..");
 
@@ -1036,7 +1044,7 @@ namespace ProjetB4
                     if (master != null)
                     {
                         author.sendDynamicInfosToAll(master.id, crit);
-                        author.checkIfDead(master, (int)(dmg * infos.specialEffects.spikes / 100f));
+                        author.checkIfDead(this, (int)(dmg * infos.specialEffects.spikes / 100f));
                     }
                     else
                     {
@@ -1098,7 +1106,7 @@ namespace ProjetB4
                 if (author.master != null)
                 {
                     sendDynamicInfosToAll(author.master.id, crit);
-                    checkIfDead(author.master, (int)dmg);
+                    checkIfDead(author, (int)dmg);
                 }
                 else
                 {
@@ -1183,7 +1191,7 @@ namespace ProjetB4
                 if (author.master != null)
                 {
                     sendDynamicInfosToAll(author.master.id, crit);
-                    checkIfDead(author.master, (int)dmg);
+                    checkIfDead(author, (int)dmg);
                 }
                 else
                 {
@@ -1201,7 +1209,7 @@ namespace ProjetB4
                 if (myGame.units[o + ""] != null)
                 {
                     Entity tmpUnit = (Entity)myGame.units[o + ""];
-                    float tmpDistance = Math.Abs(tmpUnit.position.x - position.x) + Math.Abs(tmpUnit.position.y - position.y) + Math.Abs(tmpUnit.position.z - position.z);
+                    float tmpDistance = Math.Abs(tmpUnit.position.x - position.x) + Math.Abs(tmpUnit.position.y - position.y)/2 + Math.Abs(tmpUnit.position.z - position.z);
                     if (tmpDistance <= zone)
                     {
                         if (author.team != tmpUnit.team)
@@ -1217,6 +1225,9 @@ namespace ProjetB4
         {
             if (hp < 0)
             {
+                if (_author.master != null)
+                    _author = _author.master;
+
                 focus = null;
                 focusDistance = 999;
                 lastHiter.Clear();
@@ -1227,7 +1238,7 @@ namespace ProjetB4
                 {
                     //set Reward...
 
-                    if (_author.type == EntityType.player)
+                    if (_author.type == EntityType.player && !_author.Equals(master))
                     {
                         if (type == EntityType.player)
                         {
@@ -1257,7 +1268,7 @@ namespace ProjetB4
             }
             else //if i am not dead
             {
-                if (type == EntityType.npc)
+                if (type == EntityType.npc && !_author.Equals(master))
                 {
                     try
                     {
@@ -1284,7 +1295,7 @@ namespace ProjetB4
                 if (myGame.units[o + ""] != null)
                 {
                     Entity tmpUnit = (Entity)myGame.units[o + ""];
-                    float tmpDistance = Math.Abs(tmpUnit.position.x - position.x) + Math.Abs(tmpUnit.position.y - position.y) + Math.Abs(tmpUnit.position.z - position.z);
+                    float tmpDistance = Math.Abs(tmpUnit.position.x - position.x) + Math.Abs(tmpUnit.position.y - position.y)/2 + Math.Abs(tmpUnit.position.z - position.z);
                     if (tmpDistance <= zone)
                     {
                         if (author.team != tmpUnit.team)
@@ -1444,19 +1455,30 @@ namespace ProjetB4
             myGame.sendDataToAll("dinfos", data, this);
         }
 
-        public void sendCast()
+        public void sendCast(String spell, String target)
         {
-
-            Object[] data = new Object[3];
+            Object[] data = new Object[5];
             data[0] = id; //i
             data[1] = "Cast";  //anim
             data[2] = 15;//time
-
+            data[3] = spell;//spell
+            data[4] = target; //target if any
 
             myGame.sendDataToAll("anim", data, this);
         }
 
-        void sendAnim(String _anim, string target)
+        public void sendIncant(String spell, int duration)
+        {
+            Object[] data = new Object[4];
+            data[0] = id; //i
+            data[1] = "incant";  //anim
+            data[2] = duration;//time
+            data[3] = spell;//spell
+            
+            myGame.sendDataToAll("anim", data, this);
+        }
+
+        public void sendAnim(String _anim, string target)
         {
             Object[] data = new Object[4];
             data[0] = id; //i
@@ -1469,7 +1491,6 @@ namespace ProjetB4
 
         public void sendCast(int duration)
         {
-
             Object[] data = new Object[3];
             data[0] = id; //i
             data[1] = "Cast";  //anim
@@ -1481,7 +1502,6 @@ namespace ProjetB4
 
         public void sendCast(float tx, float ty, float tz)
         {
-
             Object[] data = new Object[6];
             data[0] = id; //i
             data[1] = "Cast";  //anim
@@ -1495,7 +1515,6 @@ namespace ProjetB4
 
         public void sendCast(Item myItem)
         {
-
             Object[] data = new Object[3];
             data[0] = id; //i
             data[1] = "Cast";  //anim

@@ -21,18 +21,22 @@ namespace ProjetB4.Static_Units
         }
     }
 
-    public class FireSpirit //FireSpirits 3-5
+    public class IceSpirit //FireSpirits 3-5
     {
         public EntityInfos value()
         {
             EntityInfos infos = new EntityInfos();
-            infos.baseStats.agi = 3;
-            infos.baseStats.sta = 3;
-            infos.baseStats.str = 3;
-            infos.baseStats.intel = 3;
-            infos.baseStats.sou = 3;
-            infos.model = "Fire Spirit";
-            infos.level = 3;
+            infos.baseStats.agi = 30;
+            infos.baseStats.sta = 55;
+            infos.baseStats.str = 55;
+            infos.baseStats.intel = 200;
+            infos.baseStats.sou = 333;
+            infos.range = 20;
+            string[] spells = { "iceBall", "iceBall", "iceRain"};
+            infos.spells = spells;
+
+            infos.model = "IceSpirit";
+            infos.level = 30;
             return infos;
         }
     }

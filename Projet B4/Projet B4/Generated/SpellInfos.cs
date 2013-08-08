@@ -12,6 +12,7 @@ namespace ProjetB4
 
         public Hashtable fireBall = new Hashtable();
         public Hashtable fireRain = new Hashtable();
+        public Hashtable iceRain = new Hashtable();
         public Hashtable cataclysm = new Hashtable();
         public Hashtable teleport = new Hashtable();
         public Hashtable spiritualShout = new Hashtable();
@@ -24,6 +25,8 @@ namespace ProjetB4
         public Hashtable MoonlightArt = new Hashtable();
         public Hashtable WavesofEden = new Hashtable();
         public Hashtable HealthRegen = new Hashtable();
+        public Hashtable iceBolt = new Hashtable();
+        public Hashtable iceBall = new Hashtable();
         public SpellInfos()
         {
             //HealthRegen
@@ -42,12 +45,12 @@ namespace ProjetB4
             HealthRegen.Add("zone", 0);
             HealthRegen.Add("baseEffect", 80);
             HealthRegen.Add("coolDown", 5); //in sec
-            HealthRegen.Add("incant", 500); //in ms
+            HealthRegen.Add("incant", 2000); //in ms
             HealthRegen.Add("canalisation", 0); //in ms
 
-            HealthRegen.Add("targets", "foe");
-            HealthRegen.Add("targetType", "all");
-            HealthRegen.Add("usage", "self");
+            HealthRegen.Add("targets", "ally"); //ally, foe, any
+            HealthRegen.Add("targetType", "all"); //all, unit, hero, mechanical
+            HealthRegen.Add("usage", "target");
 
             HealthRegen.Add("id", "HealthRegen");
             allSpells.Add("HealthRegen", HealthRegen);
@@ -69,15 +72,69 @@ namespace ProjetB4
             fireBall.Add("incant", 500); //in ms
             fireBall.Add("canalisation", 0); //in ms
 
-            fireBall.Add("icon", "fireball");
+            fireBall.Add("icon", "fireBall");
             fireBall.Add("name", "fireBall");
             fireBall.Add("description", "Throws a fireball at the target, dealing ??? magic damage and slowing the target for 2 seconds.");
-            fireBall.Add("targets", "any");
+            fireBall.Add("targets", "foe");
             fireBall.Add("targetType", "all");
             fireBall.Add("usage", "target");
 
             fireBall.Add("id", "fireBall");
             allSpells.Add("fireBall", fireBall);
+
+            //iceBall
+
+            iceBall.Add("rank", 1);
+            iceBall.Add("sp_period", 1);
+            iceBall.Add("maxlvl", 5);
+            iceBall.Add("cd", 0);
+            iceBall.Add("mana", 15);
+
+            iceBall.Add("manaPerRank", 15);
+
+            iceBall.Add("range", 60);
+            iceBall.Add("zone", 0);
+            iceBall.Add("baseEffect", 80);
+            iceBall.Add("coolDown", 5); //in sec
+            iceBall.Add("incant", 1000); //in ms
+            iceBall.Add("canalisation", 0); //in ms
+
+            iceBall.Add("icon", "iceBall");
+            iceBall.Add("name", "iceBall");
+            iceBall.Add("description", "");
+            iceBall.Add("targets", "foe");
+            iceBall.Add("targetType", "all");
+            iceBall.Add("usage", "target");
+
+            iceBall.Add("id", "iceBall");
+            allSpells.Add("iceBall", iceBall);
+
+            //iceBolt
+
+            iceBolt.Add("rank", 1);
+            iceBolt.Add("sp_period", 1);
+            iceBolt.Add("maxlvl", 5);
+            iceBolt.Add("cd", 0);
+            iceBolt.Add("mana", 80);
+
+            iceBolt.Add("manaPerRank", 30);
+
+            iceBolt.Add("range", 60);
+            iceBolt.Add("zone", 0);
+            iceBolt.Add("baseEffect", 80);
+            iceBolt.Add("coolDown", 300); // = 30s
+            iceBolt.Add("incant", 4000); //in ms
+            iceBolt.Add("canalisation", 0); //in ms
+
+            iceBolt.Add("icon", "iceBolt");
+            iceBolt.Add("name", "iceBolt");
+            iceBolt.Add("description", "");
+            iceBolt.Add("targets", "foe");
+            iceBolt.Add("targetType", "all");
+            iceBolt.Add("usage", "target");
+
+            iceBolt.Add("id", "iceBolt");
+            allSpells.Add("iceBolt", iceBolt);
 
             //cataclysm
 
@@ -96,7 +153,7 @@ namespace ProjetB4
             cataclysm.Add("canalisation", 0); //in ms
 
             cataclysm.Add("icon", "cataclysm");
-            cataclysm.Add("name", "Cataclysm");
+            cataclysm.Add("name", "cataclysm");
             cataclysm.Add("description", "A huge ball of energy falls from the sky, dealing ??? magic damage to all the ennemies in a zone. \n For each enemy killed by the spell, a fire spirit is raised from the corpse to serve you.");
             cataclysm.Add("targets", "foe");
             cataclysm.Add("targetType", "all");
@@ -105,6 +162,7 @@ namespace ProjetB4
             cataclysm.Add("id", "cataclysm");
             allSpells.Add("cataclysm", cataclysm);
 
+            //fire rain
             fireRain.Add("rank", 1);
             fireRain.Add("sp_period", 1);
             fireRain.Add("maxlvl", 5);
@@ -112,15 +170,15 @@ namespace ProjetB4
             fireRain.Add("mana", 110);
             fireRain.Add("manaPerRank", 55);
 
-            fireRain.Add("range", 17);
-            fireRain.Add("zone", 10);
+            fireRain.Add("range", 30);
+            fireRain.Add("zone", 20);
             fireRain.Add("baseEffect", 0);
             fireRain.Add("coolDown", 25); //in sec
-            fireRain.Add("incant", 500); //in ms
+            fireRain.Add("incant", 25); //in ms
             fireRain.Add("canalisation", 0); //in ms
 
-            fireRain.Add("icon", "firerain");
-            fireRain.Add("name", "Rain of Fire");
+            fireRain.Add("icon", "fireRain");
+            fireRain.Add("name", "fireRain");
             fireRain.Add("description", "Waves of fire fall from the sky, dealing ??? damages per wave to the enemies in a zone.");
             fireRain.Add("targets", "foe");
             fireRain.Add("targetType", "all");
@@ -128,6 +186,31 @@ namespace ProjetB4
 
             fireRain.Add("id", "fireRain");
             allSpells.Add("fireRain", fireRain);
+
+            //iceRain
+            iceRain.Add("rank", 1);
+            iceRain.Add("sp_period", 1);
+            iceRain.Add("maxlvl", 5);
+            iceRain.Add("cd", 0);
+            iceRain.Add("mana", 110);
+            iceRain.Add("manaPerRank", 55);
+
+            iceRain.Add("range", 30);
+            iceRain.Add("zone", 20);
+            iceRain.Add("baseEffect", 0);
+            iceRain.Add("coolDown", 25); //in sec
+            iceRain.Add("incant", 25); //in ms
+            iceRain.Add("canalisation", 0); //in ms
+
+            iceRain.Add("icon", "iceRain");
+            iceRain.Add("name", "iceRain");
+            iceRain.Add("description", "");
+            iceRain.Add("targets", "foe");
+            iceRain.Add("targetType", "all");
+            iceRain.Add("usage", "target");
+
+            iceRain.Add("id", "iceRain");
+            allSpells.Add("iceRain", iceRain);
 
             //Spiritual Shout
 

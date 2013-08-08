@@ -136,6 +136,8 @@ namespace ProjetB4
 
         public void run()
         {
+            parentUnit.incantation = null;
+
             if (centerOnHero)
             {
                 x = parentUnit.position.x;
@@ -151,10 +153,11 @@ namespace ProjetB4
                 waves--;
 
                 if (period>=25)
-                mainInstance.ScheduleCallback(run, period); ;
+                    parentUnit.canalisedSpell = mainInstance.ScheduleCallback(run, period); ;
             }
             else
             {
+                parentUnit.canalisedSpell = null;
                 //myTimer.cancel();
             }
         }

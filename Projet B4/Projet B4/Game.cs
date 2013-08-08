@@ -56,7 +56,7 @@ public class GameCode : Game<Player> {
 			{
 				//the requested map does not exist, disconnect user and abord map initialization.
 				//return;
-                PlayerIO.ErrorLog.WriteError("Map failed: " + RoomData["map"]);
+                PlayerIO.ErrorLog.WriteError("Map failed: " + RoomData["map"] + "reason: " + e.Message);
 			}
 			
 			//this method load all entities, and events for this zone.
@@ -267,8 +267,10 @@ public class GameCode : Game<Player> {
                                     errorItemPattern.description = "This item could not be found. The database was alterated? Please report this.";
                                 } 
                                 
-                                tL = "1";
+                               
 							}
+
+                            tL = "1";
 
                             loadedItem.id = n + "";
                             loadedItem.cooldown = player.PlayerObject.GetInt("item_" + n + "_cd");
@@ -296,8 +298,15 @@ public class GameCode : Game<Player> {
 
                             if (loadedItem.equipped)
                             {
-                                player.myCharacter.equipItem(loadedItem.id, true);
-                                player.myCharacter.equippedItems.Add(loadedItem.infos.slot + "", loadedItem.id);
+                                try
+                                {
+                                    player.myCharacter.equipItem(loadedItem.id, true);
+                                    player.myCharacter.equippedItems.Add(loadedItem.infos.slot + "", loadedItem.id);
+                                }
+                                catch (Exception e)
+                                {
+                                    tL = "equip";
+                                }
                             }
                         }
                         catch (Exception e2)
@@ -319,7 +328,7 @@ public class GameCode : Game<Player> {
                     {
                         PlayerIO.ErrorLog.WriteError("spell FOUND: " + player.PlayerObject.GetString("spell_" + n + "_name"));
                         //load item Infos...
-                        Hashtable loadedSpell = (Hashtable)(new SpellInfos()).allSpells[player.PlayerObject.GetString("spell_" + n + "_name")]; // (player.PlayerObject.GetString("spell_" + n + "_name"));
+                        Hashtable loadedSpell = new Hashtable((Hashtable)(new SpellInfos()).allSpells[player.PlayerObject.GetString("spell_" + n + "_name")]); // (player.PlayerObject.GetString("spell_" + n + "_name"));
                         loadedSpell["rank"] = player.PlayerObject.GetInt("spell_" + n + "_rank");
                         loadedSpell["cd"] = player.PlayerObject.GetInt("spell_" + n + "_cd");
                         int loc = 0;
