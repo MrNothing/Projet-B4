@@ -346,42 +346,17 @@ namespace ProjetB4
                             {
                                 casting = true;
 
-                                if (hp > getMaxHp() * 0.95f) //Spell 1
-                                {
-                                    if (spells["0"] != null)
-                                    {
-                                        Entity focusedUnit = myGame.units[focus];
-                                        casting = myGame.spellsManager.IAUseSpell(this, focus, "0", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
-                                    }
-                                }
+                                int randomSpell = mainSeed.Next(0, spells.Count - 1);
 
-                                if (hp > getMaxHp() * 0.3f) //Spell 2
+                                if (spells[randomSpell+""] != null)
                                 {
-                                    if (spells["1"] != null)
-                                    {
-                                        Entity focusedUnit = myGame.units[focus];
-                                        casting = myGame.spellsManager.IAUseSpell(this, focus, "1", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
-                                    }
-                                }
-
-                                if (hp < getMaxHp() * 0.2f) //Spell 3
-                                {
-                                    if (spells["2"] != null)
-                                    {
-                                        Entity focusedUnit = myGame.units[focus];
-                                        casting = myGame.spellsManager.IAUseSpell(this, focus, "2", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
-                                    }
+                                    Entity focusedUnit = myGame.units[focus];
+                                    casting = myGame.spellsManager.IAUseSpell(this, focus, randomSpell + "", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
                                 }
                             }
 
                             if (!casting)
                             {
-
-                                //if(type.Equals("Tower"))
-                                //	System.out.println("My attack Speed is: "+getAttackSpeed());
-
-                                myGame.PlayerIO.ErrorLog.WriteError("Trying to attack entity: " + focus);
-    
                                 attack(focus);
                             }
 
@@ -619,9 +594,10 @@ namespace ProjetB4
                 {
                     destination = master.position.Add(new Vector3(2, 0, 2.5f)); ;
                 }
+
                 position.y = master.position.y;
 
-                if (master != null && master.getDistance(this) > 20)
+                if (master != null && master.getDistance(this) > 40)
                 {
                     focus = null;
                 }
@@ -1023,7 +999,7 @@ namespace ProjetB4
             {
                 Entity author = (Entity)myGame.units[_author];
 
-                recentlyHit = 10;
+                recentlyHit = 70;
                 lastDirectHiter = _author;
 
                 if (author.infos.specialEffects.drainHp > 0 || author.infos.specialEffects.drainMp > 0 && author.hp > 0)
@@ -1126,6 +1102,9 @@ namespace ProjetB4
 
             if (hp > 0)
             {
+                recentlyHit = 70;
+                lastDirectHiter = _author;
+
                 Entity author = (Entity)myGame.units[_author];
                 bool crit = false;
                 if ((mainSeed).Next(0, 100) < author.infos.vitalInfos.spellCrit + author.infos.vitalInfosBon.spellCrit)

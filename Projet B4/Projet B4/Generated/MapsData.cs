@@ -44,7 +44,11 @@ namespace ProjetB4
                 Entity testEnt1 = new Entity(core, "", "Ent", tmpInfos.getEntityInfosByName("Ent"), new Vector3(0, 2.732747f, -30));
                 testEnt1.team = "";
                 core.addUnit(testEnt1);
-                //core.addUnit(new Entity(core, "", "Black Dragon", tmpInfos.getEntityInfosByName("Black Dragon"), new Vector3(0, 7.400879f, -60)));
+
+                Entity testDrake1 = new Entity(core, "", "Black Drake", tmpInfos.getEntityInfosByName("BlackDrake"), new Vector3(0, 35f, 0));
+                testDrake1.team = "";
+                testDrake1.wanderAround = new Vector3(200, 0, 200);
+                core.addUnit(testDrake1);
             }
         }
 	}

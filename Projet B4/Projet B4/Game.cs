@@ -27,7 +27,7 @@ public class GameCode : Game<Player> {
 		public ItemGenerator itemGenerator = new ItemGenerator();
 
         public float baseStep = 1;
-        public float baseRefSize=100;
+        public float baseRefSize=200;
         public int loopInterval=100;
 
         public int defaultUnitCounter = 0;

@@ -398,6 +398,16 @@ namespace ProjetB4
                     return false;
                 }
 
+                if (caster.incantation != null)
+                {
+                    return false; //You are already incanting!
+                }
+
+                if (caster.canalisedSpell != null)
+                {
+                    return false; //You are already channeling!
+                }
+
                 //set spell used...
                 caster.mp -= ((int)mySpell["mana"] + (int)mySpell["manaPerRank"] *(-1 + (int)mySpell["rank"]));
                 caster.sendDynamicInfosToAll("");

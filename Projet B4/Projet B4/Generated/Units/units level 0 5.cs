@@ -41,6 +41,23 @@ namespace ProjetB4.Static_Units
         }
     }
 
+    public class Horse1 //Horse1
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 10;
+            infos.baseStats.sta = 10;
+            infos.baseStats.str = 10;
+            infos.baseStats.intel = 1;
+            infos.baseStats.sou = 10;
+
+            infos.model = "Horse1";
+            infos.level = 10;
+            return infos;
+        }
+    }
+
     public class Wolf //Woves 5-7
     {
         public EntityInfos value()
@@ -86,6 +103,7 @@ namespace ProjetB4.Static_Units
             infos.baseStats.sou = 55;
             infos.model = "Ent";
             infos.level = 40;
+            infos.range = 5;
             return infos;
         }
     }
@@ -143,13 +161,14 @@ namespace ProjetB4.Static_Units
         public EntityInfos value()
         {
             EntityInfos infos = new EntityInfos();
-            infos.baseStats.agi = 17;
-            infos.baseStats.sta = 17;
-            infos.baseStats.str = 17;
-            infos.baseStats.intel = 17;
-            infos.baseStats.sou = 17;
+            infos.baseStats.agi = 40;
+            infos.baseStats.sta = 300;
+            infos.baseStats.str = 344;
+            infos.baseStats.intel = 1;
+            infos.baseStats.sou = 122;
             infos.model = "LavaGolem";
-            infos.level = 40;
+            infos.level = 55;
+            infos.range = 5;
             return infos;
         }
     }

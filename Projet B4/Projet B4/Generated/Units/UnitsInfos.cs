@@ -30,6 +30,7 @@ namespace ProjetB4
             items.Add("Balrog", new Static_Units.Balrog().value());
             items.Add("Skeleton", new Static_Units.Skeleton().value());
             items.Add("BlackDrake", new Static_Units.BlackDrake().value());
+            items.Add("Horse1", new Static_Units.Horse1().value());
         }
     }
 }

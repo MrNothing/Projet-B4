@@ -56,7 +56,7 @@ namespace ProjetB4
                     List<String> pList = new List<String>();
                     foreach (string s in mainInstance.units.Keys)
                     {
-                        if(myPlayer.position.Substract(mainInstance.units[s].position).Magnitude()<mainInstance.baseRefSize)
+                        if(myPlayer.get2DDistance(mainInstance.units[s].position)<mainInstance.baseRefSize)
                             pList.Add(s + "|x" + mainInstance.units[s].position.x + "y" + mainInstance.units[s].position.y + "z" + mainInstance.units[s].position.z);
                     }
 
