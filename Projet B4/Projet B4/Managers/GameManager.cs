@@ -78,46 +78,6 @@ namespace ProjetB4
                     sender.myCharacter.locked = true;
                 }
 
-                /*if (_cmd.Equals("invoke"))
-                {
-                    Player myPlayer = sender;
-
-                    if (myPlayer.currentRoom != null)
-                    {
-                        if (myPlayer.hero != null) //[TODO] should be for GMs only!!!
-                        {
-                            if (myPlayer.GM)
-                            {
-                                Unit newUnit = myPlayer.hero.myGame.addUnit(message.GetString(1), myPlayer.team);
-                                newUnit.lifeSpan = 100;
-                                newUnit.x = myPlayer.hero.x;
-                                newUnit.y = myPlayer.hero.y;
-                                newUnit.z = myPlayer.hero.z;
-                                newUnit.team = myPlayer.team;
-                                newUnit.controlledByServer = false;
-                                newUnit.master = myPlayer.hero;
-                                newUnit.lockPosition();
-                            }
-                            else
-                            {
-                                sender.Send("err", "e1");
-                            }
-                        }
-                    }
-                }*/
-
-                /*if(_cmd.Equals("atk"))
-                {
-                    Player myPlayer = sender;
-			
-                    if(myPlayer.currentRoom!=null)
-                    {
-                        if(myPlayer.hero!=null)
-                        {
-                            myPlayer.hero.directAttack(params.getFloat("x"), params.getFloat("y"), params.getFloat("z"));
-                        }
-                    }
-                }*/
 
                 if (_cmd.Equals("addSpell"))
                 {

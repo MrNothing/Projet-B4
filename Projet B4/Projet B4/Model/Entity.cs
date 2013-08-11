@@ -458,7 +458,7 @@ namespace ProjetB4
                 if (targetUnit.hp > 0)
                 {
                     Vector3 tmpPos = new Vector3(position);
-                    tmpPos.y = targetUnit.position.y;
+                    //tmpPos.y = targetUnit.position.y;
                     focusDistance = targetUnit.position.Substract(tmpPos).SqrMagnitude();
 					
 					//target is out of viewRange
@@ -1656,6 +1656,11 @@ namespace ProjetB4
                 if (position.x > destination.x)
                     position.x -= calculatedSpeed;
 
+                if (position.y < destination.y)
+                    position.y += calculatedSpeed;
+                if (position.y > destination.y)
+                    position.y -= calculatedSpeed;
+
                 if (position.z < destination.z)
                     position.z += calculatedSpeed;
                 if (position.z > destination.z)
@@ -1670,6 +1675,11 @@ namespace ProjetB4
                 {
                     position.x = destination.x;
                 }
+
+                if (Math.Abs(position.y - destination.y) <= calculatedSpeed)
+                {
+                    position.y = destination.y;
+                }
             }
             else
                 hasMoved = false; 
@@ -1678,7 +1688,7 @@ namespace ProjetB4
         public bool isSynchronized()
         {
             Vector3 tmpPos = new Vector3(position);
-            tmpPos.y = destination.y;
+            //tmpPos.y = destination.y;
             return !(tmpPos.Substract(destination).Magnitude() > infos.baseSpeed && !destination.isZero());
         }
 
