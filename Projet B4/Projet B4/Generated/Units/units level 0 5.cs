@@ -318,4 +318,23 @@ namespace ProjetB4.Static_Units
             return infos;
         }
     }
+
+    //Guard
+    public class Guard
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 100;
+            infos.baseStats.sta = 550;
+            infos.baseStats.str = 110;
+            infos.baseStats.intel = 55;
+            infos.baseStats.sou = 110;
+            infos.model = "Guard";
+            infos.level = 55;
+            infos.range = 3;
+            infos.ridable = true;
+            return infos;
+        }
+    }
 }

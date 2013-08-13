@@ -575,6 +575,7 @@ namespace ProjetB4
         public bool isPatrol = false;
         public float seed=1;
         int patrolK = 1;
+        public Vector3 petOffset = new Vector3(0, 0, 0);
         void triggerWanderAround()
         {
             if (master != null)
@@ -590,9 +591,11 @@ namespace ProjetB4
                 wanderAround.x = 15;
                 wanderAround.z = 15;
 
+                initialPosition = master.position.Add(petOffset);
+
                 if (focus == null)
                 {
-                    destination = master.position.Add(new Vector3(2, 0, 2.5f)); ;
+                    destination = master.position.Add(petOffset);   
                 }
 
                 position.y = master.position.y;
@@ -604,7 +607,7 @@ namespace ProjetB4
 
                 if (master.recentlyHit > 0)
                 {
-                        focus = master.lastDirectHiter;
+                       focus = master.lastDirectHiter;
                 }
             }
 
@@ -1643,11 +1646,13 @@ namespace ProjetB4
         }
 
         bool hasMoved = false;
+        public int movementCounter = 0;
         void synchronizePosition()
         {
             if (!isSynchronized())
             {
                 hasMoved = true;
+                movementCounter = 60;
 
                 float calculatedSpeed = infos.baseSpeed;//infos.baseSpeed * ((float)myGame.loopInterval/1000f);
 
@@ -1682,7 +1687,9 @@ namespace ProjetB4
                 }
             }
             else
-                hasMoved = false; 
+                hasMoved = false;
+            if (movementCounter>0)
+                movementCounter--;
         }
 
         public bool isSynchronized()

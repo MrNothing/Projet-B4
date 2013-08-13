@@ -49,6 +49,9 @@ namespace ProjetB4
                 testDrake1.team = "";
                 testDrake1.wanderAround = new Vector3(200, 0, 200);
                 core.addUnit(testDrake1);
+
+                Entity testGuard = new Entity(core, "", "Guard", tmpInfos.getEntityInfosByName("Guard"), new Vector3(-10.00516f, 2.918638f, 89.88609f));
+                core.addUnit(testGuard);
             }
         }
 	}

@@ -31,6 +31,7 @@ namespace ProjetB4
             items.Add("Skeleton", new Static_Units.Skeleton().value());
             items.Add("BlackDrake", new Static_Units.BlackDrake().value());
             items.Add("Horse1", new Static_Units.Horse1().value());
+            items.Add("Guard", new Static_Units.Guard().value());
         }
     }
 }

@@ -56,7 +56,7 @@ namespace ProjetB4
                     List<String> pList = new List<String>();
                     foreach (string s in mainInstance.units.Keys)
                     {
-                        if(myPlayer.get2DDistance(mainInstance.units[s].position)<mainInstance.baseRefSize)
+                        if(myPlayer.get2DDistance(mainInstance.units[s].position)<mainInstance.baseRefSize && mainInstance.units[s].movementCounter>0)
                             pList.Add(s + "|x" + mainInstance.units[s].position.x + "y" + mainInstance.units[s].position.y + "z" + mainInstance.units[s].position.z);
                     }
 
@@ -320,9 +320,34 @@ namespace ProjetB4
                         Entity invokedCreature = new Entity(mainInstance, "", "", tmpInfos.getEntityInfosByName(message.GetString(1)), sender.myCharacter.position.Add(new Vector3(1,0,1)));
                         invokedCreature.infos.baseSpeed = 2;
                         invokedCreature.master = sender.myCharacter;
+                        float x = 1+(float)(mainInstance.mainSeed.NextDouble() * 5f);
+                        if (mainInstance.mainSeed.Next(0, 11) > 5)
+                            x = -x;
+                        float y = 1 + (float)(mainInstance.mainSeed.NextDouble() * 5f);
+                        if (mainInstance.mainSeed.Next(0, 11) > 5)
+                            y = -y;
+
+                        invokedCreature.petOffset = new Vector3(x, 0, y);
+
                         mainInstance.addUnit(invokedCreature);
                     }
                     catch(Exception e)
+                    {
+                        sender.Send("err", "Unit not found!");
+                    }
+                }
+
+                if (_cmd.Equals("invokeFoe"))
+                {
+                    try
+                    {
+                        WorldInfos tmpInfos = mainInstance.worldInfos;
+                        Entity invokedCreature = new Entity(mainInstance, "", "", tmpInfos.getEntityInfosByName(message.GetString(1)), sender.myCharacter.position.Add(new Vector3(1, 0, 1)));
+                        invokedCreature.infos.baseSpeed = 2;
+                        invokedCreature.team = "";
+                        mainInstance.addUnit(invokedCreature);
+                    }
+                    catch (Exception e)
                     {
                         sender.Send("err", "Unit not found!");
                     }

@@ -54,12 +54,7 @@ namespace ProjetB4
                 Object[] data = 
                 { 
                     player.PlayerObject.GetString("name"),
-                    player.PlayerObject.GetString("class"),
                     player.PlayerObject.GetString("model"),
-                    player.PlayerObject.GetString("hairs"),
-                    player.PlayerObject.GetString("hairsColor"),
-                    player.PlayerObject.GetString("eyes"),
-                    player.PlayerObject.GetString("eyesColor")
                 };
                 player.Send("charInfos", data);
             }
