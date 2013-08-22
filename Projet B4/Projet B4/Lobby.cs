@@ -51,11 +51,7 @@ namespace ProjetB4
             }
             else
             {
-                Object[] data = 
-                { 
-                    player.PlayerObject.GetString("name"),
-                    player.PlayerObject.GetString("model"),
-                };
+                Object[] data = {player.PlayerObject.GetString("model"), player.PlayerObject.GetString("map")};
                 player.Send("charInfos", data);
             }
         }

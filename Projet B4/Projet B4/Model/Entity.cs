@@ -54,6 +54,7 @@ namespace ProjetB4
 		
         public String focus = null;
         public Entity master=null;
+        public float lifeSpan = 0;
         public Entity riding = null;
         public bool ridable = false;
        
@@ -129,7 +130,16 @@ namespace ProjetB4
 
         public void run()
         {
-            
+
+            if (lifeSpan > 0)
+            {
+                lifeSpan--;
+
+                if (lifeSpan == 0)
+                {
+                    hp = -1;
+                }
+            }
 
             DateTime tmpDate = DateTime.Now;
 
@@ -286,6 +296,12 @@ namespace ProjetB4
 
                 setFocusDistance();
 
+                if (lastHiter.Count <= 0 && master == null)
+                {
+                    hp = getMaxHp();
+                    mp = getMaxMp();
+                }
+
                 if (focus != null)
                 {
                     if (watcher.Length > 0)
@@ -296,11 +312,23 @@ namespace ProjetB4
                     {
                         if (position.Substract(initialPosition).Magnitude() > viewRange)
                         {
+                            try
+                            {
+                                lastHiter.Remove(focus);
+                            }
+                            catch (Exception e) { }
+
                             focus = null;
                             paths = pathfinder.start(position, initialPosition);
                             destination = paths[paths.Count - 1];
                             paths.RemoveAt(paths.Count - 1);
                             lastHiter.Clear();
+
+                            if (lastHiter.Count<=0 && master==null)
+                            {
+                                hp = getMaxHp();
+                                mp = getMaxMp();
+                            }
                         }
                         else
                         {
@@ -462,8 +490,13 @@ namespace ProjetB4
                     focusDistance = targetUnit.position.Substract(tmpPos).SqrMagnitude();
 					
 					//target is out of viewRange
-                    if (focusDistance > viewRange + 3 && !type.Equals("Hero"))
+                    if (focusDistance > viewRange + 3)
                     {
+                        try{
+                            lastHiter.Remove(focus);
+                        }
+                        catch (Exception e) { }
+
                         focus = null;
                         focusDistance = 999;
                         lastHiter.Clear();
@@ -484,6 +517,13 @@ namespace ProjetB4
                 }
                 else
                 {
+                    try
+                    {
+                        lastHiter.Remove(focus);
+                    }
+                    catch (Exception e) { }
+
+
 					//Target is dead, reset focus
                     focus = null;
                     focusDistance = 999;
@@ -492,6 +532,12 @@ namespace ProjetB4
             }
             else
             {
+                try
+                {
+                    lastHiter.Remove(focus);
+                }
+                catch (Exception e) { }
+
 				//Target has disappeared or something was really wrong with it...
                 focus = null;
                 focusDistance = 999;
@@ -960,7 +1006,7 @@ namespace ProjetB4
             clearBuffs();
             refreshCds();
 
-            if (hp > 0) //only heroes or specific units regenerate hp over time.
+            if (hp > 0 && combatMode<=0) //only heroes or specific units regenerate hp over time.
             {
                 if (hp < getMaxHp())
                 {
@@ -1442,6 +1488,18 @@ namespace ProjetB4
             Object[] data = new Object[5];
             data[0] = id; //i
             data[1] = "Cast";  //anim
+            data[2] = 15;//time
+            data[3] = spell;//spell
+            data[4] = target; //target if any
+
+            myGame.sendDataToAll("anim", data, this);
+        }
+
+        public void sendSkillCast(String spell, String target)
+        {
+            Object[] data = new Object[5];
+            data[0] = id; //i
+            data[1] = "Skill";  //anim
             data[2] = 15;//time
             data[3] = spell;//spell
             data[4] = target; //target if any

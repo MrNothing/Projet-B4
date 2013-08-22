@@ -16,6 +16,20 @@ namespace ProjetB4
         public float arcaneBon = 0;
         public float chaosBon = 0;
 
+        public SpellBonusInfos()
+        { }
+
+        public SpellBonusInfos(SpellBonusInfos original)
+        {
+            totalBon = original.totalBon;
+            shadowBon = original.shadowBon;
+            fireBon = original.fireBon;
+            iceBon = original.iceBon;
+            natureBon = original.natureBon;
+            arcaneBon = original.arcaneBon;
+            chaosBon = original.chaosBon;
+        }
+
         public float getBonusByName(String bonusName)
         {
             if (bonusName.Equals("total"))

@@ -18,7 +18,7 @@ namespace ProjetB4
         {
             items.Add("Lever", new Static_Units.Lever().value());
             items.Add("BobDeLaLune", new Static_Units.BobDeLaLune().value());
-            items.Add("TikTik", new Static_Units.TikTik().value());
+            items.Add("Lich", new Static_Units.TikTik().value());
             items.Add("Ent", new Static_Units.WoodenGolem().value());
             items.Add("LavaGolem", new Static_Units.LavaGolem().value());
             items.Add("Button", new Static_Units.Button().value());
@@ -32,6 +32,9 @@ namespace ProjetB4
             items.Add("BlackDrake", new Static_Units.BlackDrake().value());
             items.Add("Horse1", new Static_Units.Horse1().value());
             items.Add("Guard", new Static_Units.Guard().value());
+            items.Add("Wolf", new Static_Units.Wolf().value());
+            items.Add("Wolf2", new Static_Units.WhiteWolf().value());
+            items.Add("Wolf3", new Static_Units.SpiritWolf().value());
         }
     }
 }

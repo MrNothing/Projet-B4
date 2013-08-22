@@ -27,6 +27,14 @@ namespace ProjetB4
         public Hashtable HealthRegen = new Hashtable();
         public Hashtable iceBolt = new Hashtable();
         public Hashtable iceBall = new Hashtable();
+        public Hashtable quickStrike = new Hashtable();
+        public Hashtable EnergyBall = new Hashtable();
+        public Hashtable thunderClap = new Hashtable();
+        public Hashtable HighKick = new Hashtable();
+
+        public Hashtable MirrorImage = new Hashtable();
+        public Hashtable Shuriken = new Hashtable();
+
         public SpellInfos()
         {
             //HealthRegen
@@ -68,7 +76,7 @@ namespace ProjetB4
             fireBall.Add("range", 60);
             fireBall.Add("zone", 0);
             fireBall.Add("baseEffect", 80);
-            fireBall.Add("coolDown", 5); //in sec
+            fireBall.Add("coolDown", 10); //in sec
             fireBall.Add("incant", 500); //in ms
             fireBall.Add("canalisation", 0); //in ms
 
@@ -81,6 +89,168 @@ namespace ProjetB4
 
             fireBall.Add("id", "fireBall");
             allSpells.Add("fireBall", fireBall);
+
+            //thunderClap
+
+            thunderClap.Add("rank", 1);
+            thunderClap.Add("sp_period", 1);
+            thunderClap.Add("maxlvl", 5);
+            thunderClap.Add("cd", 0);
+            thunderClap.Add("mana", 15);
+
+            thunderClap.Add("manaPerRank", 15);
+
+            thunderClap.Add("range", 60);
+            thunderClap.Add("zone", 0);
+            thunderClap.Add("baseEffect", 80);
+            thunderClap.Add("coolDown", 100); //in sec
+            thunderClap.Add("incant", 500); //in ms
+            thunderClap.Add("canalisation", 0); //in ms
+
+            thunderClap.Add("icon", "thunderClap");
+            thunderClap.Add("name", "thunderClap");
+            thunderClap.Add("description", "thunderClap");
+            thunderClap.Add("targets", "foe");
+            thunderClap.Add("targetType", "all");
+            thunderClap.Add("usage", "self");
+
+            thunderClap.Add("id", "thunderClap");
+            allSpells.Add("thunderClap", thunderClap);
+
+            //HighKick
+
+            HighKick.Add("rank", 1);
+            HighKick.Add("sp_period", 1);
+            HighKick.Add("maxlvl", 5);
+            HighKick.Add("cd", 0);
+            HighKick.Add("mana", 0);
+
+            HighKick.Add("manaPerRank", 15);
+
+            HighKick.Add("range", 30);
+            HighKick.Add("zone", 0);
+            HighKick.Add("baseEffect", 80);
+            HighKick.Add("coolDown", 40); //in sec
+            HighKick.Add("incant", 0); //in ms
+            HighKick.Add("canalisation", 0); //in ms
+
+            HighKick.Add("icon", "HighKick");
+            HighKick.Add("name", "HighKick");
+            HighKick.Add("description", "HighKick");
+            HighKick.Add("targets", "foe");
+            HighKick.Add("targetType", "all");
+            HighKick.Add("usage", "target");
+
+            HighKick.Add("id", "HighKick");
+            allSpells.Add("HighKick", HighKick);
+
+            //Shuriken
+
+            Shuriken.Add("rank", 1);
+            Shuriken.Add("sp_period", 1);
+            Shuriken.Add("maxlvl", 5);
+            Shuriken.Add("cd", 0);
+            Shuriken.Add("mana", 0);
+
+            Shuriken.Add("manaPerRank", 0);
+
+            Shuriken.Add("range", 30);
+            Shuriken.Add("zone", 0);
+            Shuriken.Add("baseEffect", 80);
+            Shuriken.Add("coolDown", 5); //in sec
+            Shuriken.Add("incant", 500); //in ms
+            Shuriken.Add("canalisation", 0); //in ms
+
+            Shuriken.Add("icon", "Shuriken");
+            Shuriken.Add("name", "Shuriken");
+            Shuriken.Add("description", "Shuriken");
+            Shuriken.Add("targets", "foe");
+            Shuriken.Add("targetType", "all");
+            Shuriken.Add("usage", "target");
+
+            Shuriken.Add("id", "Shuriken");
+            allSpells.Add("Shuriken", Shuriken);
+
+            //MirrorImage
+            //there should be an energy bar...
+            
+            MirrorImage.Add("rank", 1);
+            MirrorImage.Add("sp_period", 1);
+            MirrorImage.Add("maxlvl", 5);
+            MirrorImage.Add("cd", 0);
+            MirrorImage.Add("mana", 0);
+
+            MirrorImage.Add("manaPerRank", 0);
+
+            MirrorImage.Add("range", 30);
+            MirrorImage.Add("zone", 0);
+            MirrorImage.Add("baseEffect", 80);
+            MirrorImage.Add("coolDown", 10 * 180); //in sec
+            MirrorImage.Add("incant", 5000); //in ms
+            MirrorImage.Add("canalisation", 0); //in ms
+
+            MirrorImage.Add("icon", "MirrorImage");
+            MirrorImage.Add("name", "MirrorImage");
+            MirrorImage.Add("description", "MirrorImage");
+            MirrorImage.Add("targets", "foe");
+            MirrorImage.Add("targetType", "all");
+            MirrorImage.Add("usage", "self");
+
+            MirrorImage.Add("id", "MirrorImage");
+            allSpells.Add("MirrorImage", MirrorImage);
+
+            //EnergyBall
+
+            EnergyBall.Add("rank", 1);
+            EnergyBall.Add("sp_period", 1);
+            EnergyBall.Add("maxlvl", 5);
+            EnergyBall.Add("cd", 0);
+            EnergyBall.Add("mana", 15);
+
+            EnergyBall.Add("manaPerRank", 15);
+
+            EnergyBall.Add("range", 60);
+            EnergyBall.Add("zone", 0);
+            EnergyBall.Add("baseEffect", 80);
+            EnergyBall.Add("coolDown", 10); //in sec
+            EnergyBall.Add("incant", 500); //in ms
+            EnergyBall.Add("canalisation", 0); //in ms
+
+            EnergyBall.Add("icon", "EnergyBall");
+            EnergyBall.Add("name", "EnergyBall");
+            EnergyBall.Add("description", "EnergyBall");
+            EnergyBall.Add("targets", "foe");
+            EnergyBall.Add("targetType", "all");
+            EnergyBall.Add("usage", "target");
+
+            EnergyBall.Add("id", "EnergyBall");
+            allSpells.Add("EnergyBall", EnergyBall);
+
+            //quickStrike
+            quickStrike.Add("rank", 1);
+            quickStrike.Add("sp_period", 1);
+            quickStrike.Add("maxlvl", 5);
+            quickStrike.Add("cd", 0);
+            quickStrike.Add("mana", 0);
+
+            quickStrike.Add("manaPerRank", 0);
+
+            quickStrike.Add("range", 60);
+            quickStrike.Add("zone", 0);
+            quickStrike.Add("baseEffect", 80);
+            quickStrike.Add("coolDown", 40); //in sec
+            quickStrike.Add("incant", 500); //in ms
+            quickStrike.Add("canalisation", 0); //in ms
+
+            quickStrike.Add("icon", "quickStrike");
+            quickStrike.Add("name", "quickStrike");
+            quickStrike.Add("description", "");
+            quickStrike.Add("targets", "foe");
+            quickStrike.Add("targetType", "all");
+            quickStrike.Add("usage", "target");
+
+            quickStrike.Add("id", "quickStrike");
+            allSpells.Add("quickStrike", quickStrike);
 
             //iceBall
 

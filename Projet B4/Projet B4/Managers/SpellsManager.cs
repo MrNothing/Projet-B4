@@ -201,7 +201,11 @@ namespace ProjetB4
             caster.itemsUsageCd = 30;
             //caster.sendCast(myItem);
 		    //System.out.println("Casting spell: "+(string)mySpell["id"]);
-		
+
+            if ((int)mySpell["incant"] <= 25)
+                spellsCaster.run();
+            else
+                caster.incantation = mainInstance.ScheduleCallback(spellsCaster.run, (int)mySpell["incant"]);
 	    }
 
             //target can be random if its not a targeted spell
@@ -233,7 +237,7 @@ namespace ProjetB4
                 }
                 catch (Exception e) 
                 {
-                    caster.getMyOwner().Send("err", "s5"); //You dont know this spell!
+                    caster.getMyOwner().Send("err", "s5: "+e.Message); //You dont know this spell!
                     return;
                 }
 
@@ -292,7 +296,16 @@ namespace ProjetB4
                     }
                     else
                     {
-                        if (caster.myGame.units[target] == null)
+                        try
+                        {
+                            if (caster.myGame.units[target].hp <= 0)
+                            {
+                                caster.getMyOwner().Send("err", "s11");
+                                //send message: this target is dead!
+                                return;
+                            }
+                        }
+                        catch (Exception e) 
                         {
                             caster.getMyOwner().Send("err", "s1");
                             //send message: this target does not exist!
@@ -378,7 +391,10 @@ namespace ProjetB4
                     caster.sendCast(zoneX, zoneY, zoneZ);
                 else*/
                 //caster.sendCast((string)mySpell["id"], target);
-                caster.incantation = mainInstance.ScheduleCallback(spellsCaster.run, (int)mySpell["incant"]);
+                if ((int)mySpell["incant"] <= 25)
+                    spellsCaster.run();
+                else
+                    caster.incantation = mainInstance.ScheduleCallback(spellsCaster.run, (int)mySpell["incant"]);
             }
 
             //target can be random if its not a targeted spell
@@ -480,7 +496,10 @@ namespace ProjetB4
                     spellsCaster = new SpellsCaster(mainInstance, caster, (string)mySpell["id"], (int)mySpell["rank"]);
                 }
 
-                caster.incantation = mainInstance.ScheduleCallback(spellsCaster.run, (int)mySpell["incant"]);
+                if ((int)mySpell["incant"] <= 25)
+                    spellsCaster.run();
+                else
+                    caster.incantation = mainInstance.ScheduleCallback(spellsCaster.run, (int)mySpell["incant"]);
 
                 return true;
                 //System.out.println("Casting spell: "+(string)mySpell["id"]);
@@ -552,20 +571,24 @@ namespace ProjetB4
             initialize();
         }
 
+        Hashtable spellData;
         public void initialize()
         {
             if (noIncant)
                 return;
 
             SpellInfos tmpInfos = new SpellInfos();
-            Hashtable newSpell = (Hashtable)tmpInfos.allSpells[spell];
+            spellData = (Hashtable)tmpInfos.allSpells[spell];
 
-            author.sendIncant(spell, (int)newSpell["incant"]);
+            author.sendIncant(spell, (int)float.Parse(spellData["incant"]+""));
         }
 
         public void run()
         {
-            author.sendCast(spell, targetId);
+            if ((int)spellData["mana"] > 0)
+                author.sendCast(spell, targetId);
+            else
+                author.sendSkillCast(spell, targetId);
 
             if (type == SpellsTypes.zone)
                 castZoneSpell();
@@ -717,6 +740,100 @@ namespace ProjetB4
 
         void castTargetSpell()
         {
+            if (spell.Equals("quickStrike"))
+            {
+                float dmg = 12f + 22f * (rank - 1) + (author.getAttackValue()) * 0.45f;
+
+                float tx = target.position.x;
+                float ty = target.position.y;
+                float tz = target.position.z;
+
+                float bruteDistance = ((tx - author.position.x) * (tx - author.position.x) + (ty - author.position.y) * (ty - author.position.y) + (tz - author.position.z) * (tz - author.position.z));
+                float distance = (float)Math.Sqrt(bruteDistance);
+
+                float projectileSpeed = 0.2f;
+
+                float timeToHit = (float)(distance / (projectileSpeed * 30f)) * 250; //in ms
+
+                if (timeToHit < 25)
+                    timeToHit = 25;
+
+                delayedPhysicDmg mySpell = new delayedPhysicDmg(author, mainInstance, targetId, dmg, spell);
+                mySpell.period = 0;
+                mainInstance.ScheduleCallback(mySpell.run, (int)timeToHit);
+
+                Object[] infos = new Object[3];
+                infos[0] = "quickStrike"; //id
+                infos[1] = author.id + ""; //myid
+                infos[2] = target.id; //
+                //infos[3] = 1; // trail
+
+                author.myGame.sendDataToAll("t_spell", infos, author);
+            }
+
+            if (spell.Equals("HighKick"))
+            {
+                float dmg = 5f + 12f * (rank - 1) + (author.getAttackValue()) * 0.7f;
+
+                float tx = target.position.x;
+                float ty = target.position.y;
+                float tz = target.position.z;
+
+                float bruteDistance = ((tx - author.position.x) * (tx - author.position.x) + (ty - author.position.y) * (ty - author.position.y) + (tz - author.position.z) * (tz - author.position.z));
+                float distance = (float)Math.Sqrt(bruteDistance);
+
+                float projectileSpeed = 0.2f;
+
+                float timeToHit = (float)(distance / (projectileSpeed * 30f)) * 250; //in ms
+
+                if (timeToHit < 25)
+                    timeToHit = 25;
+
+                delayedPhysicDmg mySpell = new delayedPhysicDmg(author, mainInstance, targetId, dmg, spell);
+                mySpell.period = 0;
+                mainInstance.ScheduleCallback(mySpell.run, (int)timeToHit);
+
+                Object[] infos = new Object[3];
+                infos[0] = "HighKick"; //id
+                infos[1] = author.id + ""; //myid
+                infos[2] = target.id; //
+                //infos[3] = 1; // trail
+
+                author.myGame.sendDataToAll("t_spell", infos, author);
+            }
+
+            //Shuriken
+            if (spell.Equals("Shuriken"))
+            {
+                float dmg = 12f + 12f * (rank - 1) + (author.getAttackValue()) * 0.45f;
+
+                float tx = target.position.x;
+                float ty = target.position.y;
+                float tz = target.position.z;
+
+                float bruteDistance = ((tx - author.position.x) * (tx - author.position.x) + (ty - author.position.y) * (ty - author.position.y) + (tz - author.position.z) * (tz - author.position.z));
+                float distance = (float)Math.Sqrt(bruteDistance);
+
+                float projectileSpeed = 0.2f;
+
+                float timeToHit = (float)(distance / (projectileSpeed * 30f)) * 250; //in ms
+
+                if (timeToHit < 25)
+                    timeToHit = 25;
+
+                delayedPhysicDmg mySpell = new delayedPhysicDmg(author, mainInstance, targetId, dmg, spell);
+                mySpell.period = 0;
+                mainInstance.ScheduleCallback(mySpell.run, (int)timeToHit);
+
+                Object[] infos = new Object[3];
+                infos[0] = "Shuriken"; //id
+                infos[1] = author.id + ""; //myid
+                infos[2] = target.id; //
+                //infos[3] = 1; // trail
+
+                author.myGame.sendDataToAll("t_spell", infos, author);
+            }
+
             if (spell.Equals("fireBall"))
             {
                 float dmg = 12f + 22f * (rank - 1) + (author.infos.spellBon.totalBon + author.infos.spellBon.fireBon) * 0.45f;
@@ -741,6 +858,36 @@ namespace ProjetB4
 
                 Object[] infos = new Object[3];
                 infos[0] = "proj1"; //id
+                infos[1] = author.id + ""; //myid
+                infos[2] = target.id; //
+
+                author.myGame.sendDataToAll("t_spell", infos, author);
+            }
+
+            if (spell.Equals("EnergyBall"))
+            {
+                float dmg = 11f + 15f * (rank - 1) + (author.infos.spellBon.arcaneBon + author.infos.spellBon.arcaneBon) * 1f;
+
+                float tx = target.position.x;
+                float ty = target.position.y;
+                float tz = target.position.z;
+
+                float bruteDistance = ((tx - author.position.x) * (tx - author.position.x) + (ty - author.position.y) * (ty - author.position.y) + (tz - author.position.z) * (tz - author.position.z));
+                float distance = (float)Math.Sqrt(bruteDistance);
+
+                float projectileSpeed = 0.2f;
+
+                float timeToHit = (float)(distance / (projectileSpeed * 30f)) * 250; //in ms
+
+                if (timeToHit < 25)
+                    timeToHit = 25;
+
+                delayedMagicDmg mySpell = new delayedMagicDmg(author, mainInstance, targetId, dmg, "fire", spell);
+                mySpell.period = 0;
+                mainInstance.ScheduleCallback(mySpell.run, (int)timeToHit);
+
+                Object[] infos = new Object[3];
+                infos[0] = "EnergyBall"; //id
                 infos[1] = author.id + ""; //myid
                 infos[2] = target.id; //
 
@@ -884,6 +1031,46 @@ namespace ProjetB4
                 infos[2] = 60 * 7; //x
 
                 author.myGame.sendDataToAll("aura", infos, author);
+            }
+
+            //thunderClap
+            if (spell.Equals("thunderClap"))
+            {
+                float dmg = 25 + 90 * (rank - 1) + (author.getAttackValue()) * 0.6f;
+
+                delayedZoneMagicDmg myDelayedSpell = new delayedZoneMagicDmg(author, mainInstance, dmg, "nature", author.position.x, author.position.y, author.position.z, 8f, 1);
+                mainInstance.ScheduleCallback(myDelayedSpell.run, 25);
+
+                Object[] infos = new Object[6];
+                infos[0] = "ThunderStomp"; //model
+                infos[1] = author.id + ""; //myid
+                infos[2] = author.position.x; //x
+                infos[3] = author.position.y; //y
+                infos[4] = author.position.z; //z
+
+                infos[5] = 0; //waves
+
+                author.myGame.sendDataToAll("z_spell", infos, author);
+            }
+
+            //MirrorImage
+            if (spell.Equals("MirrorImage"))
+            {
+                EntityInfos clonedInfos = new EntityInfos(author.infos);
+
+                BaseStatsInfos myUnitBasStats = new BaseStatsInfos(author.infos.baseStats);
+
+                Entity mirrorUnit = new Entity(mainInstance, "", author.id, clonedInfos, author.position.Add(new Vector3(2, 0, 1)));
+                mirrorUnit.master = author;
+                mirrorUnit.team = author.team;
+                mirrorUnit.spells = author.spells;
+                mirrorUnit.infos.baseStats.agi += 100;
+                mirrorUnit.infos.baseStats.sta *= 0.5f;
+                mirrorUnit.infos.range = 30;
+                //mirrorUnit.items = ((Hero)author).equippedItems;
+                mirrorUnit.lifeSpan = 30*10 + 15*10 * (rank - 1);
+                mirrorUnit.petOffset = new Vector3(1, 0, 0);
+                mainInstance.addUnit(mirrorUnit);
             }
 
             if (spell.Equals("Reanimation"))

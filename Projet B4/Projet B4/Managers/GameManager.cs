@@ -62,6 +62,27 @@ namespace ProjetB4
 
                     sender.Send("ul", pList.ToArray());
                 }
+
+                //lvlUpSpell
+                if (_cmd.Equals("clearSpells"))
+                {
+                    Player myPlayer = sender;
+
+                    myPlayer.myCharacter.spells = new Dictionary<string, System.Collections.Hashtable>();
+                    myPlayer.myCharacter.spellsByName = new System.Collections.Hashtable();
+                    myPlayer.myCharacter.sendSpells();
+                }
+
+                if (_cmd.Equals("clearItems"))
+                {
+                    Player myPlayer = sender;
+
+                    myPlayer.myCharacter.items = new Dictionary<string,Item>();
+                    myPlayer.myCharacter.itemsByName = new Dictionary<string,float>();
+                    myPlayer.myCharacter.equippedItems = new Dictionary<string,string>();
+                    myPlayer.myCharacter.sendItems(myPlayer);
+                }
+
                 
                 //lvlUpSpell
                 if (_cmd.Equals("lvlUpSpell"))
@@ -173,7 +194,7 @@ namespace ProjetB4
                     }
                      
                 }
-
+                
                 if (_cmd.Equals("buyItem"))
                 {
                     Player myPlayer = sender;

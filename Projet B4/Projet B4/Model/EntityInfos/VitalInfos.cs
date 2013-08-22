@@ -28,6 +28,34 @@ namespace ProjetB4
 	    public float dmgOgres=0; //equivalent to golems
 	    public float dmgDragons=0;
 
+        public VitalInfos()
+        { }
+
+        public VitalInfos(VitalInfos original)
+        {
+            hp = original.hp;
+            mp = original.mp;
+            hpRegen = original.hpRegen;
+            mpRegen = original.mpRegen;
+            dmg = original.dmg;
+            armor = original.armor;
+            attackSpeed = original.attackSpeed;
+            crit = original.crit;
+            spellCrit = original.spellCrit;
+            critBon = original.critBon;
+            spellCritBon = original.spellCritBon;
+
+            dmgLiving = original.dmgLiving;
+            dmgUndead = original.dmgUndead;
+            dmgMonsters = original.dmgMonsters;
+            dmgHumanoids = original.dmgHumanoids;
+            dmgHumans = original.dmgHumans;
+            dmgSpirits = original.dmgSpirits;
+            dmgOgres = original.dmgOgres;
+            dmgDragons = original.dmgDragons;
+
+        }
+
         public Hashtable toHashtable()
         {
             Hashtable tmp = new Hashtable();

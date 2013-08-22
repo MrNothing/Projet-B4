@@ -14,6 +14,18 @@ namespace ProjetB4
         public float agi = 0;
         public float sou = 0;
 
+        public BaseStatsInfos()
+        {}
+
+        public BaseStatsInfos(BaseStatsInfos original)
+        {
+            str = original.str;
+            sta = original.sta;
+            agi = original.agi;
+            sou = original.sou;
+            intel = original.intel;
+        }
+
         public Hashtable toHashtable()
         {
             Hashtable tmp = new Hashtable();

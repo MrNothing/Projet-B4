@@ -58,21 +58,54 @@ namespace ProjetB4.Static_Units
         }
     }
 
-    public class Wolf //Woves 5-7
+    public class Wolf //Woves 3-7
     {
         public EntityInfos value()
         {
             EntityInfos infos = new EntityInfos();
-            infos.baseStats.agi = 5;
-            infos.baseStats.sta = 5;
-            infos.baseStats.str = 5;
-            infos.baseStats.intel = 5;
-            infos.baseStats.sou = 5;
-            infos.model = "Wolf";
+            infos.baseStats.agi = 3;
+            infos.baseStats.sta = 3;
+            infos.baseStats.str = 3;
+            infos.baseStats.intel = 3;
+            infos.baseStats.sou = 3;
+            infos.model = "Wolf1";
+            infos.level = 3;
+            return infos;
+        }
+    }
+
+    public class WhiteWolf //Woves 6
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 6;
+            infos.baseStats.sta = 6;
+            infos.baseStats.str = 6;
+            infos.baseStats.intel = 6;
+            infos.baseStats.sou = 6;
+            infos.model = "Wolf2";
             infos.level = 6;
             return infos;
         }
     }
+
+    public class SpiritWolf //Woves 6
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 75;
+            infos.baseStats.sta = 33;
+            infos.baseStats.str = 25;
+            infos.baseStats.intel = 5;
+            infos.baseStats.sou = 5;
+            infos.model = "Wolf3";
+            infos.level = 20;
+            return infos;
+        }
+    }
+
 
     public class Skeleton //skeletons 7-9
     {
@@ -99,11 +132,13 @@ namespace ProjetB4.Static_Units
             infos.baseStats.agi = 25;
             infos.baseStats.sta = 100;
             infos.baseStats.str = 150;
-            infos.baseStats.intel = 9;
-            infos.baseStats.sou = 55;
+            infos.baseStats.intel = 2;
+            infos.baseStats.sou = 20;
             infos.model = "Ent";
             infos.level = 40;
             infos.range = 5;
+            string[] spells = { "thunderClap"};
+            infos.spells = spells;
             return infos;
         }
     }
@@ -259,8 +294,12 @@ namespace ProjetB4.Static_Units
             infos.baseStats.str = 50;
             infos.baseStats.intel = 300;
             infos.baseStats.sou = 200;
-            infos.model = "TikTik";
+            infos.model = "Ancient Lich";
             infos.level = 20;
+            infos.range = 20;
+            string[] spells = { "iceBolt", "iceBall", "iceBall", "iceBall" };
+            infos.spells = spells;
+
             return infos;
         }
     }

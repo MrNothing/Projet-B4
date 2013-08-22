@@ -14,6 +14,19 @@ namespace ProjetB4
         public float natureRes = 0;
         public float arcaneRes = 0;
 
+        public ResistanceInfos()
+        { }
+
+        public ResistanceInfos(ResistanceInfos original)
+        {
+            totalRes = original.totalRes;
+            shadowRes = original.shadowRes;
+            fireRes = original.fireRes;
+            iceRes = original.iceRes;
+            natureRes = original.natureRes;
+            arcaneRes = original.arcaneRes;
+        }
+
         public Hashtable toHashtable()
         {
             Hashtable tmp = new Hashtable();

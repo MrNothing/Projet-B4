@@ -615,7 +615,7 @@ public class GameCode : Game<Player> {
             string errLocation = "";
             try
             {
-                Object[] data = new Object[29];
+                Object[] data = new Object[30];
                
                /* if (myUnit.master.Equals(player.myCharacter))
                 {*/
@@ -717,11 +717,20 @@ public class GameCode : Game<Player> {
 
                 try
                 {
-                    data[28] = myUnit.riding.id; //trigger status
+                    data[28] = myUnit.riding.id;
                 }
                 catch (Exception e)
                 {
-                    data[28] = ""; //owner
+                    data[28] = ""; 
+                }
+
+                try
+                {
+                    data[29] = myUnit.master.id;
+                }
+                catch (Exception e)
+                {
+                    data[29] = "";
                 }
                 //}
                 //System.out.println("myUnit.speed: "+myUnit.speed);
@@ -756,7 +765,7 @@ public class GameCode : Game<Player> {
             string errLocation = "";
             try
             {
-                Object[] data = new Object[29];
+                Object[] data = new Object[30];
 
                 /* if (myUnit.master.Equals(player.myCharacter))
                  {*/
@@ -857,13 +866,21 @@ public class GameCode : Game<Player> {
 
                 try
                 {
-                    data[28] = myUnit.riding.id; //trigger status
+                    data[28] = myUnit.riding.id; 
                 }
                 catch (Exception e)
                 {
-                    data[28] = ""; //owner
+                    data[28] = ""; 
                 }
 
+                try
+                {
+                    data[29] = myUnit.master.id;
+                }
+                catch (Exception e)
+                {
+                    data[29] = "";                
+                }
                 //}
                 //System.out.println("myUnit.speed: "+myUnit.speed);
 

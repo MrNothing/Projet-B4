@@ -39,6 +39,23 @@ namespace ProjetB4
             model = _model;
         }
 
+        public EntityInfos(EntityInfos original)
+        {
+            vitalInfos = new VitalInfos(original.vitalInfos);
+            baseStats = new BaseStatsInfos(original.baseStats);
+            vitalInfosBon = new VitalInfos(original.vitalInfosBon);
+            baseStatsBon = new BaseStatsInfos(original.baseStatsBon);
+            resBon = new ResistanceInfos(original.resBon);
+            spellBon = new SpellBonusInfos(original.spellBon);
+
+            specialEffects = original.specialEffects;
+            model = original.model;
+            range = original.range;
+            attackMoveSpeed = original.attackMoveSpeed;
+            baseSpeed = original.baseSpeed;
+            level = original.level;
+            ridable = original.ridable;
+        }
         public String toString()
         {
             return "EntityInfos";
