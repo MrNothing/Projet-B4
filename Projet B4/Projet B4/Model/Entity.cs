@@ -877,12 +877,23 @@ namespace ProjetB4
                         this.hitMeWithMagic(myEffect["author"]+"", eValue, "nature");
                     }
 
-                    if (eName.Equals("stun"))
+                    if (eName.Equals("burn"))
                     {
-                        //this.stunMe();
+                        this.hitMeWithMagic(myEffect["author"] + "", eValue, "fire");
                     }
 
-                    myEffect.Add("turns", turns - 1);
+                    if (eName.Equals("stun"))
+                    {
+                        stun = 3;
+                    }
+
+                    if (eName.Equals("snare"))
+                    {
+                        //TODO
+                        snareRatio=0;
+                    }
+
+                    myEffect["turns"] = turns - 1;
                 }
                 else
                 {
@@ -1006,6 +1017,21 @@ namespace ProjetB4
             clearBuffs();
             refreshCds();
 
+            if (soulShield > 0)
+            {
+                if (mp <= 0)
+                {
+                    soulShield = 0;
+
+                    Object[] infos = new Object[3];
+                    infos[0] = soulShield; //
+                    infos[1] = id + ""; //myid
+                    myGame.sendDataToAll("soulShield", infos, this);
+                }
+                else
+                    mp -= getMaxMp() / 10;
+            }
+
             if (hp > 0 && combatMode<=0) //only heroes or specific units regenerate hp over time.
             {
                 if (hp < getMaxHp())
@@ -1032,7 +1058,15 @@ namespace ProjetB4
 
             lastHp = hp;
             lastMp = mp;
+
+            if (!focus.Equals(lastFocus))
+            {
+                lastFocus = focus;
+                sendFocus();
+            }
         }
+
+        String lastFocus = null;
 
         string lastDirectHiter = "";
         public SortedDictionary<String, float> lastHiter = new SortedDictionary<String, float>();
@@ -1141,6 +1175,8 @@ namespace ProjetB4
             }
         }
 
+        public Entity grabbedTarget = null;
+        public int grabbed = 0;
         public float soulShield = 0;
         public SpellBonusInfos magicShield = new SpellBonusInfos();
         public void hitMeWithMagic(String _author, float dmg, String dmgType)
@@ -1575,6 +1611,13 @@ namespace ProjetB4
             myGame.sendDataToAll("teleport", data, this);
         }
 
+        public void sendFocus()
+        {
+            Object[] data = new Object[1];
+            data[0] = focus; //i
+            myGame.sendDataToAll("focus", data, this);
+        }
+
         public void sendSpells()
         {
             /*ISFSObject data = new SFSObject();
@@ -1705,14 +1748,32 @@ namespace ProjetB4
 
         bool hasMoved = false;
         public int movementCounter = 0;
+        public float stun = 0;
+        public float snare = 0;
+        public float snareRatio = 0;
         void synchronizePosition()
         {
+            if (grabbedTarget != null)
+            {
+                grabbedTarget.position = position;
+                grabbedTarget.grabbed = 3;
+            }
+
+            if (grabbed > 0)
+            {
+                grabbed--;
+                return;
+            }
+
             if (!isSynchronized())
             {
                 hasMoved = true;
                 movementCounter = 60;
 
                 float calculatedSpeed = infos.baseSpeed;//infos.baseSpeed * ((float)myGame.loopInterval/1000f);
+
+                if (incantation != null || canalisedSpell != null || stun>0)
+                    calculatedSpeed = 0;
 
                 if (position.x < destination.x)
                     position.x += calculatedSpeed;
@@ -1746,8 +1807,14 @@ namespace ProjetB4
             }
             else
                 hasMoved = false;
+
             if (movementCounter>0)
                 movementCounter--;
+
+            if (stun > 0)
+            {
+                stun--;
+            }
         }
 
         public bool isSynchronized()

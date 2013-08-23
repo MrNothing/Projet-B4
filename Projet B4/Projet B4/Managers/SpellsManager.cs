@@ -50,7 +50,7 @@ namespace ProjetB4
             caster.sendInfosToMe();
         }
 
-        public void UseItem(Entity caster, String target, String spellId, float zoneX, float zoneY, float zoneZ)
+        public void UseItem(Entity caster, String target, String itemId, float zoneX, float zoneY, float zoneZ)
 	    {
             if (caster.hp <= 0)
             {
@@ -74,7 +74,7 @@ namespace ProjetB4
 
             try
             {
-                myItem = (Item)caster.items[spellId];
+                myItem = (Item)caster.items[itemId];
             }
             catch (Exception e)
             { 
@@ -187,12 +187,12 @@ namespace ProjetB4
 		    {
                 myItem.uses--;
                 if (myItem.uses <= 0)
-                    ((Hero)caster).destroyItem(spellId);
+                    ((Hero)caster).destroyItem(itemId);
                 else
                 { 
                     //send item lost 1 charge   
                     Object[] data = new Object[1];
-                    data[0] = spellId; //i
+                    data[0] = itemId; //i
 
                     caster.getMyOwner().Send("charge", data);
                 }
@@ -214,6 +214,24 @@ namespace ProjetB4
                 if (caster.hp <= 0)
                 {
                     caster.getMyOwner().Send("err", "e2"); //You are dead!
+                    return;
+                }
+
+                if (caster.riding != null)
+                {
+                    caster.getMyOwner().Send("err", "You are riding!"); //You are riding!
+                    return; 
+                }
+
+                if (caster.grabbedTarget != null)
+                {
+                    caster.getMyOwner().Send("err", ""); //You cannot do that while holding something!
+                    return;
+                }
+
+                if (caster.grabbed>0)
+                {
+                    caster.getMyOwner().Send("err", ""); //You cannot do that!
                     return;
                 }
 
@@ -740,6 +758,32 @@ namespace ProjetB4
 
         void castTargetSpell()
         {
+            if (spell.Equals("grab"))
+            {
+                if (author.grabbedTarget == null)
+                {
+                    author.grabbedTarget = target;
+
+                    Object[] infos = new Object[3];
+                    infos[0] = true; //grab
+                    infos[1] = author.id + ""; //myid
+                    infos[2] = target.id; //
+
+                    author.myGame.sendDataToAll("grab", infos, author);
+                }
+                else
+                {
+                    author.grabbedTarget = null;
+
+                    Object[] infos = new Object[3];
+                    infos[0] = false; //release
+                    infos[1] = author.id + ""; //myid
+                    infos[2] = target.id; //
+
+                    author.myGame.sendDataToAll("grab", infos, author);
+                }
+            }
+
             if (spell.Equals("quickStrike"))
             {
                 float dmg = 12f + 22f * (rank - 1) + (author.getAttackValue()) * 0.45f;
@@ -1117,16 +1161,25 @@ namespace ProjetB4
 
             if (spell.Equals("SoulShield"))
             {
-                float time = 4 * 3 + 2 * (rank - 1);
+                //toggle
+                if (author.soulShield > 0)
+                {
+                    author.soulShield = 0;
 
-                author.soulShield = time;
+                    Object[] infos = new Object[3];
+                    infos[0] = author.soulShield; //id
+                    infos[1] = author.id + ""; //myid
+                    author.myGame.sendDataToAll("soulShield", infos, author);
+                }
+                else
+                {
+                    author.soulShield = 1;
 
-                Object[] infos = new Object[3];
-                infos[0] = "Aura7"; //id
-                infos[1] = author.id + ""; //myid
-                infos[2] = (int)(60f * time / 4f); //x
-
-                author.myGame.sendDataToAll("aura", infos, author);
+                    Object[] infos = new Object[3];
+                    infos[0] = author.soulShield; //id
+                    infos[1] = author.id + ""; //myid
+                    author.myGame.sendDataToAll("soulShield", infos, author);
+                }
             }
 
             if (spell.Equals("MoonlightArt"))
@@ -1144,6 +1197,345 @@ namespace ProjetB4
                  infos[2] = (int)(60f * time / 2f); //x
 
                  author.myGame.sendDataToAll("aura", infos, author);*/
+            }
+        }
+    }
+
+    public class delayedMagicDmg
+    {
+        private Entity parentUnit;
+        private String target;
+        private float dmg;
+        private String dmgType;
+        private GameCode mainInstance;
+        private string spell;
+
+        public int waves = 1;
+        public int period = 0;
+
+        public delayedMagicDmg(Entity _parentUnit, GameCode _mainInstance, String _target, float _dmg, String _dmgType, String _spell)
+        {
+            mainInstance = _mainInstance;
+            dmg = _dmg;
+            target = _target;
+            parentUnit = _parentUnit;
+            dmgType = _dmgType;
+            spell = _spell;
+        }
+        public void run()
+        {
+            if (waves > 0)
+            {
+                //System.out.println("Wave "+waves+" fell");
+
+                Entity targetUnit = (Entity)parentUnit.myGame.units[target];
+
+                if (targetUnit.soulShield <= 0)
+                {
+                    targetUnit.incantation = null;
+                    targetUnit.hitMeWithMagic(parentUnit.id, dmg, dmgType);
+                }
+                else
+                {
+                    SpellsCaster spellsCaster = new SpellsCaster(mainInstance, targetUnit, spell, 1, parentUnit, dmg);
+                    spellsCaster.noIncant = true;
+                }
+
+                waves--;
+
+                if (period >= 25)
+                    parentUnit.canalisedSpell = mainInstance.ScheduleCallback(run, period);
+            }
+            else
+            {
+                parentUnit.canalisedSpell = null;
+                //myTimer.cancel();
+            }
+        }
+    }
+
+    public class delayedPhysicDmg
+    {
+        private Entity parentUnit;
+        private String target;
+        private float dmg;
+        private GameCode mainInstance;
+        private string spell;
+
+        public int waves = 1;
+        public int period = 0;
+
+        public delayedPhysicDmg(Entity _parentUnit, GameCode _mainInstance, String _target, float _dmg, String _spell)
+        {
+            mainInstance = _mainInstance;
+            dmg = _dmg;
+            target = _target;
+            parentUnit = _parentUnit;
+            spell = _spell;
+        }
+        public void run()
+        {
+            if (waves > 0)
+            {
+                //System.out.println("Wave "+waves+" fell");
+
+                Entity targetUnit = (Entity)parentUnit.myGame.units[target];
+
+                if (targetUnit.soulShield <= 0)
+                {
+                    targetUnit.incantation = null;
+                    bool lastCrit = false;
+                    if ((targetUnit.mainSeed).Next(0, 100) < (targetUnit.infos.vitalInfos.crit + targetUnit.infos.vitalInfosBon.crit))
+                    {
+                        lastCrit = true;
+                        dmg *= (2f + (targetUnit.infos.vitalInfos.critBon + targetUnit.infos.vitalInfosBon.critBon) / 100);
+                    }
+
+                    targetUnit.hitMeWithPhysic(parentUnit.id, dmg, lastCrit);
+                }
+                else
+                {
+                    SpellsCaster spellsCaster = new SpellsCaster(mainInstance, targetUnit, spell, 1, parentUnit, dmg);
+                    spellsCaster.noIncant = true;
+                }
+
+                waves--;
+
+                if (period >= 25)
+                    parentUnit.canalisedSpell = mainInstance.ScheduleCallback(run, period);
+            }
+            else
+            {
+                parentUnit.canalisedSpell = null;
+                //myTimer.cancel();
+            }
+        }
+    }
+
+    public class delayedMoonlightArt
+    {
+        private Entity parentUnit;
+        public float x;
+        public float y;
+        public float z;
+        public int waves = 0;
+        public int period = 0;
+        public GameCode mainInstance;
+
+        public delayedMoonlightArt(Entity _parentUnit, GameCode _mainInstance, int _waves)
+        {
+            parentUnit = _parentUnit;
+            mainInstance = _mainInstance;
+            waves = _waves;
+        }
+
+        public void run()
+        {
+            if (waves > 0)
+            {
+                //System.out.println("Wave "+waves+" fell");
+                Entity randEnnemy = parentUnit.getRandomEnnemy();
+
+                if (randEnnemy != null)
+                {
+                    if (randEnnemy.getDistance(parentUnit) < 15)
+                    {
+                        parentUnit.position = randEnnemy.position;
+
+                        randEnnemy.hitMeWithPhysic(parentUnit.id, parentUnit.getAttackValue(), parentUnit.lastCrit);
+
+                        //parentUnit.sendSpecialAttack(randEnnemy.id, (int)randEnnemy.x, (int)randEnnemy.y, (int)randEnnemy.z, "special_1");
+                    }
+                }
+
+                waves--;
+
+                if (period >= 25)
+                    mainInstance.ScheduleCallback(run, period); ;
+            }
+            else
+            {
+                //myTimer.cancel();
+            }
+        }
+    }
+
+    public class delayedTeleport
+    {
+        private Entity parentUnit;
+        public float x;
+        public float y;
+        public float z;
+        public delayedTeleport(Entity _parentUnit)
+        {
+            parentUnit = _parentUnit;
+        }
+
+        public void run()
+        {
+            parentUnit.position.x = x;
+            parentUnit.position.y = y;
+            parentUnit.position.z = z;
+
+            parentUnit.sendTeleport();
+        }
+    }
+
+    public class delayedZoneMagicDmg
+    {
+        private Entity parentUnit;
+
+        private String target;
+        private float dmg;
+        private String dmgType;
+
+        float x;
+        float y;
+        float z;
+
+        float zone;
+
+        int waves;
+
+        public bool centerOnHero = false;
+
+        public String invokeOnKill = ""; //invoke the specific unit if the spell kills a unit.
+
+        public float propelValue = 0; //propels the unit on the opposite side of the spell.
+
+        public float decreaseWithDistance = 0;
+
+        public float angleLimit = 0;
+        private float casterAngle = 0;
+
+        private GameCode mainInstance;
+
+        public int period;
+
+        public delayedZoneMagicDmg(Entity _parentUnit, GameCode _mainInstance, float _dmg, String _dmgType, float ix, float iy, float iz, float _zone, int _waves)
+        {
+            if (angleLimit > 0)
+            {
+                casterAngle = (float)Math.Atan2((ix - parentUnit.position.x), -(iz - parentUnit.position.z));
+            }
+
+            mainInstance = _mainInstance;
+            waves = _waves;
+            zone = _zone;
+            dmg = _dmg;
+            parentUnit = _parentUnit;
+            dmgType = _dmgType;
+
+            x = ix;
+            y = iy;
+            z = iz;
+        }
+
+        private float calculateDifferenceBetweenAngles(float firstAngle, float secondAngle)
+        {
+            float difference = secondAngle - firstAngle;
+            while (difference < -180) difference += 360;
+            while (difference > 180) difference -= 360;
+            return difference;
+        }
+
+
+        public void run()
+        {
+            parentUnit.incantation = null;
+
+            if (centerOnHero)
+            {
+                x = parentUnit.position.x;
+                y = parentUnit.position.y;
+                z = parentUnit.position.z;
+            }
+
+            if (waves > 0)
+            {
+                //System.out.println("Wave "+waves+" fell");
+
+                CheckInZoneUnits(x, y, z);
+                waves--;
+
+                if (period >= 25)
+                    parentUnit.canalisedSpell = mainInstance.ScheduleCallback(run, period); ;
+            }
+            else
+            {
+                parentUnit.canalisedSpell = null;
+                //myTimer.cancel();
+            }
+        }
+
+        void CheckInZoneUnits(float _x, float _y, float _z)
+        {
+
+            if (parentUnit.hp > 0)
+            {
+                Dictionary<String, Entity> unitsList = parentUnit.myGame.units;
+
+                //     System.out.println("Bloc Size: "+unitsList.size());   
+
+                foreach (Object o in unitsList.Keys)
+                {
+
+                    Entity theUnit = parentUnit.myGame.units[o + ""];
+
+                    if (theUnit != null)
+                    {
+                        bool inCone = true;
+
+                        if (angleLimit > 0)
+                        {
+                            inCone = false;
+
+                            float tmpAngle = (float)Math.Atan2((theUnit.position.x - parentUnit.position.x), -(theUnit.position.z - parentUnit.position.z));
+
+                            if (calculateDifferenceBetweenAngles(casterAngle, tmpAngle) < angleLimit)
+                                inCone = true;
+                        }
+
+                        //System.out.println("Unit found! id: "+theUnit.id);
+                        float distance = (float)Math.Sqrt(Math.Abs(theUnit.position.x - x) * Math.Abs(theUnit.position.x - x) + Math.Abs(theUnit.position.y - y) * Math.Abs(theUnit.position.y - y) + Math.Abs(theUnit.position.z - z) * Math.Abs(theUnit.position.z - z));
+                        if (distance < zone // + Math.Abs(theUnit.y-y)*Math.Abs(theUnit.y-y)
+                           && /*(theUnit.team!=parentUnit.team) &&*/ inCone)
+                        {
+                            if (decreaseWithDistance <= 0)
+                                theUnit.hitMeWithMagic(parentUnit.id, dmg, dmgType);
+                            else
+                            {
+                                float tmpDmg = dmg * ((zone - distance) / zone);
+                                theUnit.hitMeWithMagic(parentUnit.id, dmg, dmgType);
+                            }
+                            if (propelValue > 0)
+                            {
+                                //theUnit.propelMe(parentUnit, propelValue);
+                            }
+
+                            if (invokeOnKill.Length > 0 && theUnit.hp <= 0)
+                            {
+                                //try{
+                                /* Unit newUnit = parentUnit.myGame.addUnit(invokeOnKill, parentUnit.team);
+                                 newUnit.lifeSpan = 4*15;
+                                 newUnit.x = theUnit.x;
+                                 newUnit.y = theUnit.y;
+                                 newUnit.z = theUnit.z;
+                                 newUnit.lockPosition();
+                                 newUnit.controlledByServer = true;
+                                 newUnit.agressive = true;
+                                 newUnit.team = parentUnit.team;
+                                 newUnit.master = parentUnit;*/
+                                //}
+                                //catch(Exception e)
+                                //{
+
+                                //}
+
+                            }
+                        }
+                    }
+                }
             }
         }
     }

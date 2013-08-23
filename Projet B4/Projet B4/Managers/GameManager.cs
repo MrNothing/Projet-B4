@@ -183,44 +183,62 @@ namespace ProjetB4
                 if (_cmd.Equals("useItem"))
                 {
                     Player myPlayer = sender;
-
-                    if (((Entity)(mainInstance).units[message.GetString(1)]).getMyOwner().ConnectUserId.Equals(sender.ConnectUserId))
-                    {
-                        spellsInstance.UseItem(((Entity)(mainInstance).units[message.GetString(1)]), message.GetString(3), message.GetString(2), message.GetFloat(4), message.GetFloat(5), message.GetFloat(6));
-                    }
-                    else
-                    {
-                        sender.Send("err", "e1");
-                    }
-                     
+                    spellsInstance.UseItem(myPlayer.myCharacter, message.GetString(3), message.GetString(2), message.GetFloat(4), message.GetFloat(5), message.GetFloat(6)); 
                 }
                 
                 if (_cmd.Equals("buyItem"))
                 {
                     Player myPlayer = sender;
 
-                    //TODO: Check if this item is sold by this npc using message.GetString(3)
-                    ((Hero)mainInstance.units[message.GetString(1)]).buyItem(message.GetString(2));
+                    //TODO: Check if this item is sold by this npc using message.GetString(1)
+                    sender.myCharacter.buyItem(message.GetString(2));
                     
                 }
 
                 if (_cmd.Equals("sellItem"))
                 {
                     Player myPlayer = sender;
-                    //TODO: Check if i am close to a vendor with message.GetString(3)
-                    ((Hero)mainInstance.units[message.GetString(1)]).sellItem(message.GetString(2));
-                    
+                    //TODO: Check if i am close to a vendor with message.GetString(1)
+                    sender.myCharacter.sellItem(message.GetString(2));
+
                 }
 
+                if (_cmd.Equals("notifyNpc"))
+                {
+                    Player myPlayer = sender;
 
+                    Entity myEntity = ((Entity)(mainInstance).units[message.GetString(1)]);
+
+                    if (!myEntity.team.Equals(myPlayer.myCharacter.team) && myEntity.agressivity == AgressivityLevel.agressive && myEntity.focus == null)
+                    {
+                        myEntity.focus = myPlayer.myCharacter.id;
+                    }
+
+                }
+
+                if (_cmd.Equals("pet_spells"))
+                {
+                    //TODO: do this in a way specific to my class or with a spell Master
+                    Player myPlayer = sender;
+                    Entity myEntity = ((Entity)(mainInstance).units[message.GetString(1)]);
+                    if (myEntity.master.Equals(sender.myCharacter))
+                    {
+                        myEntity.sendSpells(myPlayer);
+                    }
+                }
 
                 if (_cmd.Equals("cast"))
                 {
                     Player myPlayer = sender;
+                    Entity myEntity = ((Entity)(mainInstance).units[message.GetString(1)]);
 
-                    if (((Entity)(mainInstance).units[message.GetString(1)]).getMyOwner().ConnectUserId.Equals(sender.ConnectUserId))
+                    if (myEntity.id.Equals(sender.ConnectUserId) || myEntity.master.Equals(sender.myCharacter))
                     {
-                        spellsInstance.UseSpell(((Entity)(mainInstance).units[message.GetString(1)]), message.GetString(3), message.GetString(2), message.GetFloat(4), message.GetFloat(5), message.GetFloat(6));
+                        if(myEntity.type==EntityType.player)
+                            spellsInstance.UseSpell(((Entity)(mainInstance).units[message.GetString(1)]), message.GetString(3), message.GetString(2), message.GetFloat(4), message.GetFloat(5), message.GetFloat(6));
+                        else
+                            spellsInstance.IAUseSpell(((Entity)(mainInstance).units[message.GetString(1)]), message.GetString(3), message.GetString(2), message.GetFloat(4), message.GetFloat(5), message.GetFloat(6));
+
                     }
                     else
                     {
@@ -233,7 +251,9 @@ namespace ProjetB4
                 {
                     Player myPlayer = sender;
 
-                    if (((Entity)(mainInstance).units[message.GetString(1)]).getMyOwner().ConnectUserId.Equals(sender.ConnectUserId))
+                    Entity myEntity = ((Entity)(mainInstance).units[message.GetString(1)]);
+
+                    if (myEntity.id.Equals(sender.ConnectUserId) || myEntity.master.Equals(sender.myCharacter))
                     {
                         try
                         {
