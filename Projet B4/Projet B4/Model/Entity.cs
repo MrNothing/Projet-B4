@@ -80,32 +80,39 @@ namespace ProjetB4
 
         public Entity(GameCode _myGame, String _id, String _name, EntityInfos _infos, Vector3 _position)
         {
-            if (_infos.spells.Length > 0)
+            try
             {
-                SpellInfos spellInfos = new SpellInfos();
-                for (int i = 0; i < _infos.spells.Length; i++)
-                    spells.Add(i + "", new Hashtable((Hashtable)spellInfos.allSpells[_infos.spells[i]]));
+                if (_infos.spells.Length > 0)
+                {
+                    SpellInfos spellInfos = new SpellInfos();
+                    for (int i = 0; i < _infos.spells.Length; i++)
+                        spells.Add(i + "", new Hashtable((Hashtable)spellInfos.allSpells[_infos.spells[i]]));
+                }
+
+                myTrigger = new Triggers(this);
+                myGame = _myGame;
+                id = _id;
+                name = _name;
+                infos = _infos;
+
+                ridable = _infos.ridable;
+
+                level = _infos.level;
+
+                position = _position;
+                destination = _position.getNewInstance();
+                initialPosition = _position.getNewInstance();
+
+                type = EntityType.npc;
+                team = "neutral";
+                applyBaseStatsToVitalInfos();
+
+                enablePathFinder(new Dictionary<String, Vector3>());
             }
-
-            myTrigger = new Triggers(this);
-            myGame = _myGame;
-            id = _id;
-            name = _name;
-            infos = _infos;
-
-            ridable = _infos.ridable;
-
-            level = _infos.level;
-
-            position = _position;
-            destination = _position.getNewInstance();
-            initialPosition = _position.getNewInstance();
-
-            type = EntityType.npc;
-            team = "neutral";
-            applyBaseStatsToVitalInfos();
-
-            enablePathFinder(new Dictionary<String, Vector3>());
+            catch (Exception e)
+            {
+                _myGame.PlayerIO.ErrorLog.WriteError("unit failed: "+_id+" cause: "+e);
+            }
         }
 
         PathFinder pathfinder;
@@ -130,6 +137,7 @@ namespace ProjetB4
 
         public void run()
         {
+            int counter = 0;
 
             if (lifeSpan > 0)
             {
@@ -141,6 +149,8 @@ namespace ProjetB4
                 }
             }
 
+            counter++;
+
             DateTime tmpDate = DateTime.Now;
 
             int diff = (tmpDate - lastDate).Milliseconds;
@@ -149,7 +159,11 @@ namespace ProjetB4
 
             lastDate = tmpDate;
 
+            counter++;
+
             setRegenPoints();
+
+            counter++;
 
             /*visibleUnits = new Dictionary<String, String>();
             visibleEnemies = new Dictionary<String, String>();
@@ -174,7 +188,15 @@ namespace ProjetB4
                         checkVisiblePlayers(new Vector3((int)x,(int)y,(int)z));
                 }
             }*/
-			
+            if (grabbedTarget != null)
+            {
+                //getMyOwner().Send("err", grabbedTarget.position.toString());
+                grabbedTarget.position = position;
+                grabbedTarget.destination = position;
+                grabbedTarget.paths = new List<Vector3>();
+                grabbedTarget.grabbed = 3;
+            }
+
             if (type != EntityType.player)
             {
                 if (riding == null)
@@ -187,7 +209,7 @@ namespace ProjetB4
                 {
                     if (rezCounter <= 0)
                     {
-                        if (isTemp || master!=null)
+                        if (isTemp || master != null)
                             myGame.destroyUnit(id);
                         else
                         {
@@ -224,16 +246,22 @@ namespace ProjetB4
                     }
                     catch (Exception e)
                     {
+                        if (master != null)
+                            master.getMyOwner().Send("err", "triggerWanderAround fail: " + e.Message);
                     }
 
                     try
                     {
-                        applyIAMoves();
+                        if (grabbed <= 0)
+                            applyIAMoves();
                     }
-                    catch (Exception e){ 
+                    catch (Exception e)
+                    {
+                        if (master != null)
+                            master.getMyOwner().Send("err", "IA fail: " + e.Message);
                     }
 
-                   
+
                 }
 
             }
@@ -374,7 +402,10 @@ namespace ProjetB4
                             {
                                 casting = true;
 
-                                int randomSpell = mainSeed.Next(0, spells.Count - 1);
+                                int randomSpell = mainSeed.Next(0, spells.Count);
+
+                                if (randomSpell >= spells.Count)
+                                    randomSpell = spells.Count - 1;
 
                                 if (spells[randomSpell+""] != null)
                                 {
@@ -402,12 +433,17 @@ namespace ProjetB4
 
         public void attack(String target)
         {
-            if (myGame.units[target] != null)
+            if (myGame.units[target] != null && grabbed <= 0 && grabbedTarget==null)
             {
                 Entity targetUnit = myGame.units[target];
                 float tmpDmg = getAttackValue();
                 targetUnit.hitMeWithPhysic(id, tmpDmg, lastCrit);
                 sendAnim("Attack", target);
+            }
+
+            if (type==EntityType.player && grabbedTarget != null)
+            {
+                getMyOwner().Send("err", "You cannot attack while holding someone!");
             }
         }
 
@@ -1023,7 +1059,7 @@ namespace ProjetB4
                 {
                     soulShield = 0;
 
-                    Object[] infos = new Object[3];
+                    Object[] infos = new Object[2];
                     infos[0] = soulShield; //
                     infos[1] = id + ""; //myid
                     myGame.sendDataToAll("soulShield", infos, this);
@@ -1059,10 +1095,13 @@ namespace ProjetB4
             lastHp = hp;
             lastMp = mp;
 
-            if (!focus.Equals(lastFocus))
+            if (focus != null)
             {
-                lastFocus = focus;
-                sendFocus();
+                if (!focus.Equals(lastFocus))
+                {
+                    lastFocus = focus;
+                    sendFocus();
+                }
             }
         }
 
@@ -1753,12 +1792,6 @@ namespace ProjetB4
         public float snareRatio = 0;
         void synchronizePosition()
         {
-            if (grabbedTarget != null)
-            {
-                grabbedTarget.position = position;
-                grabbedTarget.grabbed = 3;
-            }
-
             if (grabbed > 0)
             {
                 grabbed--;

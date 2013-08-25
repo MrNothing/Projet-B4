@@ -223,15 +223,9 @@ namespace ProjetB4
                     return; 
                 }
 
-                if (caster.grabbedTarget != null)
-                {
-                    caster.getMyOwner().Send("err", ""); //You cannot do that while holding something!
-                    return;
-                }
-
                 if (caster.grabbed>0)
                 {
-                    caster.getMyOwner().Send("err", ""); //You cannot do that!
+                    caster.getMyOwner().Send("err", "You cannot do that!"); //You cannot do that!
                     return;
                 }
 
@@ -255,7 +249,37 @@ namespace ProjetB4
                 }
                 catch (Exception e) 
                 {
-                    caster.getMyOwner().Send("err", "s5: "+e.Message); //You dont know this spell!
+                    caster.getMyOwner().Send("err", "s5"); //You dont know this spell!
+                    return;
+                }
+
+                if (caster.grabbedTarget != null && !mySpell["id"].Equals("grab") && !mySpell["id"].Equals("throw") && !mySpell["id"].Equals("smash"))
+                {
+                    caster.getMyOwner().Send("err", "You cannot do that while holding something!"); //You cannot do that while holding something!
+                    return;
+                }
+
+                if (mySpell["id"].Equals("grab"))
+                {
+                    if (caster.grabbedTarget != null)
+                    {
+                        Object[] infos = new Object[3];
+                        infos[0] = false; //release
+                        infos[1] = caster.id + ""; //myid
+                        infos[2] = caster.grabbedTarget.id; //
+
+                        caster.grabbedTarget.grabbed = 0;
+                        caster.grabbedTarget = null;
+
+                        caster.myGame.sendDataToAll("grab", infos, caster);
+
+                        return;
+                    }
+                }
+
+                if (mySpell["id"].Equals("throw") && caster.grabbedTarget == null)
+                {
+                    caster.getMyOwner().Send("err", "You need to hold someone first!");
                     return;
                 }
 
@@ -426,6 +450,50 @@ namespace ProjetB4
                     return false;
                 }
 
+                if (caster.grabbedTarget != null && !mySpell["id"].Equals("grab") && !mySpell["id"].Equals("throw") && !mySpell["id"].Equals("smash"))
+                {
+                    if (caster.grabbedTarget != null)
+                    {
+                        Object[] infos = new Object[3];
+                        infos[0] = false; //release
+                        infos[1] = caster.id + ""; //myid
+                        infos[2] = caster.grabbedTarget.id; //
+
+                        caster.grabbedTarget.grabbed = 0;
+                        caster.grabbedTarget = null;
+
+                        caster.myGame.sendDataToAll("grab", infos, caster);
+
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                if (mySpell["id"].Equals("grab"))
+                {
+                    if (caster.grabbedTarget != null)
+                    {
+                        Object[] infos = new Object[3];
+                        infos[0] = false; //release
+                        infos[1] = caster.id + ""; //myid
+                        infos[2] = caster.grabbedTarget.id; //
+
+                        caster.grabbedTarget.grabbed = 0;
+                        caster.grabbedTarget = null;
+
+                        caster.myGame.sendDataToAll("grab", infos, caster);
+
+                        return true;
+                    }
+                }
+
+                if (mySpell["id"].Equals("throw") && caster.grabbedTarget == null)
+                {
+                    caster.getMyOwner().Send("err", "You need to hold someone first!");
+                    return false;
+                }
+
                 if ((int)mySpell["cd"] > 0)
                 {
                     //send message: The spell is not ready!
@@ -455,8 +523,6 @@ namespace ProjetB4
                     {
                         //proceed...
                         spellsCaster = new SpellsCaster(mainInstance, caster, (string)mySpell["id"], (int)mySpell["rank"], zoneX, zoneY, zoneZ);
-
-                        return true;
                     }
                     else
                     {
@@ -622,6 +688,71 @@ namespace ProjetB4
 
         void castZoneSpell()
         {
+            if (spell.Equals("throw"))
+            {
+                float dmg = 15f + 10f * (rank - 1) + (author.getAttackValue()) * 1.1f;
+
+                float bruteDistance = ((ix - author.position.x) * (ix - author.position.x) + (iy - author.position.y) * (iy - author.position.y) + (iz - author.position.z) * (iz - author.position.z));
+                float distance = (float)Math.Sqrt(bruteDistance);
+
+                float projectileSpeed = 0.1f;
+
+                float timeToHit = (float)(distance / (projectileSpeed * 30f)) * 250; //in ms
+
+                if (timeToHit < 25)
+                    timeToHit = 25;
+
+                float zone = 3f;
+
+                author.grabbedTarget.position = new Vector3(ix, iy, iz);
+
+                delayedZoneMagicDmg mySpell = new delayedZoneMagicDmg(author, mainInstance, dmg, "nature", ix, iy, iz, zone, 1);
+                mySpell.period = 0;
+                mainInstance.ScheduleCallback(mySpell.run, (int)timeToHit);
+
+                Object[] infos = new Object[5];
+                infos[0] = "throw"; //id
+                infos[1] = author.id + ""; //myid
+                infos[2] = ix; //x
+                infos[3] = iy; //y
+                infos[4] = iz; //z 
+
+                author.myGame.sendDataToAll("z_spell", infos, author);
+
+                author.grabbedTarget.grabbed = 0;
+                author.grabbedTarget = null;
+            }
+
+            if (spell.Equals("smash"))
+            {
+                float dmg = 15f + 10f * (rank - 1) + (author.getAttackValue()) * 1.1f;
+
+                float bruteDistance = ((ix - author.position.x) * (ix - author.position.x) + (iy - author.position.y) * (iy - author.position.y) + (iz - author.position.z) * (iz - author.position.z));
+                float distance = (float)Math.Sqrt(bruteDistance);
+
+                float projectileSpeed = 0.1f;
+
+                float timeToHit = (float)(distance / (projectileSpeed * 30f)) * 250; //in ms
+
+                if (timeToHit < 25)
+                    timeToHit = 25;
+
+                float zone = 3f;
+                
+                delayedZoneMagicDmg mySpell = new delayedZoneMagicDmg(author, mainInstance, dmg, "nature", ix, iy, iz, zone, 1);
+                mySpell.period = 0;
+                mySpell.smash = true;
+                mainInstance.ScheduleCallback(mySpell.run, (int)timeToHit);
+
+                Object[] infos = new Object[5];
+                infos[0] = "smash"; //id
+                infos[1] = author.id + ""; //myid
+                infos[2] = ix; //x
+                infos[3] = iy; //y
+                infos[4] = iz; //z 
+
+                author.myGame.sendDataToAll("z_spell", infos, author);
+            }
 
             if (spell.Equals("cataclysm"))
             {
@@ -763,6 +894,7 @@ namespace ProjetB4
                 if (author.grabbedTarget == null)
                 {
                     author.grabbedTarget = target;
+                    target.grabbed = 3;
 
                     Object[] infos = new Object[3];
                     infos[0] = true; //grab
@@ -773,14 +905,7 @@ namespace ProjetB4
                 }
                 else
                 {
-                    author.grabbedTarget = null;
-
-                    Object[] infos = new Object[3];
-                    infos[0] = false; //release
-                    infos[1] = author.id + ""; //myid
-                    infos[2] = target.id; //
-
-                    author.myGame.sendDataToAll("grab", infos, author);
+                  
                 }
             }
 
@@ -1397,6 +1522,7 @@ namespace ProjetB4
 
         int waves;
 
+        public bool smash = false;
         public bool centerOnHero = false;
 
         public String invokeOnKill = ""; //invoke the specific unit if the spell kills a unit.
@@ -1454,6 +1580,19 @@ namespace ProjetB4
             if (waves > 0)
             {
                 //System.out.println("Wave "+waves+" fell");
+
+                if (smash)
+                {
+                    parentUnit.position = new Vector3(x, y, z);
+
+                    try
+                    {
+                        parentUnit.grabbedTarget.position = new Vector3(x, y, z);
+                        parentUnit.grabbedTarget.grabbed = 0;
+                        parentUnit.grabbedTarget = null;
+                    }
+                    catch { }
+                }
 
                 CheckInZoneUnits(x, y, z);
                 waves--;

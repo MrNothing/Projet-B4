@@ -35,6 +35,12 @@ namespace ProjetB4
             items.Add("Wolf", new Static_Units.Wolf().value());
             items.Add("Wolf2", new Static_Units.WhiteWolf().value());
             items.Add("Wolf3", new Static_Units.SpiritWolf().value());
+            items.Add("Ancien Guard", new Static_Units.AncienGuard().value());
+            items.Add("Ancien Warrior", new Static_Units.AncienWarrior().value());
+            items.Add("MudGolem", new Static_Units.AncienWarrior().value());
+            items.Add("Rakar", new Static_Units.Rakar().value());
+            items.Add("Rukus", new Static_Units.Rukus().value());
+            items.Add("WarGolem", new Static_Units.WarGolem().value());   
         }
     }
 }

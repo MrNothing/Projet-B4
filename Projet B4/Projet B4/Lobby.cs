@@ -30,6 +30,8 @@ namespace ProjetB4
                     player.PlayerObject.Set("eyes", message.GetString(5));
                     player.PlayerObject.Set("eyesColor", message.GetString(6));
 
+                    player.PlayerObject.Set("map", "Map1");
+
                     player.PlayerObject.Save();
                 }
             }
@@ -51,7 +53,9 @@ namespace ProjetB4
             }
             else
             {
-                Object[] data = {player.PlayerObject.GetString("model"), player.PlayerObject.GetString("map")};
+                Object[] data = new Object[2];
+                data[0] = player.PlayerObject.GetString("model");
+                data[1] = player.PlayerObject.GetString("map");
                 player.Send("charInfos", data);
             }
         }

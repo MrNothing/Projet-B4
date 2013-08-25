@@ -106,10 +106,10 @@ namespace ProjetB4
                     Player myPlayer = sender;
 
                    
-                    if (myPlayer.myCharacter.spells.Count < 10)
+                    //if (myPlayer.myCharacter.spells.Count < 10)
                         myPlayer.myCharacter.addSpell(message.GetString(1));
-                    else
-                        sender.Send("err", "You cannot learn any more spells");
+                    //else
+                    //    sender.Send("err", "You cannot learn any more spells");
                       
                 }
 
@@ -382,11 +382,31 @@ namespace ProjetB4
                 {
                     try
                     {
-                        WorldInfos tmpInfos = mainInstance.worldInfos;
-                        Entity invokedCreature = new Entity(mainInstance, "", "", tmpInfos.getEntityInfosByName(message.GetString(1)), sender.myCharacter.position.Add(new Vector3(1, 0, 1)));
-                        invokedCreature.infos.baseSpeed = 2;
-                        invokedCreature.team = "";
-                        mainInstance.addUnit(invokedCreature);
+                        if (!message.GetString(1).Equals("clone"))
+                        {
+                            WorldInfos tmpInfos = mainInstance.worldInfos;
+                            Entity invokedCreature = new Entity(mainInstance, "", "", tmpInfos.getEntityInfosByName(message.GetString(1)), sender.myCharacter.position.Add(new Vector3(1, 0, 1)));
+                            invokedCreature.infos.baseSpeed = 2;
+                            invokedCreature.team = "";
+                            mainInstance.addUnit(invokedCreature);
+                        }
+                        else 
+                        {
+                            Entity author = sender.myCharacter;
+
+                            EntityInfos clonedInfos = new EntityInfos(author.infos);
+
+                            BaseStatsInfos myUnitBasStats = new BaseStatsInfos(author.infos.baseStats);
+
+                            Entity mirrorUnit = new Entity(mainInstance, "", author.id, clonedInfos, author.position.Add(new Vector3(2, 0, 1)));
+                            mirrorUnit.spells = author.spells;
+                            mirrorUnit.infos.baseStats.agi += 100;
+                            mirrorUnit.infos.range = 30;
+                            mirrorUnit.isTemp = true;
+                            mirrorUnit.team = "";
+                            //mirrorUnit.items = ((Hero)author).equippedItems;
+                            mainInstance.addUnit(mirrorUnit);
+                        }
                     }
                     catch (Exception e)
                     {

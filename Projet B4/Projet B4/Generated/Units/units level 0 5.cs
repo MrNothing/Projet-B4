@@ -32,7 +32,7 @@ namespace ProjetB4.Static_Units
             infos.baseStats.intel = 200;
             infos.baseStats.sou = 333;
             infos.range = 20;
-            string[] spells = { "iceBall", "iceBall", "iceRain"};
+            string[] spells = { "iceBall", "iceRain", "iceBall" };
             infos.spells = spells;
 
             infos.model = "IceSpirit";
@@ -175,7 +175,7 @@ namespace ProjetB4.Static_Units
         }
     }
 
-    public class WarGolem //WarGolems 15-17
+    /*public class WarGolem //WarGolems 15-17
     {
         public EntityInfos value()
         {
@@ -189,7 +189,7 @@ namespace ProjetB4.Static_Units
             infos.level = 15;
             return infos;
         }
-    }
+    }*/
 
     public class LavaGolem //LavaGolems 17-19
     {
@@ -297,7 +297,7 @@ namespace ProjetB4.Static_Units
             infos.model = "Ancient Lich";
             infos.level = 20;
             infos.range = 20;
-            string[] spells = { "iceBolt", "iceBall", "iceBall", "iceBall" };
+            string[] spells = { "iceBolt", "iceBall", "iceRain", "iceBall" };
             infos.spells = spells;
 
             return infos;
@@ -352,7 +352,9 @@ namespace ProjetB4.Static_Units
             infos.baseStats.sou = 99;
             infos.model = "BlackDragon";
             infos.level = 60;
-            infos.range = 8;
+            infos.range = 30;
+            string[] spells = { "fireBall", "fireBall" };
+            infos.spells = spells;
             infos.ridable = true;
             return infos;
         }
@@ -365,14 +367,128 @@ namespace ProjetB4.Static_Units
         {
             EntityInfos infos = new EntityInfos();
             infos.baseStats.agi = 100;
-            infos.baseStats.sta = 550;
+            infos.baseStats.sta = 290;
             infos.baseStats.str = 110;
             infos.baseStats.intel = 55;
             infos.baseStats.sou = 110;
             infos.model = "Guard";
             infos.level = 55;
             infos.range = 3;
-            infos.ridable = true;
+            return infos;
+        }
+    }
+
+    //Ancien Guard
+    public class AncienGuard
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 15*3;
+            infos.baseStats.sta = 15*9;
+            infos.baseStats.str = 15*9;
+            infos.baseStats.intel = 1;
+            infos.baseStats.sou = 0;
+            infos.model = "Ancien Guard";
+            infos.level = 15;
+            infos.range = 3;
+            return infos;
+        }
+    }
+
+    //Ancient Warrior
+    public class AncienWarrior
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 14 * 3;
+            infos.baseStats.sta = 14 * 8;
+            infos.baseStats.str = 14 * 8;
+            infos.baseStats.intel = 1;
+            infos.baseStats.sou = 0;
+            infos.model = "Ancien Warrior";
+            infos.level = 14;
+            infos.range = 3;
+            return infos;
+        }
+    }
+
+    //MudGolem
+    public class MudGolem
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 17 * 3;
+            infos.baseStats.sta = 17 * 3;
+            infos.baseStats.str = 17 * 3;
+            infos.baseStats.intel = 1;
+            infos.baseStats.sou = 0;
+            infos.model = "MudGolem";
+            infos.level = 17;
+            infos.range = 4;
+            return infos;
+        }
+    }
+
+    //Rakar
+    public class Rakar
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 100;
+            infos.baseStats.sta = 16 * 15;
+            infos.baseStats.str = 16 * 15;
+            infos.baseStats.intel = 2;
+            infos.baseStats.sou = 20;
+            infos.model = "Rakar";
+            string[] spells = { "thunderClap" };
+            infos.level = 16;
+            infos.range = 5;
+            infos.isBoss = true;
+            //TODO: infos.forceDrop = {...}
+            return infos;
+        }
+    }
+
+    //Rukus
+    public class Rukus
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 100;
+            infos.baseStats.sta = 16 * 10;
+            infos.baseStats.str = 16 * 8;
+            infos.baseStats.intel = 16*30;
+            infos.baseStats.sou = 0;
+            infos.model = "Rukus";
+            string[] spells = { "fireBall", "fireBall", "fireRain" };
+            infos.spells = spells;
+            infos.level = 16;
+            infos.range = 30;
+            
+            return infos;
+        }
+    }
+
+    //War Golem
+    public class WarGolem
+    {
+        public EntityInfos value()
+        {
+            EntityInfos infos = new EntityInfos();
+            infos.baseStats.agi = 18*10;
+            infos.baseStats.sta = 18 * 10;
+            infos.baseStats.str = 18 * 15;
+            infos.baseStats.intel = 16 * 30;
+            infos.baseStats.sou = 0;
+            infos.model = "War Golem";
+            infos.level = 18;
+            infos.range = 4;
+
             return infos;
         }
     }

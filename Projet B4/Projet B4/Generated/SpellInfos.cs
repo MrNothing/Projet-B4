@@ -31,6 +31,9 @@ namespace ProjetB4
         public Hashtable EnergyBall = new Hashtable();
         public Hashtable thunderClap = new Hashtable();
         public Hashtable HighKick = new Hashtable();
+        public Hashtable grab = new Hashtable();
+        public Hashtable throw1 = new Hashtable();
+        public Hashtable smash = new Hashtable();
 
         public Hashtable MirrorImage = new Hashtable();
         public Hashtable Shuriken = new Hashtable();
@@ -62,6 +65,87 @@ namespace ProjetB4
 
             HealthRegen.Add("id", "HealthRegen");
             allSpells.Add("HealthRegen", HealthRegen);
+
+            //grab
+
+            grab.Add("rank", 1);
+            grab.Add("sp_period", 1);
+            grab.Add("maxlvl", 5);
+            grab.Add("cd", 0);
+            grab.Add("mana", 0);
+
+            grab.Add("manaPerRank", 0);
+
+            grab.Add("range", 3);
+            grab.Add("zone", 0);
+            grab.Add("baseEffect", 80);
+            grab.Add("coolDown", 60); //in sec
+            grab.Add("incant", 25); //in ms
+            grab.Add("canalisation", 0); //in ms
+
+            grab.Add("icon", "grab");
+            grab.Add("name", "grab");
+            grab.Add("description", "");
+            grab.Add("targets", "foe");
+            grab.Add("targetType", "all");
+            grab.Add("usage", "target");
+
+            grab.Add("id", "grab");
+            allSpells.Add("grab", grab);
+
+            //throw1
+
+            throw1.Add("rank", 1);
+            throw1.Add("sp_period", 1);
+            throw1.Add("maxlvl", 5);
+            throw1.Add("cd", 0);
+            throw1.Add("mana", 0);
+
+            throw1.Add("manaPerRank", 0);
+
+            throw1.Add("range", 35);
+            throw1.Add("zone", 1);
+            throw1.Add("baseEffect", 80);
+            throw1.Add("coolDown", 150); //in sec
+            throw1.Add("incant", 2000); //in ms
+            throw1.Add("canalisation", 0); //in ms
+
+            throw1.Add("icon", "throw");
+            throw1.Add("name", "throw");
+            throw1.Add("description", "");
+            throw1.Add("targets", "foe");
+            throw1.Add("targetType", "all");
+            throw1.Add("usage", "target");
+
+            throw1.Add("id", "throw");
+            allSpells.Add("throw", throw1);
+
+            //smash
+
+            smash.Add("rank", 1);
+            smash.Add("sp_period", 1);
+            smash.Add("maxlvl", 5);
+            smash.Add("cd", 0);
+            smash.Add("mana", 0);
+
+            smash.Add("manaPerRank", 0);
+
+            smash.Add("range", 40);
+            smash.Add("zone", 1);
+            smash.Add("baseEffect", 80);
+            smash.Add("coolDown", 150); //in sec
+            smash.Add("incant", 25); //in ms
+            smash.Add("canalisation", 0); //in ms
+
+            smash.Add("icon", "smash");
+            smash.Add("name", "smash");
+            smash.Add("description", "");
+            smash.Add("targets", "foe");
+            smash.Add("targetType", "all");
+            smash.Add("usage", "target");
+
+            smash.Add("id", "smash");
+            allSpells.Add("smash", smash);
 
             //fireball
 
@@ -505,7 +589,7 @@ namespace ProjetB4
             avatar.Add("canalisation", 0); //in ms
 
             avatar.Add("icon", "avatar");
-            avatar.Add("name", "Avatar");
+            avatar.Add("name", "avatar");
             avatar.Add("description", "Turns you into a giant for 25 seconds. You gain health, resistance, armor, and damage during the effect.");
             avatar.Add("targets", "foe");
             avatar.Add("targetType", "all");
@@ -531,7 +615,7 @@ namespace ProjetB4
             boneDance.Add("canalisation", 0); //in ms
 
             boneDance.Add("icon", "boneDance");
-            boneDance.Add("name", "Bone Dance");
+            boneDance.Add("name", "boneDance");
             boneDance.Add("description", "??");
             boneDance.Add("targets", "foe");
             boneDance.Add("targetType", "all");
@@ -556,7 +640,7 @@ namespace ProjetB4
             Reanimation.Add("incant", 500); //in ms
             Reanimation.Add("canalisation", 0); //in ms
 
-            Reanimation.Add("icon", "reanimation");
+            Reanimation.Add("icon", "Reanimation");
             Reanimation.Add("name", "Reanimation");
             Reanimation.Add("description", "??");
             Reanimation.Add("targets", "foe");
@@ -578,12 +662,12 @@ namespace ProjetB4
             SoulShield.Add("range", 0);
             SoulShield.Add("zone", 0);
             SoulShield.Add("baseEffect", 0);
-            SoulShield.Add("coolDown", 40); //in sec
+            SoulShield.Add("coolDown", 1); //in sec
             SoulShield.Add("incant", 500); //in ms
             SoulShield.Add("canalisation", 0); //in ms
 
             SoulShield.Add("icon", "SoulShield");
-            SoulShield.Add("name", "Soul Shield");
+            SoulShield.Add("name", "SoulShield");
             SoulShield.Add("description", "??");
             SoulShield.Add("targets", "foe");
             SoulShield.Add("targetType", "all");
@@ -610,7 +694,7 @@ namespace ProjetB4
             MoonlightArt.Add("canalisation", 0); //in ms
 
             MoonlightArt.Add("icon", "MoonlightArt");
-            MoonlightArt.Add("name", "Moonlight Art");
+            MoonlightArt.Add("name", "MoonlightArt");
             MoonlightArt.Add("description", "??");
             MoonlightArt.Add("targets", "foe");
             MoonlightArt.Add("targetType", "all");
@@ -636,7 +720,7 @@ namespace ProjetB4
             WavesofEden.Add("canalisation", 0); //in ms
 
             WavesofEden.Add("icon", "WavesofEden");
-            WavesofEden.Add("name", "Waves of Eden");
+            WavesofEden.Add("name", "WavesofEden");
             WavesofEden.Add("description", "??");
             WavesofEden.Add("targets", "foe");
             WavesofEden.Add("targetType", "all");

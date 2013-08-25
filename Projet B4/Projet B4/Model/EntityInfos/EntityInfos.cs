@@ -28,6 +28,7 @@ namespace ProjetB4
         public float baseSpeed = 0.3f;
         public int level=1;
         public bool ridable = false;
+        public bool isBoss = false;
 
         public string[] spells = new string[0];
 
@@ -55,6 +56,7 @@ namespace ProjetB4
             baseSpeed = original.baseSpeed;
             level = original.level;
             ridable = original.ridable;
+            isBoss = original.isBoss;
         }
         public String toString()
         {
