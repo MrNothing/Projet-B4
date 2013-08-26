@@ -1065,7 +1065,7 @@ namespace ProjetB4
                     myGame.sendDataToAll("soulShield", infos, this);
                 }
                 else
-                    mp -= getMaxMp() / 10;
+                    mp -= getMaxMp() / 100;
             }
 
             if (hp > 0 && combatMode<=0) //only heroes or specific units regenerate hp over time.
@@ -1326,6 +1326,18 @@ namespace ProjetB4
         public bool enableRewards = true;
         void checkIfDead(Entity _author, int _dmg)
         {
+            if (type == EntityType.npc && !_author.Equals(master))
+            {
+                try
+                {
+                    lastHiter.Add(_author.id, _dmg);
+                }
+                catch (Exception e)
+                {
+                    lastHiter[_author.id] = _dmg + (float)lastHiter[_author.id];
+                }
+            }
+
             if (hp < 0)
             {
                 if (_author.master != null)
@@ -1333,8 +1345,7 @@ namespace ProjetB4
 
                 focus = null;
                 focusDistance = 999;
-                lastHiter.Clear();
-
+                
                 rezCounter = rezInterval;
 
                 if (enableRewards)
@@ -1348,8 +1359,9 @@ namespace ProjetB4
                             //give special rewards...
                         }
 
-                        if (type == EntityType.npc && enableRewards)
+                        if (type == EntityType.npc && enableRewards && lastHiter.Count>0)
                         {
+                            
                             float totalDmg = 0;
                             foreach (string s in lastHiter.Keys)
                             {
@@ -1366,11 +1378,21 @@ namespace ProjetB4
 
                                     List<Item> rewards = new List<Item>();
 
-                                    float mobRarity = ((float)infos.toInt()) / (5 * infos.level);
+                                    float mobRarity = (((float)infos.baseStats.sta + infos.baseStats.str) / (infos.level)) * (lastHiter[s] / totalDmg)*2;
 
-                                    for (int i = 0; i < mobRarity; i++)
+                                    if (mobRarity < 1)
+                                        mobRarity = 1;
+
+                                    float itemsCount = mobRarity/3;
+
+                                    if (itemsCount > 5)
                                     {
-                                        if ((mainSeed).NextDouble() * 100 < 10)
+                                        itemsCount = 5;
+                                    }
+
+                                    for (int i = 0; i < itemsCount; i++)
+                                    {
+                                        if ((mainSeed).NextDouble() * 100 < 10 || (mobRarity>5 && i==1))
                                         {
                                             Item newItem = myGame.itemGenerator.generateItem("gen", mobRarity, infos.level);
                                             rewards.Add(newItem);
@@ -1388,13 +1410,27 @@ namespace ProjetB4
                                         }
                                     }
 
-                                    if (rewards.Count>0)
-                                        theHero.itemRewardsByEntity.Add(s, rewards);
+                                    try
+                                    {
+                                        theHero.itemRewardsByEntity.Add(id, rewards);
+                                    }
+                                    catch
+                                    { 
+                                        theHero.itemRewardsByEntity[id] = rewards;
+                                    }
+
                                     float moneyReward = (int)((float)infos.toInt() * (lastHiter[s] / totalDmg));
 
                                     moneyReward = moneyReward + (float)mainSeed.NextDouble() * moneyReward;
 
-                                    theHero.goldRewardsByEntity.Add(s, (int) moneyReward);
+                                    try
+                                    {
+                                        theHero.goldRewardsByEntity.Add(id, (int) moneyReward);
+                                    }
+                                    catch
+                                    {
+                                        theHero.goldRewardsByEntity[id] = (int) moneyReward;
+                                    }
                                 }
                             }
                             /*Hero theHero = (Hero)_author;
@@ -1415,21 +1451,12 @@ namespace ProjetB4
 
                     }
                 }
+
+                lastHiter.Clear();
+
             }
             else //if i am not dead
             {
-                if (type == EntityType.npc && !_author.Equals(master))
-                {
-                    try
-                    {
-                        lastHiter.Add(_author.id, _dmg);
-                    }
-                    catch (Exception e)
-                    {
-                        lastHiter[_author.id] = _dmg + (float)lastHiter[_author.id];
-                    }
-                }
-
                 combatMode = 15;
 
                 if (lastHiter.Count == 1)

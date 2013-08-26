@@ -642,8 +642,8 @@ namespace ProjetB4
                 data[3] = "null";
             else
             {
-                getMyOwner().Send("sMsg", "exportItem");
-                getMyOwner().Send("sMsg", "toHashTable" + item.infos.toReducedHashtable());
+               // getMyOwner().Send("sMsg", "exportItem");
+                //getMyOwner().Send("sMsg", "toHashTable" + item.infos.toReducedHashtable());
                 data[3] = myGame.itemGenerator.exportItemCompact(item);
             }
             getMyOwner().Send("i+", data);

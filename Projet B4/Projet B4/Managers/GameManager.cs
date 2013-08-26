@@ -131,25 +131,53 @@ namespace ProjetB4
                     //TODO: do this in a way specific to my class or with a spell Master
                     //message.GetString(1) the mob checked
                     //message.GetInt(2) the item picked
+                    Item myItem = sender.myCharacter.itemRewardsByEntity[message.GetString(1)][message.GetInt(2)];
+
+                    sender.myCharacter.itemRewardsByEntity[message.GetString(1)] = null;
+
+                    sender.myCharacter.addItem(myItem);
+                }
+
+                if (_cmd.Equals("pickGold"))
+                {
+                    //TODO: do this in a way specific to my class or with a spell Master
+                    //message.GetString(1) the mob checked
+                    sender.money += sender.myCharacter.goldRewardsByEntity[message.GetString(1)];
+
+                    sender.myCharacter.goldRewardsByEntity[message.GetString(1)] = 0;
+                    
+                    sender.myCharacter.sendMoney("");
                 }
 
                 if (_cmd.Equals("getRewards"))
                 {
+                   
                     //message.GetString(1) the mob checked
                     Hashtable items = new Hashtable();
 
+                    //string test = "";
+
                     for (int i = 0; i < sender.myCharacter.itemRewardsByEntity[message.GetString(1)].Count; i++)
                     {
-                        items.Add(i, sender.myCharacter.itemRewardsByEntity[message.GetString(1)][i].toHashtable());
+                        Item myItem = sender.myCharacter.itemRewardsByEntity[message.GetString(1)][i];
+
+                        if (myItem != null)
+                        {
+                            myItem.infos.description = myItem.generateDescription();
+                            items.Add(i + "", myItem.infos.toReducedHashtable());
+                        }
+                        else
+                            items.Add(i + "", "null");
                     }
 
                     string itemsData = mainInstance.itemGenerator.hashMapToData(items);
 
                     int money = sender.myCharacter.goldRewardsByEntity[message.GetString(1)];
 
-                    Object[] data = new Object[2];
+                    Object[] data = new Object[3];
                     data[0] = money; //i
                     data[1] = itemsData;  //x
+                    data[2] = message.GetString(1);  //x
 
                     sender.Send("rewards", data);
                 }
