@@ -30,7 +30,10 @@ namespace ProjetB4
         public bool ridable = false;
         public bool isBoss = false;
 
-        public string[] spells = new string[0];
+        public string[] spells = new string[0]; //combat spells
+        public string[] nonCombatSpells = new string[0];
+        public string[] defensiveSpells = new string[0];
+        public Dictionary<string, float> itemsDropped = new Dictionary<string,float>(); //the float is the drop rate /1
 
         public EntityInfos()
         {}

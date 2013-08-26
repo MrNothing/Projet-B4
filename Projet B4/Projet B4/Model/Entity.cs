@@ -1231,7 +1231,7 @@ namespace ProjetB4
 
                 Entity author = (Entity)myGame.units[_author];
                 bool crit = false;
-                if ((mainSeed).Next(0, 100) < author.infos.vitalInfos.spellCrit + author.infos.vitalInfosBon.spellCrit)
+                if ((mainSeed).NextDouble() * 100 < author.infos.vitalInfos.spellCrit + author.infos.vitalInfosBon.spellCrit)
                 {
                     dmg = dmg * (150 + author.infos.vitalInfos.spellCritBon + author.infos.vitalInfosBon.spellCritBon) / 100;
                     crit = true;
@@ -1341,7 +1341,7 @@ namespace ProjetB4
                 {
                     //set Reward...
 
-                    if (_author.type == EntityType.player && !_author.Equals(master))
+                    if (master==null || (master!=null && master.type!=EntityType.player))
                     {
                         if (type == EntityType.player)
                         {
@@ -1350,20 +1350,67 @@ namespace ProjetB4
 
                         if (type == EntityType.npc && enableRewards)
                         {
-                            Hero theHero = (Hero)_author;
+                            float totalDmg = 0;
+                            foreach (string s in lastHiter.Keys)
+                            {
+                                totalDmg += lastHiter[s];
+                            }
+
+                            foreach (string s in lastHiter.Keys)
+                            {
+                                Entity killer = myGame.units[s];
+                                if (killer.type == EntityType.player)
+                                {
+                                    Hero theHero = (Hero)killer;
+                                    theHero.addXp(((float)infos.toInt()) * 2 * (lastHiter[s] / totalDmg));
+
+                                    List<Item> rewards = new List<Item>();
+
+                                    float mobRarity = ((float)infos.toInt()) / (5 * infos.level);
+
+                                    for (int i = 0; i < mobRarity; i++)
+                                    {
+                                        if ((mainSeed).NextDouble() * 100 < 10)
+                                        {
+                                            Item newItem = myGame.itemGenerator.generateItem("gen", mobRarity, infos.level);
+                                            rewards.Add(newItem);
+                                        }
+                                        else
+                                        { 
+                                            //try to loot a non generated Item...
+                                            if ((mainSeed).NextDouble() * 100 < 10)
+                                            {
+                                                //fetch a random item around the level of this mob or an ingedient...;
+                                                //myGame.worldInfos.getRandomItemByLevel();
+                                                //myGame.worldInfos.getCraftItem;
+                                                //rewards.Add(myItem);
+                                            }
+                                        }
+                                    }
+
+                                    if (rewards.Count>0)
+                                        theHero.itemRewardsByEntity.Add(s, rewards);
+                                    float moneyReward = (int)((float)infos.toInt() * (lastHiter[s] / totalDmg));
+
+                                    moneyReward = moneyReward + (float)mainSeed.NextDouble() * moneyReward;
+
+                                    theHero.goldRewardsByEntity.Add(s, (int) moneyReward);
+                                }
+                            }
+                            /*Hero theHero = (Hero)_author;
                             theHero.addXp(((float)infos.toInt()) * 2);
                             theHero.getMyOwner().money += infos.toInt();
                             theHero.sendMoney(id);
 
                             //show items for drop;
-                            if (mainSeed.Next(0, 100) < 10)
+                            if ((mainSeed).NextDouble() * 100 < 10)
                             {
                                 float mobRarity = ((float)infos.toInt())/(5*infos.level);
 
                                 Item newItem = myGame.itemGenerator.generateItem("gen", mobRarity, infos.level);
 
                                 theHero.addItem(newItem);
-                            }
+                            }*/
                         }
 
                     }
@@ -1439,9 +1486,10 @@ namespace ProjetB4
 
         public float getAttackValue()
         {
+            lastCrit = false;
             float dmg = infos.vitalInfos.dmg + infos.vitalInfosBon.dmg;
 
-            if ((mainSeed).Next(0, 100) < (infos.vitalInfos.crit + infos.vitalInfosBon.crit))
+            if ((mainSeed).NextDouble()*100 < (infos.vitalInfos.crit + infos.vitalInfosBon.crit))
             {
                 lastCrit = true;
                 dmg *= (2f + (infos.vitalInfos.critBon + infos.vitalInfosBon.critBon) / 100);

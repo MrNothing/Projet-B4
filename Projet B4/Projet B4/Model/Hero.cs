@@ -25,6 +25,9 @@ namespace ProjetB4
 
         public Dictionary<String, String> equippedItems = new Dictionary<String, String>();
 
+        public Dictionary<String, List<Item>> itemRewardsByEntity = new Dictionary<string, List<Item>>();
+        public Dictionary<String, int> goldRewardsByEntity = new Dictionary<string, int>();
+
         public int minionsSlain=0;
         public int heroKills = 0;
         public int assists = 0;

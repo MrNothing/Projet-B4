@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using PlayerIO.GameLibrary;
@@ -123,6 +124,34 @@ namespace ProjetB4
                 {
                     //TODO: do this in a way specific to my class or with a spell Master
                     sender.myCharacter.sendItems(sender);
+                }
+
+                if (_cmd.Equals("pickUp"))
+                {
+                    //TODO: do this in a way specific to my class or with a spell Master
+                    //message.GetString(1) the mob checked
+                    //message.GetInt(2) the item picked
+                }
+
+                if (_cmd.Equals("getRewards"))
+                {
+                    //message.GetString(1) the mob checked
+                    Hashtable items = new Hashtable();
+
+                    for (int i = 0; i < sender.myCharacter.itemRewardsByEntity[message.GetString(1)].Count; i++)
+                    {
+                        items.Add(i, sender.myCharacter.itemRewardsByEntity[message.GetString(1)][i].toHashtable());
+                    }
+
+                    string itemsData = mainInstance.itemGenerator.hashMapToData(items);
+
+                    int money = sender.myCharacter.goldRewardsByEntity[message.GetString(1)];
+
+                    Object[] data = new Object[2];
+                    data[0] = money; //i
+                    data[1] = itemsData;  //x
+
+                    sender.Send("rewards", data);
                 }
 
                 /*if(_cmd.Equals("profile"))
