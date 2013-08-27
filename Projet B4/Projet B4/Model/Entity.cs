@@ -730,6 +730,7 @@ namespace ProjetB4
             infos.vitalInfos.hpRegen = (float)(infos.baseStats.sou * 0.022) + (float)(infos.baseStats.sta * 0.011);
             infos.vitalInfos.mpRegen = (float)(infos.baseStats.sou * 0.028) + (float)(infos.baseStats.intel * 0.014);
             infos.vitalInfos.dmg = (float)(infos.baseStats.str * 0.6);
+            infos.spellBon.totalBon = (float)(infos.baseStats.intel * 0.6);
             infos.vitalInfos.armor = (float)(infos.baseStats.agi * 1.1);
             infos.vitalInfos.attackSpeed = (float)(infos.baseStats.agi * 0.4);
             infos.vitalInfos.crit = (float)((infos.baseStats.agi) * 0.125);
@@ -749,6 +750,7 @@ namespace ProjetB4
             infos.vitalInfos.hpRegen = (float)((infos.baseStats.sou + infos.baseStatsBon.sou) * 0.022) + (float)((infos.baseStats.sta + infos.baseStatsBon.sta) * 0.011);
             infos.vitalInfos.mpRegen = (float)((infos.baseStats.sou + infos.baseStatsBon.sou) * 0.028) + (float)((infos.baseStats.intel + infos.baseStatsBon.intel) * 0.014);
             infos.vitalInfos.dmg = (float)((infos.baseStats.str + infos.baseStatsBon.str) * 0.6);
+            infos.spellBon.totalBon = (float)((infos.baseStats.intel + infos.baseStatsBon.intel) * 0.6);
             infos.vitalInfos.armor = (float)((infos.baseStats.agi + infos.baseStatsBon.agi) * 1.1);
             infos.vitalInfos.attackSpeed = (float)((infos.baseStats.agi + infos.baseStatsBon.agi) * 0.4);
             infos.vitalInfos.crit = (float)((infos.baseStats.agi + infos.baseStatsBon.agi) * 0.125);

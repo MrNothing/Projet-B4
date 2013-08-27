@@ -74,6 +74,8 @@ namespace ProjetB4
                 addPerLevelStats();
 
                 sendStatsToMe();
+
+                infos.level = level;
             }
 
             sendDynamicInfosToAll();
@@ -446,7 +448,7 @@ namespace ProjetB4
                     */
                 }
 
-                items.Add(itemsCounter + "", item);
+                items.Add(item.id, item);
 
                 debugCounter++; //2
 
@@ -476,14 +478,14 @@ namespace ProjetB4
 
                 //sendDynamicInfosToAll();
                 //sendInfosToMe();
-                sendAddItem(item, itemsCounter + "");
+                sendAddItem(item);
                 //sendMoney();
                 debugCounter++; //5
                 itemsCounter++;
             }
             catch (Exception e)
             {
-                getMyOwner().Send("err", "i6="+debugCounter);
+                getMyOwner().Send("err", "i6");
                 return;
             }
         }
@@ -631,12 +633,12 @@ namespace ProjetB4
             myGame.sendDataToAll("i+", data, this);
         }
 
-        public void sendAddItem(Item item, String itemId) 
+        public void sendAddItem(Item item) 
         {
             Object[] data = new Object[4];
             data[0] = id;
             data[1] = item.infos.name;
-            data[2] = itemId;
+            data[2] = item.id;
 
             if (!item.generated)
                 data[3] = "null";
@@ -718,54 +720,66 @@ namespace ProjetB4
             {
                 Item myItem = items[itemId];
 
-                if (!myItem.equipped || isSlient)
+                if (myItem.infos.minLevel <= level)
                 {
-                    if (!isSlient)
+
+                    if (!myItem.equipped || isSlient)
                     {
-                        if (myItem.infos.slot == SlotTypes.bothHands)
+                        if (!isSlient)
                         {
-                            unEquipItem(SlotTypes.rightHand + "", false);
-                            unEquipItem(SlotTypes.leftHand + "", false);
+                            if (myItem.infos.slot == SlotTypes.bothHands)
+                            {
+                                unEquipItem(SlotTypes.rightHand + "", false);
+                                unEquipItem(SlotTypes.leftHand + "", false);
+                            }
+
+                            if (myItem.infos.slot == SlotTypes.rightHand || myItem.infos.slot == SlotTypes.leftHand)
+                            {
+                                unEquipItem(SlotTypes.bothHands + "", false);
+                            }
+
+                            unEquipItem(myItem.infos.slot + "", false);
                         }
 
-                        if (myItem.infos.slot == SlotTypes.rightHand || myItem.infos.slot == SlotTypes.leftHand)
-                        {
-                            unEquipItem(SlotTypes.bothHands + "", false);
-                        }
+                        myItem.equipped = true;
+                        equippedItems.Add(myItem.infos.slot + "", myItem.id);
+                        myItem.infos.setAllEffects(this);
 
-                        unEquipItem(myItem.infos.slot + "", false);
+                        if (!isSlient)
+                        {
+                            sendEquipItem(myItem.id, true);
+                            sendInfosToMe();
+                            sendDynamicInfosToAll();
+                        }
                     }
-
-                    myItem.equipped = true;
-                    equippedItems.Add(myItem.infos.slot + "", myItem.id);
-                    myItem.infos.setAllEffects(this);
-
-                    if (!isSlient)
+                    else
                     {
-                        sendEquipItem(myItem.id, true);
-                        sendInfosToMe();
-                        sendDynamicInfosToAll();
+                        if (!isSlient)
+                            getMyOwner().Send("err", "i8"); //You are already equiping this item!
+                        return;
                     }
                 }
                 else
                 {
-                    getMyOwner().Send("err", "i8"); //You are already equiping this item!
+                    if (!isSlient)
+                        getMyOwner().Send("err", "You dont have the required level!"); //You are already equiping this item!
                     return;
                 }
             }
             catch (Exception e)
             {
-                getMyOwner().Send("err", "i6");
+                if (!isSlient)
+                    getMyOwner().Send("err", "i6"); //item not found!
                 return;
             }
         }
 
-        public void unEquipItem(String slot, bool displayError)
+        public bool unEquipItem(String slot, bool displayError)
         {
             try
             {
-                if (bagWeight - equippedItems.Count + 1 <= bagMaxWeight || !displayError)
-                { 
+                //if (bagWeight - equippedItems.Count + 1 <= bagMaxWeight || !displayError)
+                //{ 
                     String myId = equippedItems[slot];
                     Item myItem = items[myId];
                     myItem.infos.clearAllEffects(this);
@@ -778,18 +792,20 @@ namespace ProjetB4
                         sendInfosToMe();
                         sendDynamicInfosToAll();
                     }
-                }
-                else
-                {
-                    getMyOwner().Send("err", "i3");
-                    return;
-                }
+                //}
+                //else
+                //{
+                //    getMyOwner().Send("err", "i3");
+                //    return;
+                //}
+
+                    return true;
             }
             catch(Exception e)
             {
                 if (displayError)
                     getMyOwner().Send("err", "i9"); //you have not equiped this item!
-                return;
+                return false;
             }
         }
 

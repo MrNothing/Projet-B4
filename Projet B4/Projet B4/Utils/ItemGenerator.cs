@@ -329,6 +329,26 @@ namespace ProjetB4
             return newItem;
         }
 
+        public Item parseItem(Hashtable itemInfos, GameCode mainInstane)
+        {
+            ItemPattern newPattern;
+            try
+            {
+                newPattern = new ItemPattern(itemInfos);
+            }
+            catch (Exception e)
+            {
+                mainInstane.PlayerIO.ErrorLog.WriteError("newPattern error: " + e.Message);
+                throw new Exception();
+            }
+
+            Item newItem = new Item(newPattern);
+            newItem.generated = true;
+
+            return newItem;
+        }
+
+
         public String exportItem(Item myItem)
         {
             

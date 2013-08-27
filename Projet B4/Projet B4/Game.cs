@@ -66,7 +66,7 @@ public class GameCode : Game<Player> {
             chatManager = new ChatManager(this);
             gameManager = new GameManager(this, spellsManager);
 
-            PlayerIO.ErrorLog.WriteError("test Item infos:"+itemGenerator.generateItem("0", 10, 10).toString());
+            //PlayerIO.ErrorLog.WriteError("test Item infos:"+itemGenerator.generateItem("0", 10, 10).toString());
 
 			//this is the main routine 
             mainTimer = AddTimer(run, loopInterval);
@@ -230,9 +230,14 @@ public class GameCode : Game<Player> {
                 location = "9";
 
                 //load Bag Items
-                for (int n = 0; ; n++)
+                string rawItems = player.PlayerObject.GetString("items", "");
+                Hashtable items = itemGenerator.dataToHashMap(rawItems);
+
+                int itemsCounter = 0;
+                foreach (string s in items.Keys)
                 {
-                    if (player.PlayerObject.GetInt("item_" + n, -1) != -1)
+                    Hashtable item = (Hashtable)items[s];
+                    if (true)
                     {
                         String tL = "0";
                         //PlayerIO.ErrorLog.WriteError("item FOUND: "+player.PlayerObject.GetString("item_" + n + "_name"));
@@ -245,11 +250,13 @@ public class GameCode : Game<Player> {
 
 							Item loadedItem =  new Item(errorItemPattern);
 
-							if(!player.PlayerObject.GetString("item_" + n + "_generated", "N/A").Equals("N/A"))
+							if(item["generated"]!=null)
 							{
                                 try
                                 {
-                                    loadedItem = itemGenerator.parseItem(player.PlayerObject.GetString("item_" + n + "_generated", "N/A"), this);
+                                    if (((Hashtable)item["generated"])["name"] == null)
+                                        ((Hashtable)item["generated"]).Add("name", item["name"] + "");
+                                    loadedItem = itemGenerator.parseItem((Hashtable)item["generated"], this);
                                 }
                                 catch (Exception e)
                                 {
@@ -260,7 +267,7 @@ public class GameCode : Game<Player> {
 							{
                                 try
                                 {
-								    loadedItem = worldInfos.getItemByName(player.PlayerObject.GetString("item_" + n + "_name"));
+                                    loadedItem = worldInfos.getItemByName(item["name"]+"");
                                 }
                                 catch (Exception e)
                                 {
@@ -272,14 +279,14 @@ public class GameCode : Game<Player> {
 
                             tL = "1";
 
-                            loadedItem.id = n + "";
-                            loadedItem.cooldown = player.PlayerObject.GetInt("item_" + n + "_cd");
-                            loadedItem.uses = player.PlayerObject.GetInt("item_" + n + "_uses");
-                            loadedItem.equipped = player.PlayerObject.GetBool("item_" + n + "_equipped");
-                               
-                            player.myCharacter.itemsCounter = n + 1;
+                            loadedItem.id = itemsCounter + "";
+                            loadedItem.cooldown = float.Parse(item["cd"]+"");
+                            loadedItem.uses = float.Parse(item["uses"] + "");
+                            loadedItem.equipped = bool.Parse(item["equipped"] + "");
 
-                            player.myCharacter.items.Add(n + "", loadedItem);
+                            player.myCharacter.itemsCounter = itemsCounter + 1;
+
+                            player.myCharacter.items.Add(itemsCounter + "", loadedItem);
 
                             player.myCharacter.bagWeight += loadedItem.infos.weight;
 
@@ -308,6 +315,8 @@ public class GameCode : Game<Player> {
                                     tL = "equip";
                                 }
                             }
+
+                            itemsCounter++;
                         }
                         catch (Exception e2)
                         {
@@ -321,40 +330,49 @@ public class GameCode : Game<Player> {
                 }
 
                 //load Spells
-                for (int n = 0; ; n++)
+                string rawSpells = player.PlayerObject.GetString("spells", "");
+                Hashtable spells = itemGenerator.dataToHashMap(rawSpells);
+
+                int spellsCounter = 0;
+                int decal = 0;
+
+                foreach (string s in spells.Keys)
                 {
-                    int decal = 0;
-                    if (player.PlayerObject.GetInt("spell_" + n + "_rank", -1) != -1)
+                    Hashtable spell = (Hashtable)spells[s];
+                    
+                    if (true)
                     {
-                        PlayerIO.ErrorLog.WriteError("spell FOUND: " + player.PlayerObject.GetString("spell_" + n + "_name"));
+                        PlayerIO.ErrorLog.WriteError("spell FOUND: " + spell["id"]);
                         //load item Infos...
-                        Hashtable loadedSpell = new Hashtable((Hashtable)(new SpellInfos()).allSpells[player.PlayerObject.GetString("spell_" + n + "_name")]); // (player.PlayerObject.GetString("spell_" + n + "_name"));
-                        loadedSpell["rank"] = player.PlayerObject.GetInt("spell_" + n + "_rank");
-                        loadedSpell["cd"] = player.PlayerObject.GetInt("spell_" + n + "_cd");
+                        Hashtable loadedSpell = new Hashtable((Hashtable)(new SpellInfos()).allSpells[spell["id"]+""]); // (player.PlayerObject.GetString("spell_" + n + "_name"));
+                        loadedSpell["rank"] = int.Parse(spell["rank"]+"");
+                        loadedSpell["cd"] = int.Parse(spell["cd"] + "");
+
                         int loc = 0;
                         try
                         {
-                            player.myCharacter.spellsByName.Add(loadedSpell["name"], true);
+                            player.myCharacter.spellsByName.Add(spell["id"], true);
                             loc++;
-                            player.myCharacter.spells.Add((n - decal) + "", loadedSpell);
+                            player.myCharacter.spells.Add((spellsCounter) + "", loadedSpell);
                             loc++;
-                            player.myCharacter.spellsCounter = (n - decal) + 1;
+                            player.myCharacter.spellsCounter = (spellsCounter) + 1;
                             loc++;
-                            spellsManager.applyPassiveEffects(player.myCharacter, loadedSpell["name"]+"");
+                            spellsManager.applyPassiveEffects(player.myCharacter, spell["id"] + "");
+
+                            PlayerIO.ErrorLog.WriteError("spell Loaded: " + spell["id"] + loadedSpell.Count);
                         }
-                        catch (Exception e)
+                        catch
                         {
                             decal += 1;
-                            PlayerIO.ErrorLog.WriteError("spell FAILED: " + loc);
                         }
                     }
-                    else
-                    {
-                        break;
-                    }
+
+                    spellsCounter++;
                 }
 
                 location = "17";
+
+                player.myCharacter.applyAllBaseStatsToVitalInfos();
 
                 units[player.ConnectUserId] = player.myCharacter;
                 players[player.ConnectUserId] = player;
@@ -450,28 +468,31 @@ public class GameCode : Game<Player> {
 
                 //save items
                 int tmpC1 = 0;
+                Hashtable items = new Hashtable();
                 foreach (String s in player.myCharacter.items.Keys)
                 {
                     Item tmpitem = player.myCharacter.items[s];
 
+                    Hashtable myItemInstance = new Hashtable();
+
                     if (!tmpitem.generated)
                     {
-                        player.PlayerObject.Set("item_" + tmpC1, 1);
-                        player.PlayerObject.Set("item_" + tmpC1 + "_name", tmpitem.infos.name);
-                        player.PlayerObject.Set("item_" + tmpC1 + "_cd", (int)tmpitem.infos.coolDown);
-                        player.PlayerObject.Set("item_" + tmpC1 + "_uses", (int)tmpitem.uses);
-                        player.PlayerObject.Set("item_" + tmpC1 + "_equipped", tmpitem.equipped);
+                        myItemInstance.Add("id", tmpC1 + "");
+                        myItemInstance.Add("name", tmpitem.infos.name);
+                        myItemInstance.Add("cd", tmpitem.cooldown);
+                        myItemInstance.Add("uses", tmpitem.uses);
+                        myItemInstance.Add("equipped", tmpitem.equipped);
                     }
                     else
                     {
                         try
                         {
-                            player.PlayerObject.Set("item_" + tmpC1, 1);
-                            player.PlayerObject.Set("item_" + tmpC1 + "_generated", itemGenerator.exportItem(tmpitem));
-                            player.PlayerObject.Set("item_" + tmpC1 + "_name", tmpitem.infos.name);
-                            player.PlayerObject.Set("item_" + tmpC1 + "_cd", (int)tmpitem.infos.coolDown);
-                            player.PlayerObject.Set("item_" + tmpC1 + "_uses", (int)tmpitem.uses);
-                            player.PlayerObject.Set("item_" + tmpC1 + "_equipped", tmpitem.equipped);
+                            myItemInstance.Add("id", tmpC1 + "");
+                            myItemInstance.Add("name", tmpitem.infos.name);
+                            myItemInstance.Add("cd", tmpitem.cooldown);
+                            myItemInstance.Add("uses", tmpitem.uses);
+                            myItemInstance.Add("equipped", tmpitem.equipped);
+                            myItemInstance.Add("generated", tmpitem.infos.toHashtable());
                         }
                         catch (Exception e)
                         {
@@ -479,19 +500,28 @@ public class GameCode : Game<Player> {
                         }
                     }
 
+                    items.Add(tmpC1 + "", myItemInstance);
                     tmpC1++;
                 }
 
+                player.PlayerObject.Set("items", itemGenerator.hashMapToData(items));
+
                 //save spells
-                int tmpC2 = 0;
+                Hashtable spells = new Hashtable();
+
                 foreach (String s in player.myCharacter.spells.Keys)
                 {
                     Hashtable tmpitem = player.myCharacter.spells[s];
-                    player.PlayerObject.Set("spell_" + tmpC2 + "_name", tmpitem["id"] + "");
-                    player.PlayerObject.Set("spell_" + tmpC2 + "_rank", (int)tmpitem["rank"]);
-                    player.PlayerObject.Set("spell_" + tmpC2 + "_cd", (int)tmpitem["cd"]);
-                    tmpC2++;
+                    Hashtable mySpellInstance = new Hashtable();
+
+                    mySpellInstance.Add("id", tmpitem["id"] + "");
+                    mySpellInstance.Add("rank", tmpitem["rank"] + "");
+                    mySpellInstance.Add("cd", tmpitem["cd"] + "");
+
+                    spells.Add(tmpitem["id"] + "", mySpellInstance);
                 }
+
+                player.PlayerObject.Set("spells", itemGenerator.hashMapToData(spells));
 
                 player.PlayerObject.Save();
                 

@@ -35,7 +35,7 @@ namespace ProjetB4
                 {
                     sender.myCharacter.addItem(mainInstance.itemGenerator.generateItem("", 10, 10));
                 }
-        
+                
                 //getVisibleUnits
                 if (_cmd.Equals("getVisibleUnits"))
                 {
@@ -48,7 +48,7 @@ namespace ProjetB4
                         sender.Send("err", "Unit not found!");
                     }
                 }
-
+                
                 //getVisibleUnits
                 if (_cmd.Equals("ul"))
                 {
@@ -63,7 +63,7 @@ namespace ProjetB4
 
                     sender.Send("ul", pList.ToArray());
                 }
-
+                
                 //lvlUpSpell
                 if (_cmd.Equals("clearSpells"))
                 {
@@ -73,7 +73,7 @@ namespace ProjetB4
                     myPlayer.myCharacter.spellsByName = new System.Collections.Hashtable();
                     myPlayer.myCharacter.sendSpells();
                 }
-
+                
                 if (_cmd.Equals("clearItems"))
                 {
                     Player myPlayer = sender;
@@ -83,7 +83,6 @@ namespace ProjetB4
                     myPlayer.myCharacter.equippedItems = new Dictionary<string,string>();
                     myPlayer.myCharacter.sendItems(myPlayer);
                 }
-
                 
                 //lvlUpSpell
                 if (_cmd.Equals("lvlUpSpell"))
@@ -223,7 +222,10 @@ namespace ProjetB4
                 {
                     Player myPlayer = sender;
 
-                    myPlayer.myCharacter.unEquipItem(message.GetString(1), true);
+                    if (!myPlayer.myCharacter.unEquipItem(message.GetString(1), false))
+                    {
+                        myPlayer.myCharacter.equipItem(message.GetString(1), false);
+                    }
                 }
 
                 if (_cmd.Equals("req"))
