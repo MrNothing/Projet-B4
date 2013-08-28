@@ -299,6 +299,9 @@ namespace ProjetB4
         int focusCounter = 0;
         public float attackCounter = 0;
         String lastTargetPosRefId="";
+
+        Hashtable currentIASpell = null;
+        string currentIASpellId = "";
         private void applyIAMoves()
         {
 
@@ -318,8 +321,23 @@ namespace ProjetB4
                     if (highestThreat < lastHiter[tmpId])
                     {
                         highestThreat = lastHiter[tmpId];
-                        focus = tmpId;
+
+                        try
+                        {
+                            focus = myGame.units[focus].id;
+                        }
+                        catch 
+                        {
+                            lastHiter.Remove(tmpId);
+                            //this unit does not exist anymore...
+                        }
+                        
                     }
+                }
+
+                if (lastHiter.Count <= 0)
+                {
+                    focus = null;
                 }
 
                 setFocusDistance();
@@ -336,7 +354,7 @@ namespace ProjetB4
                     {
                         myGame.players[watcher].Send("err", "focusDistance: " + focusDistance);
                     }
-                    if (focusDistance > infos.range)
+                    if (focusDistance > infos.range || (currentIASpell!=null && focusDistance > (int)currentIASpell["range"]))
                     {
                         if (position.Substract(initialPosition).Magnitude() > viewRange)
                         {
@@ -350,7 +368,7 @@ namespace ProjetB4
                             paths = pathfinder.start(position, initialPosition);
                             destination = paths[paths.Count - 1];
                             paths.RemoveAt(paths.Count - 1);
-                            lastHiter.Clear();
+                            //lastHiter.Clear();
 
                             if (lastHiter.Count<=0 && master==null)
                             {
@@ -402,15 +420,80 @@ namespace ProjetB4
                             {
                                 casting = true;
 
-                                int randomSpell = mainSeed.Next(0, spells.Count);
-
-                                if (randomSpell >= spells.Count)
-                                    randomSpell = spells.Count - 1;
-
-                                if (spells[randomSpell+""] != null)
+                                if (currentIASpell != null)
                                 {
-                                    Entity focusedUnit = myGame.units[focus];
-                                    casting = myGame.spellsManager.IAUseSpell(this, focus, randomSpell + "", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
+                                    string target = "";
+                                    if (currentIASpell["usage"].Equals("target"))
+                                    {
+                                        if (currentIASpell["targets"].Equals("ally"))
+                                        { 
+                                            if(master!=null)
+                                                target = master.id;
+                                            else
+                                                target = id;
+                                        }
+                                        else
+                                        {
+                                            target = focus;
+                                        }
+                                    }
+
+                                    //self
+                                    if(currentIASpell["usage"].Equals("self"))
+                                    {
+                                        target = focus;
+                                    }
+
+                                    Entity focusedUnit = myGame.units[target];
+                                    casting = myGame.spellsManager.IAUseSpell(this, focus, currentIASpellId + "", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
+
+                                    currentIASpellId = "";
+                                    currentIASpell = null;
+                                }
+                                else
+                                {
+                                    int randomSpell = mainSeed.Next(0, spells.Count);
+
+                                    if (randomSpell >= spells.Count)
+                                        randomSpell = spells.Count - 1;
+
+                                    if (spells[randomSpell + ""] != null)
+                                    {
+                                        Hashtable tmpSpell = spells[randomSpell + ""];
+
+                                        string target = "";
+                                        if (tmpSpell["usage"].Equals("target"))
+                                        {
+                                            if (tmpSpell["targets"].Equals("ally"))
+                                            { 
+                                                if(master!=null)
+                                                    target = master.id;
+                                                else
+                                                    target = id;
+                                            }
+                                            else
+                                            {
+                                                target = focus;
+                                            }
+                                        }
+
+                                        //self
+                                        if(tmpSpell["usage"].Equals("self"))
+                                        {
+                                            target = focus;
+                                        }
+
+                                        if (focusDistance <= (int)tmpSpell["range"] || tmpSpell["targets"].Equals("ally"))
+                                        {
+                                            Entity focusedUnit = myGame.units[target];
+                                            casting = myGame.spellsManager.IAUseSpell(this, focus, randomSpell + "", focusedUnit.position.x, focusedUnit.position.y, focusedUnit.position.z);
+                                        }
+                                        else
+                                        {
+                                            currentIASpell = tmpSpell;
+                                            currentIASpellId = randomSpell + "";
+                                        }
+                                    }
                                 }
                             }
 
@@ -419,7 +502,8 @@ namespace ProjetB4
                                 attack(focus);
                             }
 
-                            attackCounter = 0;
+                            if (currentIASpell==null)
+                                attackCounter = 0;
                         }
 
                         debugLocation = "line 338"; //7

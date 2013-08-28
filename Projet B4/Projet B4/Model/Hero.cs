@@ -18,6 +18,12 @@ namespace ProjetB4
 
         public Hashtable spellsByName = new Hashtable();
 
+        /// <summary>
+        /// Active quests are indexed by their name since they cannot be two instances of the same quest for a player
+        /// </summary>
+        public Dictionary<string, string> startedQuests = new Dictionary<string, string>();
+        public Dictionary<String, Quest> quests = new Dictionary<string, Quest>();
+
         public float bagWeight = 0;
         public int bagMaxWeight = 6;
 

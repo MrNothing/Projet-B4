@@ -43,13 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generated\QuestInfos.cs" />
     <Compile Include="Generated\SpellInfos.cs" />
     <Compile Include="Generated\Units\units level 0 5.cs" />
     <Compile Include="Generated\Units\UnitsInfos.cs" />
     <Compile Include="Lobby.cs" />
+    <Compile Include="Managers\QuestsManager.cs" />
     <Compile Include="Model\EntityInfos\BaseStatsInfos.cs" />
     <Compile Include="Managers\ChatManager.cs" />
     <Compile Include="Model\ItemSeed.cs" />
+    <Compile Include="Model\Quest.cs" />
+    <Compile Include="Model\QuestPattern.cs" />
     <Compile Include="Utils\delayedMagicDmg.cs" />
     <Compile Include="Utils\delayedZoneMagicDmg.cs" />
     <Compile Include="Utils\EffectsGenerator.cs" />

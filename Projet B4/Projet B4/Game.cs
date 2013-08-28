@@ -11,6 +11,7 @@ public class GameCode : Game<Player> {
         public String zoneName;
         public MapsData mapsInfos;
 		public WorldInfos worldInfos;
+        public QuestInfos questInfos;
 		
         public Dictionary<String, Entity> units = new Dictionary<String, Entity>(); //contains all entities
         public Dictionary<String, Player> players = new Dictionary<String, Player>(); //contains all entities
@@ -42,6 +43,7 @@ public class GameCode : Game<Player> {
 			//load the classes generated with the World Editor
             mapsInfos = new MapsData();
 			worldInfos = new WorldInfos();
+            questInfos = new QuestInfos();
 			
 			//enable this for persistence
             PreloadPlayerObjects = true;
