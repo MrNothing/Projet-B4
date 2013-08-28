@@ -29,6 +29,11 @@ namespace ProjetB4
                 mainInstance.PlayerIO.ErrorLog.WriteError("handleClientRequest Cancelled: " + _cmd + " there was no Hero loaded");
             }
 
+                //generateItem
+                if (_cmd.Equals("startQuest"))
+                {
+                    ;
+                }
 
                 //generateItem
                 if (_cmd.Equals("generateItem"))

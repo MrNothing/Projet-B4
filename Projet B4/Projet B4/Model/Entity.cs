@@ -42,6 +42,7 @@ namespace ProjetB4
 
         public Dictionary<String, Hashtable> spells = new Dictionary<String, Hashtable>(); //object shall be spell soon...
         public Dictionary<String, Item> items = new Dictionary<string,Item>();
+        public Dictionary<String, QuestPattern> npcQuests = new Dictionary<string,QuestPattern>();
 
         public GameCode myGame;
         public Player myController;
@@ -1443,6 +1444,26 @@ namespace ProjetB4
                         if (type == EntityType.player)
                         {
                             //give special rewards...
+
+                            float totalDmg = 0;
+                            foreach (string s in lastHiter.Keys)
+                            {
+                                totalDmg += lastHiter[s];
+                            }
+
+                            foreach (string s in lastHiter.Keys)
+                            {
+                                Entity killer = myGame.units[s];
+                                if (killer.type == EntityType.player)
+                                {
+                                    Hero theHero = (Hero)killer;
+                                    foreach (string myQuest in theHero.startedQuests.Keys)
+                                        myGame.questsManager.updateQuestStatus(theHero.getMyOwner(), name, myQuest, QuestTaskType.killPlayers);
+
+                                    //TODO: give honor(or whatever its name is...) to the player
+                                    //TODO: increase vh count
+                                }
+                            }
                         }
 
                         if (type == EntityType.npc && enableRewards && lastHiter.Count>0)
@@ -1461,6 +1482,9 @@ namespace ProjetB4
                                 {
                                     Hero theHero = (Hero)killer;
                                     theHero.addXp(((float)infos.toInt()) * 2 * (lastHiter[s] / totalDmg));
+
+                                    foreach (string myQuest in theHero.startedQuests.Keys)
+                                        myGame.questsManager.updateQuestStatus(theHero.getMyOwner(), name, myQuest, QuestTaskType.killEntities);
 
                                     List<Item> rewards = new List<Item>();
 
@@ -2069,6 +2093,20 @@ namespace ProjetB4
         public String toString()
         {
             return name;
+        }
+
+        public bool listenChats = false;
+        public void onChatRecieved(Player sender, string msg)
+        {
+            if (listenChats)
+            {
+                string[] chatCode = new string[2];
+                chatCode[0] = name;
+                chatCode[1] = msg;
+
+                foreach (string myQuest in sender.myCharacter.startedQuests.Keys)
+                    myGame.questsManager.updateQuestStatus(sender, chatCode, myQuest, QuestTaskType.chatWithNpcAndSayTheCode);
+            }
         }
     }
 }

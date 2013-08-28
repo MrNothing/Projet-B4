@@ -24,6 +24,7 @@ public class GameCode : Game<Player> {
         public SpellsManager spellsManager;
         public ChatManager chatManager;
         public GameManager gameManager;
+        public QuestsManager questsManager;
 		
 		public ItemGenerator itemGenerator = new ItemGenerator();
 
@@ -67,6 +68,7 @@ public class GameCode : Game<Player> {
             spellsManager = new SpellsManager(this);
             chatManager = new ChatManager(this);
             gameManager = new GameManager(this, spellsManager);
+            questsManager = new QuestsManager(this);
 
             //PlayerIO.ErrorLog.WriteError("test Item infos:"+itemGenerator.generateItem("0", 10, 10).toString());
 
@@ -392,12 +394,12 @@ public class GameCode : Game<Player> {
                 sendEntityInfos(player, player.myCharacter);
 
                 location = "sendSpells ";
-                //send my spells -> disabled since the infos are sent in a different way now
                 player.myCharacter.sendSpells(player);
 
                 location = "sendItems ";
-                //send Items -> disabled since the infos are sent in a different way now
                 player.myCharacter.sendItems(player);
+
+                player.myCharacter.sendQuests();
 
                 player.myCharacter.sendMoney();
             }
@@ -647,7 +649,7 @@ public class GameCode : Game<Player> {
             string errLocation = "";
             try
             {
-                Object[] data = new Object[30];
+                Object[] data = new Object[31];
                
                /* if (myUnit.master.Equals(player.myCharacter))
                 {*/
@@ -764,6 +766,11 @@ public class GameCode : Game<Player> {
                 {
                     data[29] = "";
                 }
+
+                data[30] = "";
+                
+                foreach(string s in myUnit.npcQuests.Keys)
+                    data[30] += s+"|";
                 //}
                 //System.out.println("myUnit.speed: "+myUnit.speed);
 
@@ -913,6 +920,11 @@ public class GameCode : Game<Player> {
                 {
                     data[29] = "";                
                 }
+
+                data[30] = "";
+
+                foreach (string s in myUnit.npcQuests.Keys)
+                    data[30] += s + "|";
                 //}
                 //System.out.println("myUnit.speed: "+myUnit.speed);
 

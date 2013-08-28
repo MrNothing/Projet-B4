@@ -82,6 +82,10 @@ namespace ProjetB4
                 sendStatsToMe();
 
                 infos.level = level;
+
+                foreach (string myQuest in startedQuests.Keys)
+                    myGame.questsManager.updateQuestStatus(getMyOwner(), name, myQuest, QuestTaskType.reachLevel);
+
             }
 
             sendDynamicInfosToAll();
@@ -248,6 +252,9 @@ namespace ProjetB4
 					    }
 				        
 					    items.Add(itemsCounter+"", item);
+
+                        onAddItem(item);
+                        
                         try
 					    {
                             float amount = (float)itemsByName[item.infos.name];
@@ -353,6 +360,9 @@ namespace ProjetB4
                     }
 
                     items.Add(itemsCounter + "", item);
+
+                    onAddItem(item);
+
                     try
                     {
                         float amount = (float)itemsByName[item.infos.name];
@@ -455,6 +465,8 @@ namespace ProjetB4
                 }
 
                 items.Add(item.id, item);
+
+                onAddItem(item);
 
                 debugCounter++; //2
 
@@ -815,6 +827,19 @@ namespace ProjetB4
             }
         }
 
+        void onAddItem(Item item)
+        {
+            foreach (string myQuest in startedQuests.Keys)
+                myGame.questsManager.updateQuestStatus(getMyOwner(), item.infos.name, myQuest, QuestTaskType.getItem);
+        }
 
+        public void sendQuests() //use the new photon protocol!
+        {
+            Hashtable myQuests = new Hashtable();
+            foreach (string myQuest in startedQuests.Keys)
+            { 
+                
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace ProjetB4
 
     public enum QuestTaskType
     {
-        killEntities, activateTrigger, completeEvent, talkTo, getItem, completeQuest, killPlayers, exploreZone, reachLevel
+        killEntities, activateTrigger, completeEvent, talkTo, getItem, completeQuest, killPlayers, exploreZone, reachLevel, chatWithNpcAndSayTheCode
     }
 
     public enum QuestRewardType
@@ -35,6 +35,14 @@ namespace ProjetB4
         {
             id = _id;
         }
+
+        public QuestTask(QuestTask origin)
+        {
+            id = origin.id;
+            task = origin.task;
+            requiredElements = new Dictionary<string,int>(origin.requiredElements);
+        }
+
         public QuestTask(byte _id, Hashtable infos)
         {
             id = _id;
@@ -68,19 +76,21 @@ namespace ProjetB4
     /// </summary>
     public class QuestReward
     {
-        QuestRewardType type;
-        float rewardLevel = 0; //applies for randomized items...
-        float rewardRarity = 0; //applies for randomized items...
-        float rewardQuantity = 0; //how much xp or gold or how many items...
+        public QuestRewardType type;
+        public float rewardLevel = 0; //applies for randomized items...
+        public float rewardRarity = 0; //applies for randomized items...
+        public float rewardQuantity = 1; //how much xp or gold or how many items...
+        public string rewardName = ""; //the name of the reward (for specific rewards)
 
         public QuestReward(QuestRewardType _type)
         {
             type = _type;
         }
 
-        public QuestReward(QuestRewardType _type, float quantity, float level, float rarity)
+        public QuestReward(QuestRewardType _type, string _rewardName, float quantity, float level, float rarity)
         {
             type = _type;
+            rewardName = _rewardName;
             rewardQuantity = quantity;
             rewardLevel = level;
             rewardRarity = rarity;
@@ -89,8 +99,9 @@ namespace ProjetB4
 
     public class QuestPattern
     {
-        public QuestPattern(string _name, Dictionary<byte, QuestTask> _tasks, Dictionary<byte, QuestReward> _rewards, Entity _questGiver, Entity _questEnder)
+        public QuestPattern(string _name, int _requiredLevel, Dictionary<byte, QuestTask> _tasks, Dictionary<byte, QuestReward> _rewards, Entity _questGiver, Entity _questEnder)
         {
+            requiredLevel = _requiredLevel;
             name = _name;
             tasks = _tasks;
             rewards = _rewards;
@@ -130,6 +141,7 @@ namespace ProjetB4
 
         public string name;
         public QuestType type = QuestType.standard;
+        public int requiredLevel = 0;
 
         public Dictionary<byte, QuestTask> tasks; //all the required tasks to complete the quest
         public Dictionary<QuestTaskType, List<QuestTask>> tasksByType = new Dictionary<QuestTaskType, List<QuestTask>>();
@@ -188,6 +200,16 @@ namespace ProjetB4
                     //Well fuck this is too long I'll write the descriptions myself...
                 }
             }
+        }
+
+        public Dictionary<byte, QuestTask> cloneTasks()
+        {
+            Dictionary<byte, QuestTask> newTasks = new Dictionary<byte, QuestTask>();
+            foreach (byte b in tasks.Keys)
+            { 
+                newTasks.Add(b, new QuestTask(tasks[b]));
+            }
+            return newTasks;
         }
     }
 }

@@ -126,8 +126,12 @@ namespace ProjetB4
             }
             else
             {
+                foreach (string myQuest in author.startedQuests.Keys)
+                    parentEntity.myGame.questsManager.updateQuestStatus(author.getMyOwner(), parentEntity.name, myQuest, QuestTaskType.activateTrigger);
+
                 activated = true;
             }
+
             sendTriggerStatus();
         }
 

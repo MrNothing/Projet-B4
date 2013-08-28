@@ -8,7 +8,7 @@ namespace ProjetB4
 {
     public enum QuestStatus
     { 
-        started, completed
+        started, completed, failed
     }
 
     /// <summary>
@@ -23,8 +23,7 @@ namespace ProjetB4
         public QuestStatus status = QuestStatus.started;
 
         public Dictionary<byte, QuestTask> tasks = new Dictionary<byte, QuestTask>();
-        public Dictionary<QuestTaskType, List<QuestTask>> tasksByType = new Dictionary<QuestTaskType, List<QuestTask>>();
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="Quest"/> class.
         /// </summary>
