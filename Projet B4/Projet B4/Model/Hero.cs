@@ -4,7 +4,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 
-namespace ProjetB4
+namespace PhotonB4
 {
     public class Hero : Entity
     {
@@ -837,9 +837,11 @@ namespace ProjetB4
         {
             Hashtable myQuests = new Hashtable();
             foreach (string myQuest in startedQuests.Keys)
-            { 
-                
+            {
+                myQuests.Add(myQuest, quests[myQuest].toHashtable());
             }
+
+            //getMyOwner().SendFast("quests", myQuests);
         }
     }
 }

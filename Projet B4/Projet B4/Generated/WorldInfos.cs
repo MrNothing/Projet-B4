@@ -12,7 +12,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 
-namespace ProjetB4
+namespace PhotonB4
 {
 	public class WorldInfos
 	{

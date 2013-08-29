@@ -49,6 +49,7 @@
     <Compile Include="Generated\Units\UnitsInfos.cs" />
     <Compile Include="Lobby.cs" />
     <Compile Include="Managers\QuestsManager.cs" />
+    <Compile Include="Managers\ViewsTilesManager.cs" />
     <Compile Include="Model\EntityInfos\BaseStatsInfos.cs" />
     <Compile Include="Managers\ChatManager.cs" />
     <Compile Include="Model\ItemSeed.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Utils\Vector3.cs" />
     <Compile Include="Model\EntityInfos\VitalInfos.cs" />
     <Compile Include="Generated\WorldInfos.cs" />
+    <Compile Include="Utils\ViewTile.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

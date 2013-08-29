@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
-namespace ProjetB4
+namespace PhotonB4
 {
     public class Item
     {

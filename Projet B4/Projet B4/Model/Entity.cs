@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using PlayerIO.GameLibrary;
 
-namespace ProjetB4
+namespace PhotonB4
 {
     public enum EntityType
     {
@@ -66,18 +66,20 @@ namespace ProjetB4
         public SpawnZone spawnZone;
 
         private int visibleCounter = 0;
-        public Dictionary<String, String> visibleUnits = new Dictionary<String, String>();
-        public Dictionary<String, String> visibleEnemies = new Dictionary<String, String>();
-        public Dictionary<String, String> visibleAllies = new Dictionary<String, String>();
-        public Dictionary<String, String> visibleEnnemyHeroes = new Dictionary<String, String>();
-        public Dictionary<String, String> visiblePlayers = new Dictionary<String, String>();
-        public Dictionary<String, String> visibleEnnemyNonHeroes = new Dictionary<String, String>();
-        public Dictionary<String, String> visibleCorpses = new Dictionary<String, String>();
+        public Hashtable visibleUnits = new Hashtable();
+        public Hashtable visibleEnemies = new Hashtable();
+        public Hashtable visibleAllies = new Hashtable();
+        public Hashtable visibleEnnemyHeroes = new Hashtable();
+        public Hashtable visiblePlayers = new Hashtable();
+        public Hashtable visibleEnnemyNonHeroes = new Hashtable();
+        public Hashtable visibleCorpses = new Hashtable();
 
         public String watcher="";
 
         public Timer incantation = null;
         public Timer canalisedSpell = null;
+
+        public ViewsTilesManager entityView;
 
         public Entity(GameCode _myGame, String _id, String _name, EntityInfos _infos, Vector3 _position)
         {
@@ -109,6 +111,8 @@ namespace ProjetB4
                 applyBaseStatsToVitalInfos();
 
                 enablePathFinder(new Dictionary<String, Vector3>());
+
+                entityView = new ViewsTilesManager(this, position.smash(myGame.baseRefSize));
             }
             catch (Exception e)
             {
@@ -295,6 +299,12 @@ namespace ProjetB4
 
             if (recentlyHit > 0)
                 recentlyHit--;
+
+            if (!entityView.lastTiledPosition.Equals(position.smash(myGame.baseRefSize)))
+            {
+                entityView.onMove();
+                entityView.lastTiledPosition = position.smash(myGame.baseRefSize);
+            }
         }
 
         int focusCounter = 0;
@@ -533,6 +543,11 @@ namespace ProjetB4
         }
 
         public string debugMsg = "";
+        /// <summary>
+        /// DEPRECATED
+        /// Checks the visible players.
+        /// </summary>
+        /// <param name="offset">The offset.</param>
         private void checkVisiblePlayers(Vector3 offset)
         {
             //check the units around me, if they are players, send my position to them.
@@ -566,9 +581,9 @@ namespace ProjetB4
                             visibleEnemies.Add(theUnit.id, theUnit.id);
 
                             if (type == EntityType.player)
-                                visibleEnnemyHeroes = new Dictionary<String, String>();
+                                visibleEnnemyHeroes = new Hashtable();
                             else
-                                visibleEnnemyNonHeroes = new Dictionary<String, String>();
+                                visibleEnnemyNonHeroes = new Hashtable();
                         }
                         else
                             visibleAllies.Add(theUnit.id, theUnit.id);
@@ -667,6 +682,7 @@ namespace ProjetB4
         }
 
         /*String lastPosRefId = "";
+        //DEPRECATED
         public void setRef()
         {
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProjetB4
+namespace PhotonB4
 {
 	public class Vector3
 	{
@@ -24,6 +24,9 @@ namespace ProjetB4
 		public Vector3 ()
 		{
 			//zero vector;
+            x = 0;
+            y = 0;
+            z = 0;
 		}
 		
 		public Vector3 (Vector3 vector)
@@ -108,5 +111,15 @@ namespace ProjetB4
 		{
 			return Math.Floor(x/defaultStep)*defaultStep + "_" + Math.Floor(y/defaultStep)*defaultStep + "_" + Math.Floor(z/defaultStep)*defaultStep;
 		}
+
+        public Vector3 smash(float factor)
+        {
+            return new Vector3((float)Math.Floor(x / factor) * factor, (float)Math.Floor(y / factor) * factor, (float)Math.Floor(z / factor) * factor);
+        }
+
+        public Vector3 smash(Vector3 factorAsVector)
+        {
+            return new Vector3((float)Math.Floor(x / factorAsVector.x) * factorAsVector.x, (float)Math.Floor(y / factorAsVector.y) * factorAsVector.y, (float)Math.Floor(z / factorAsVector.z) * factorAsVector.z);
+        }
 	}
 }

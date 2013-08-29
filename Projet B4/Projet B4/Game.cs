@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections;
 using PlayerIO.GameLibrary;
 
-namespace ProjetB4 {
+namespace PhotonB4 {
 	[RoomType("Game")]
 public class GameCode : Game<Player> {
 
@@ -15,7 +15,11 @@ public class GameCode : Game<Player> {
 		
         public Dictionary<String, Entity> units = new Dictionary<String, Entity>(); //contains all entities
         public Dictionary<String, Player> players = new Dictionary<String, Player>(); //contains all entities
+        
+        //deprecated
         public Dictionary<String, Dictionary<String, String>> inGameUnitsRefs = new Dictionary<String, Dictionary<String, String>>();
+
+        public Dictionary<string, ViewTile> worldSpace = new Dictionary<string, ViewTile>();
 
         public Dictionary<int, Event> events = new Dictionary<int, Event>();
         public Dictionary<String, SpawnZone> spawnZones = new Dictionary<String, SpawnZone>();

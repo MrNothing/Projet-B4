@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 
-namespace ProjetB4
+namespace PhotonB4
 {
     public class ItemGenerator
     {

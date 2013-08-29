@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Text;
 
-namespace ProjetB4
+namespace PhotonB4
 {
     public class ResistanceInfos
     {

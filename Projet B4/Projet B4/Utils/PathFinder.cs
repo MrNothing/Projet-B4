@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProjetB4
+namespace PhotonB4
 {
     //To use this pathfinder, call start()
 	public class PathFinder

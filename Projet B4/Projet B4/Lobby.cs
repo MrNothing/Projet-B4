@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections;
 using PlayerIO.GameLibrary;
 
-namespace ProjetB4
+namespace PhotonB4
 {
     //The lobby is the character creation interface.
     [RoomType("Lobby")]

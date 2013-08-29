@@ -4,7 +4,7 @@ using PlayerIO.GameLibrary;
 using System.Linq;
 using System.Text;
 
-namespace ProjetB4
+namespace PhotonB4
 {
     public class ChatManager
     {
